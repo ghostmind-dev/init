@@ -1,8 +1,11 @@
 {
   "name": "@ghostmind-dev/post-create",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "post-create script for devcontainer",
   "main": "src/main.mjs",
+  "bin": {
+    "post-create": "src/main.mjs"
+  },
   "scripts": {
     "publish_patch": "npm version patch && npm publish --access public",
     "publish_minor": "npm version minor && npm publish --access public",
@@ -12,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ghostmind-dev/post-create": "^0.0.2",
     "@ghostmind-dev/run": "latest",
     "dotenv": "^16.0.2",
     "js-yaml": "^4.1.0",

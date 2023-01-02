@@ -1,4 +1,4 @@
-import { $, which, fs } from 'zx';
+import { $, fs, chalk } from 'zx';
 import { config } from 'dotenv';
 
 export default async function postCreate() {

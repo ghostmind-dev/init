@@ -27,3 +27,5 @@ RUN go install mvdan.cc/sh/v3/cmd/shfmt@latest
 ############################################################################
 # NPM LINK
 ############################################################################
+
+RUN npm install @ghostmind-dev/post-create -g

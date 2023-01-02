@@ -1,3 +1,5 @@
-import { actionRunRemote } from "@ghostmind-dev/run";
+// need to manually install the package first
 
-console.log(actionRunRemote);
+import postCreate from '@ghostmind-dev/post-create';
+
+console.log(postCreate);
