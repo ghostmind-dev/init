@@ -115,10 +115,10 @@ export default async function postCreate() {
       await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
       const isProjectExists =
-        await $`gcloud projects list --filter="${projectName}"`;
+        await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
 
       if (`${isProjectExists}` != '') {
-        await $`gcloud config set project ${projectName}`;
+        await $`gcloud config set project ${GCP_PROJECT_NAME}`;
         await $`gcloud config set compute/zone us-central1-b`;
         await $`gcloud auth configure-docker gcr.io --quiet`;
       }
