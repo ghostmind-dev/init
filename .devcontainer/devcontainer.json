@@ -1,9 +1,9 @@
 {
-  "name": "ghostmind-post-create-devcontainer",
+  "name": "post-create-devcontainer",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "PROJECT_DIR": "${env:HOME}${env:USERPROFILE}/projects/ghostmind-post-create"
+      "PROJECT_DIR": "${env:HOME}${env:USERPROFILE}/projects/container/post-create"
     }
   },
   "overrideCommand": false,
@@ -15,7 +15,7 @@
     "GOOGLE_APPLICATION_CREDENTIALS": "/tmp/gsa_key.json",
     "PATH": "${containerEnv:PATH}:/home/vscode/.npm-global/bin",
     "USE_GKE_GCLOUD_AUTH_PLUGIN": "true",
-    "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/ghostmind-post-create",
+    "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/container/post-create",
     "NODE_OPTION": "--openssl-legacy-provider",
     "GCP_PROJECT_NAME": "ghostmind-post-create",
     "VAULT_ROOT_TOKEN": "${localEnv:VAULT_ROOT_TOKEN}",
@@ -38,12 +38,12 @@
     "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind",
     "source=ghostmind-post-create-zsh-history,target=/commandhistory,type=volume",
-    "source=${env:HOME}${env:USERPROFILE}/projects/ghostmind-post-create,target=/Users/francoisseguin/projects/ghostmind-post-create,type=bind"
+    "source=${env:HOME}${env:USERPROFILE}/projects/container/post-create,target=/Users/francoisseguin/projects/container/post-create,type=bind"
   ],
   "runArgs": [
     "--cap-add=CAP_IPC_LOCK",
     "--name",
-    "ghostmind-post-create-devcontainer"
+    "post-create-devcontainer"
   ],
   "customizations": {
     "vscode": {

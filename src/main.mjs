@@ -1,8 +1,8 @@
-import { $, fs, chalk, sleep } from "zx";
-import { config } from "dotenv";
+import { $, fs, chalk, sleep } from 'zx';
+import { config } from 'dotenv';
 
 export default async function postCreate() {
-  console.log(chalk.blue("Starting devcontainer..."));
+  console.log(chalk.blue('Starting devcontainer...'));
 
   //////////////////////////////////////////////////////////////////////////////////
   // CONSTANTS
@@ -15,14 +15,24 @@ export default async function postCreate() {
   // CONFIG
   //////////////////////////////////////////////////////////////////////////////////
 
+  // need a funny name for naming my environment variables
+  // INIT = devcontainer post create
+  // but this is not funny or original
+  // so I will use INIT = devcontainer post create
+  // propose a better name if you have one
+  // I will use it and give you credit
+  // INIT = devcontainer post create
+  //
+
   const {
-    GCP_PROJECT_NAME,
-    EXPORT_PROJECT_ENV = "false",
-    INSTALL_DEV_DEPENDENCIES = "false",
-    RESET_LIVE_RUN = "false",
-    SET_NPM_CREDENTIALS = "false",
-    SET_GCP_CREDENTIALS = "false",
-    SET_GAM_CREDENTIALS = "false",
+    INIT_EXPORT_ENV_PROJECT = 'false',
+    INIT_EXPORT_ENV_ALL = 'false',
+    INIT_DEV_INSTALL_DEPENDENCIES = 'false',
+    INIT_DEV_RESET_LIVE = 'false',
+    INIT_LOGIN_NPM = 'false',
+    INIT_LOGIN_GCP = 'false',
+    INIT_LOGIN_GAM = 'false',
+    INIT_LOGIN_VAULT = 'false',
   } = process.env;
 
   //////////////////////////////////////////////////////////////////////////////////
@@ -52,14 +62,19 @@ export default async function postCreate() {
   // VAULT LOGIN
   //////////////////////////////////////////////////////////////////////////////////
 
-  await $`vault login ${process.env.VAULT_ROOT_TOKEN}`;
-
+  if (INIT_LOGIN_VAULT === 'true') {
+    await $`vault login ${process.env.VAULT_ROOT_TOKEN}`;
+  }
   //////////////////////////////////////////////////////////////////////////////////
   // SET PROJECT ENVIRONMENT VARIABLES
   //////////////////////////////////////////////////////////////////////////////////
 
-  if (EXPORT_PROJECT_ENV === "true") {
+  if (INIT_EXPORT_ENV_PROJECT === 'true') {
     await $`${run} vault kv export`;
+  }
+
+  if (INIT_EXPORT_ENV_ALL === 'true') {
+    await $`${run} vault kv export --all`;
   }
 
   const { config } = await import(`${SRC}/node_modules/dotenv/lib/main.js`);
@@ -70,7 +85,7 @@ export default async function postCreate() {
   // SET NPM CREDENTIALS
   //////////////////////////////////////////////////////////////////////////////////
 
-  if (SET_NPM_CREDENTIALS === "true") {
+  if (INIT_LOGIN_NPM === 'true') {
     const NPMRC_INSTALL = process.env.NPMRC_INSTALL;
     const NPMRC_PUBLISH = process.env.NPMRC_PUBLISH;
     await $`echo ${NPMRC_INSTALL} | base64 -di -w 0 >${HOME}/.npmrc`;
@@ -81,11 +96,15 @@ export default async function postCreate() {
   // // GCP
   // ////////////////////////////////////////////////////////////////////////////////
 
-  if (SET_GCP_CREDENTIALS) {
+  if (INIT_LOGIN_GCP === 'true') {
     const GCP_SERVICE_ACCOUNT_ADMIN = process.env.GCP_SERVICE_ACCOUNT_ADMIN;
     const GCP_SERVICE_ACCOUNT_RUN = process.env.GCP_SERVICE_ACCOUNT_RUN;
 
-    $.shell = "/usr/bin/zsh";
+    $.shell = '/usr/bin/zsh';
+
+    const GCP_PROJECT_NAME = process.env.GCP_PROJECT_NAME;
+
+    const projectName = POST_CREATE_GCP_PROJECT_NAME || GCP_PROJECT_NAME;
 
     try {
       $.verbose = false;
@@ -98,16 +117,16 @@ export default async function postCreate() {
       await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
       const isProjectExists =
-        await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
+        await $`gcloud projects list --filter="${projectName}"`;
 
-      if (`${isProjectExists}` != "") {
-        await $`gcloud config set project ${GCP_PROJECT_NAME}`;
+      if (`${isProjectExists}` != '') {
+        await $`gcloud config set project ${projectName}`;
         await $`gcloud config set compute/zone us-central1-b`;
         await $`gcloud auth configure-docker gcr.io --quiet`;
       }
     } catch (e) {
       console.log(chalk.red(e));
-      console.log("something went wrong");
+      console.log('something went wrong');
     }
 
     await sleep(2000);
@@ -117,7 +136,7 @@ export default async function postCreate() {
   // // GAM
   // //////////////////////////////////////////////////////////////////////////////////
 
-  if (SET_GAM_CREDENTIALS === "true") {
+  if (INIT_LOGIN_GAM === 'true') {
     const GAM_OAUTH2CLIENT = process.env.GAM_OAUTH2CLIENT;
     const GAM_CLIENTSECRETS = process.env.GAM_CLIENTSECRETS;
     const GAM_OAUTH2TXT = process.env.GAM_OAUTH2TXT;
@@ -133,7 +152,7 @@ export default async function postCreate() {
 
   const dotfilesFolder = fs.readdirSync(`${process.env.HOME}`);
 
-  if (!dotfilesFolder.includes(".dotfiles")) {
+  if (!dotfilesFolder.includes('.dotfiles')) {
     await $`git clone https://github.com/ghostmind-dev/dotfiles.git ${HOME}/.dotfiles`;
     await $`rcup -d ${HOME}/.dotfiles -x Readme.md -x .gitignore -f`;
   }
@@ -142,7 +161,7 @@ export default async function postCreate() {
   // // INSTALL APP DEPENDENCIES
   // ////////////////////////////////////////////////////////////////////////////////
 
-  if (INSTALL_DEV_DEPENDENCIES === "true") {
+  if (INIT_DEV_INSTALL_DEPENDENCIES === 'true') {
     await $`${run} utils dev install`;
   }
 
@@ -150,7 +169,7 @@ export default async function postCreate() {
   // // INSTALL LIVE RUN
   // //////////////////////////////////////////////////////////////////////////////////
 
-  if (RESET_LIVE_RUN === "true") {
+  if (INIT_DEV_RESET_LIVE === 'true') {
     await $`rm -rf ${SRC}/dev`;
     await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
     await $`npm --prefix ${SRC}/dev  install`;
@@ -167,12 +186,12 @@ export default async function postCreate() {
   const currentBranch = currentBranchRaw.stdout.trim();
 
   let environemnt;
-  if (currentBranch === "main") {
-    environemnt = "prod";
-  } else if (currentBranch === "preview") {
-    environemnt = "preview";
+  if (currentBranch === 'main') {
+    environemnt = 'prod';
+  } else if (currentBranch === 'preview') {
+    environemnt = 'preview';
   } else {
-    environemnt = "dev";
+    environemnt = 'dev';
   }
 
   $.verbose = true;
