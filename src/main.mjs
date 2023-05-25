@@ -151,6 +151,7 @@ export default async function postCreate() {
   const dotfilesFolder = fs.readdirSync(`${process.env.HOME}`);
 
   if (!dotfilesFolder.includes('.dotfiles')) {
+    await $`git config --global --add safe.directory '*'`;
     await $`git clone https://github.com/ghostmind-dev/dotfiles.git ${HOME}/.dotfiles`;
     await $`rcup -d ${HOME}/.dotfiles -x Readme.md -x .gitignore -f`;
   }
