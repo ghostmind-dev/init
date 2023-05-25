@@ -104,8 +104,6 @@ export default async function postCreate() {
 
     const GCP_PROJECT_NAME = process.env.GCP_PROJECT_NAME;
 
-    const projectName = POST_CREATE_GCP_PROJECT_NAME || GCP_PROJECT_NAME;
-
     try {
       $.verbose = false;
 
