@@ -7,13 +7,9 @@ export default async function postCreate() {
   //////////////////////////////////////////////////////////////////////////////////
   // CONSTANTS
   //////////////////////////////////////////////////////////////////////////////////
-
-  const SRC = process.env.SRC;
-  const HOME = process.env.HOME;
-
-  //////////////////////////////////////////////////////////////////////////////////
-  // CONFIG
-  //////////////////////////////////////////////////////////////////////////////////
+  
+  const HOME = process.env.HOME
+  const SRC = process.env.SRC
 
   // need a funny name for naming my environment variables
   // INIT = devcontainer post create
@@ -25,6 +21,7 @@ export default async function postCreate() {
   //
 
   const {
+    INIT_SRC,
     INIT_EXPORT_ENV_PROJECT = 'false',
     INIT_EXPORT_ENV_ALL = 'false',
     INIT_DEV_INSTALL_DEPENDENCIES = 'false',
