@@ -21,7 +21,7 @@ export default async function postCreate() {
   //
 
   const {
-    INIT_SRC,
+    INIT_SRC = process.env.INIT_SRC,
     INIT_EXPORT_ENV_PROJECT = 'false',
     INIT_EXPORT_ENV_ALL = 'false',
     INIT_DEV_INSTALL_DEPENDENCIES = 'false',
