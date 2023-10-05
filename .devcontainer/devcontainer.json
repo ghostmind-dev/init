@@ -31,28 +31,19 @@
     "SET_GCP_CREDENTIALS": "true",
     "SET_GAM_CREDENTIALS": "true"
   },
-  "appPort": [
-    "5050"
-  ],
+  "appPort": ["5050"],
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind",
-    "source=ghostmind-post-create-zsh-history,target=/commandhistory,type=volume",
-    "source=${env:HOME}${env:USERPROFILE}/projects/container/post-create,target=/Users/francoisseguin/projects/container/post-create,type=bind"
+    "source=ghostmind-post-create-zsh-history,target=/commandhistory,type=volume"
   ],
-  "runArgs": [
-    "--cap-add=CAP_IPC_LOCK",
-    "--name",
-    "post-create-devcontainer"
-  ],
+  "runArgs": ["--cap-add=CAP_IPC_LOCK", "--name", "post-create"],
   "customizations": {
     "vscode": {
       "settings": {
         "prettier.singleQuote": true,
         "vs-kubernetes": {
-          "disable-linters": [
-            "resource-limits"
-          ]
+          "disable-linters": ["resource-limits"]
         },
         "shellformat.path": "/home/vscode/go/bin/shfmt"
       },
