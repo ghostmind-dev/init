@@ -206,7 +206,7 @@ export default async function postCreate() {
   // CONNECT TO GHCR.IO
   ////////////////////////////////////////////////////////////////////////////////
 
-  await $`echo ${process.env.GITHUB_TOKEN} | docker login ghcr.io -u USERNAME --password-stdin`;
+  await $`echo ${process.env.GH_TOKEN} | docker login ghcr.io -u USERNAME --password-stdin`;
 
   ////////////////////////////////////////////////////////////////////////////////
   // THE END
