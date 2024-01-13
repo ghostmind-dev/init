@@ -61,18 +61,18 @@ export default async function postCreate() {
 
   if (INIT_LOGIN_VAULT === "true") {
     await $`vault login ${process.env.VAULT_ROOT_TOKEN}`;
+
+    if (INIT_EXPORT_ENV_PROJECT === "true") {
+      await $`${run} vault kv export`;
+    }
+
+    if (INIT_EXPORT_ENV_ALL === "true") {
+      await $`${run} vault kv export --all`;
+    }
   }
   //////////////////////////////////////////////////////////////////////////////////
   // SET PROJECT ENVIRONMENT VARIABLES
   //////////////////////////////////////////////////////////////////////////////////
-
-  if (INIT_EXPORT_ENV_PROJECT === "true") {
-    await $`${run} vault kv export`;
-  }
-
-  if (INIT_EXPORT_ENV_ALL === "true") {
-    await $`${run} vault kv export --all`;
-  }
 
   const { config } = await import(`${SRC}/node_modules/dotenv/lib/main.js`);
 
