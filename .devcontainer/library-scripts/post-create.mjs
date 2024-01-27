@@ -1,5 +1,21 @@
 #!/usr/bin/env zx
 
-import postCreate from '/workspaces/post-create/src/main.mjs';
+const HOME = process.env.HOME;
+
+await $`mkdir -p ${HOME}/.npm-global`;
+await $`npm config set prefix ${HOME}/.npm-global`;
+await $`npm config set update-notifier false`;
+
+const NODE_PATH = "/home/vscode/.npm-global/lib/node_modules";
+
+// await $`npm link`;
+// await cd(`${NODE_PATH}/@ghostmind-dev/post-create`);
+// await $`npm install`;
+
+await $`npm install --global ${process.env.SRC}`;
+
+const { default: postCreate } = await import(
+  `${NODE_PATH}/@ghostmind-dev/post-create/src/main.mjs`
+);
 
 await postCreate();
