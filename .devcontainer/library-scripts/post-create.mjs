@@ -8,10 +8,6 @@ await $`npm config set update-notifier false`;
 
 const NODE_PATH = '/home/vscode/.npm-global/lib/node_modules';
 
-// await $`npm link`;
-// await cd(`${NODE_PATH}/@ghostmind-dev/post-create`);
-// await $`npm install`;
-
 await $`npm install --global ${process.env.SRC}`;
 
 const { default: postCreate } = await import(

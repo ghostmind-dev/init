@@ -23,6 +23,7 @@
     "GH_TOKEN": "${localEnv:GH_TOKEN}",
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "TERRAFORM_BUCKET_NAME": "${localEnv:TERRAFORM_BUCKET_NAME}",
+    "NPM_TOKEN": "${localEnv:NPM_TOKEN}",
     "VAULT_ROOT_TOKEN": "${localEnv:VAULT_ROOT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}",
     "BUILDX_NO_DEFAULT_ATTESTATIONS": "1"
@@ -32,7 +33,7 @@
     "INIT_EXPORT_ENV_ALL": "false",
     "INIT_DEV_INSTALL_DEPENDENCIES": "false",
     "INIT_DEV_RESET_LIVE": "true",
-    "INIT_LOGIN_NPM": "false",
+    "INIT_LOGIN_NPM": "true",
     "INIT_LOGIN_GCP": "true",
     "INIT_LOGIN_GAM": "false",
     "INIT_LOGIN_VAULT": "true"

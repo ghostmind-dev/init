@@ -3,18 +3,6 @@
 import { $, fs, chalk, sleep } from 'zx';
 import { config } from 'dotenv';
 
-// const {
-//   default: { config },
-// } = await import(
-//   `${NODE_PATH}/@ghostmind-dev/post-create/node_modules/dotenv/lib/main.js`
-// );
-
-// // const { config } = dotenv;
-
-// const { $, fs, chalk, sleep } = await import(
-//   `${NODE_PATH}/@ghostmind-dev/post-create/node_modules/zx/build/index.js`
-// );
-
 export default async function postCreate() {
   console.log(chalk.blue('Starting devcontainer...'));
   //////////////////////////////////////////////////////////////////////////////////
@@ -79,20 +67,22 @@ export default async function postCreate() {
   //////////////////////////////////////////////////////////////////////////////////
   // SET PROJECT ENVIRONMENT VARIABLES
   //////////////////////////////////////////////////////////////////////////////////
-  // const { config } = await import(`${SRC}/node_modules/dotenv/lib/main.js`);
+
   config({ path: `${SRC}/.env` });
+
   //////////////////////////////////////////////////////////////////////////////////
   // SET NPM CREDENTIALS
   //////////////////////////////////////////////////////////////////////////////////
+
   if (INIT_LOGIN_NPM === 'true') {
-    const NPMRC_INSTALL = process.env.NPMRC_INSTALL;
-    const NPMRC_PUBLISH = process.env.NPMRC_PUBLISH;
-    await $`echo ${NPMRC_INSTALL} | base64 -di -w 0 >${HOME}/.npmrc`;
-    await $`echo ${NPMRC_PUBLISH} | base64 -di -w 0 >${SRC}/.npmrc`;
+    const NPM_TOKEN = process.env.NPM_TOKEN;
+
+    await $`echo //registry.npmjs.org/:_${NPM_TOKEN} >${SRC}/.npmrc`;
+    await $`echo //registry.npmjs.org/:_${NPM_TOKEN} >${HOME}/.npmrc`;
   }
-  // /////////////////////////////////////////////////////////////////////////////////
-  // // GCP
-  // ////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////
+  // GCP
+  ////////////////////////////////////////////////////////////////////////////////
   if (INIT_LOGIN_GCP === 'true') {
     const GCP_SERVICE_ACCOUNT_ADMIN = process.env.GCP_SERVICE_ACCOUNT_ADMIN;
     $.shell = '/usr/bin/zsh';
