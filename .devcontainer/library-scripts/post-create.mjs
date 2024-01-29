@@ -6,7 +6,7 @@ await $`mkdir -p ${HOME}/.npm-global`;
 await $`npm config set prefix ${HOME}/.npm-global`;
 await $`npm config set update-notifier false`;
 
-const NODE_PATH = '/home/vscode/.npm-global/lib/node_modules';
+const NODE_PATH = "/home/vscode/.npm-global/lib/node_modules";
 
 await $`npm install`;
 await $`npm run build`;

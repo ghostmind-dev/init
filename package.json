@@ -2,15 +2,14 @@
   "name": "@ghostmind-dev/post-create",
   "version": "0.0.42",
   "description": "post-create script for devcontainer",
-  "main": "dist/index.mjs",
+  "main": "app/main.mjs",
   "bin": {
-    "post-create": "dist/bin/index.mjs"
+    "post-create": "app/bin/cmd.mjs"
   },
   "scripts": {
     "publish_patch": "npm version patch && git push origin main --tags",
     "publish_local": "npm version patch && npm publish --access public",
-    "test": "node test/utils-test.mjs",
-    "build": "ncc build app/main.mjs -o dist/ && ncc build app/bin/cmd.mjs -o dist/bin/"
+    "test": "node test/utils-test.mjs"
   },
   "author": "",
   "license": "ISC",
@@ -20,9 +19,6 @@
     "js-yaml": "^4.1.0",
     "prefix": "^1.0.0",
     "zx": "^7.0.8"
-  },
-  "devDependencies": {
-    "@vercel/ncc": "^0.38.1"
   },
   "repository": {
     "type": "git",
