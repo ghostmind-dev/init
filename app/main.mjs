@@ -124,14 +124,9 @@ export default async function postCreate() {
   //////////////////////////////////////////////////////////////////////////////////
   // DOTFILES
   //////////////////////////////////////////////////////////////////////////////////
-  const dotfilesFolder = fs.readdirSync(`${process.env.HOME}`);
-  if (!dotfilesFolder.includes('.dotfiles')) {
-    await $`rm -f ${HOME}/.zshrc`;
-    await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/zshrc`;
 
-    await $`rm -f ${HOME}/.gitconfig`;
-    await $`curl -o ${HOME}/.gitconfig https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/.gitconfig`;
-  }
+  await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/zsh/.zshrc`;
+
   // ////////////////////////////////////////////////////////////////////////////////
   // // INSTALL APP DEPENDENCIES
   // ////////////////////////////////////////////////////////////////////////////////
