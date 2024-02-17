@@ -1,6 +1,6 @@
 {
   "name": "@ghostmind-dev/post-create",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "post-create script for devcontainer",
   "main": "app/main.mjs",
   "bin": {
