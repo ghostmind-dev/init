@@ -3,7 +3,7 @@
 import { $, fs, chalk, sleep } from 'zx';
 import { config } from 'dotenv';
 
-export default async function postCreate() {
+export async function postCreateCommand() {
   console.log(chalk.blue('Starting devcontainer...'));
   //////////////////////////////////////////////////////////////////////////////////
   // CONSTANTS

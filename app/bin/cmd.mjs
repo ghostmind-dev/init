@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
-import postCreate from '../main.mjs';
+import { postCreateCommand } from '../main.mjs';
 
-await postCreate();
+const functionToRun = process.argv[2];
+
+if (functionToRun === 'postCreateCommand') {
+  await postCreateCommand();
+}
