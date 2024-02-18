@@ -1,14 +1,21 @@
-# post-create
+# init
 
-post-create script for devcontainer
+script for devcontainer initialization
 
 ## install
 
 ```bash
-npm install @ghostmind-dev/post-create
+npm install @ghostmind-dev/init
 ```
 
-## environment variable
+## scripts
 
-| name                       | default value | description                                               |
-| -------------------------- | ------------- | --------------------------------------------------------- |
+| script            | description                                           |
+| ----------------- | ----------------------------------------------------- |
+| postCreateCommand | command to run after the creation of the devcontainer |
+
+## usage
+
+```bash
+npx @ghostmind-dev/init postCreateCommand
+```
