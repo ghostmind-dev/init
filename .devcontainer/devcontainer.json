@@ -8,7 +8,7 @@
   },
   "overrideCommand": false,
   "containerUser": "vscode",
-  "postCreateCommand": "${containerWorkspaceFolder}/app/bin/cmd.mjs",
+  "postCreateCommand": "${containerWorkspaceFolder}/app/bin/cmd.mjs postCreateCommand",
   "remoteUser": "vscode",
   "remoteEnv": {
     "SYNC_LOCALHOST_KUBECONFIG": "true",
