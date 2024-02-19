@@ -1,6 +1,6 @@
 {
   "name": "@ghostmind-dev/init",
-  "version": "0.0.63",
+  "version": "0.0.64",
   "description": "post-create script for devcontainer",
   "main": "app/main.mjs",
   "bin": {
