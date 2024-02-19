@@ -6,7 +6,7 @@ const functionToRun = process.argv[2];
 
 if (
   functionToRun === 'postCreateCommand' ||
-  functionToRun === 'poat-create' ||
+  functionToRun === 'post-create' ||
   functionToRun === 'postcreate'
 ) {
   await postCreateCommand();

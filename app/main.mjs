@@ -4,6 +4,8 @@ import { $, fs, chalk, sleep } from 'zx';
 import { config } from 'dotenv';
 
 export async function postCreateCommand() {
+  $.verbose = true;
+
   console.log(chalk.blue('Starting devcontainer...'));
   //////////////////////////////////////////////////////////////////////////////////
   // CONSTANTS
