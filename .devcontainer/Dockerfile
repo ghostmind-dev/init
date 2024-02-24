@@ -2,7 +2,7 @@
 # WELCOME
 ############################################################################
 
-FROM ghcr.io/ghostmind-dev/dvc:latest
+FROM ghcr.io/ghostmind-dev/dvc:latest@sha256:f0e138fc077c9fd53d8c899dc978c1f22cd17b7ba8c8b58ba4f514a330db00e1
 
 ############################################################################
 # THE END

@@ -24,6 +24,7 @@
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "TERRAFORM_BUCKET_NAME": "${localEnv:TERRAFORM_BUCKET_NAME}",
     "NPM_TOKEN": "${localEnv:NPM_TOKEN}",
+    "CLOUDFLARED_CREDS": "${localEnv:CLOUDFLARED_CREDS}",
     "VAULT_ROOT_TOKEN": "${localEnv:VAULT_ROOT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}",
     "BUILDX_NO_DEFAULT_ATTESTATIONS": "1"
@@ -36,6 +37,7 @@
     "INIT_LOGIN_NPM": "true",
     "INIT_LOGIN_GCP": "true",
     "INIT_LOGIN_GAM": "false",
+    "INIT_LOGIN_CLOUDFLARED": "true",
     "INIT_LOGIN_VAULT": "true"
   },
   "appPort": ["5050"],
