@@ -38,7 +38,8 @@
     "INIT_LOGIN_GCP": "true",
     "INIT_LOGIN_GAM": "false",
     "INIT_LOGIN_CLOUDFLARED": "true",
-    "INIT_LOGIN_VAULT": "true"
+    "INIT_LOGIN_VAULT": "true",
+    "INIT_SSH_MODE": "true"
   },
   "appPort": ["5050"],
   "mounts": [
