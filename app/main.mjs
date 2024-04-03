@@ -31,7 +31,7 @@ export async function postCreateCommand() {
     INIT_LOGIN_GAM = 'false',
     INIT_LOGIN_VAULT = 'false',
     INIT_LOGIN_CLOUDFLARED = 'false',
-    INIT_SSH_MODE = 'false'
+    INIT_SSH_MODE = 'false',
   } = process.env;
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GITHUB REGISTRY
@@ -63,7 +63,7 @@ export async function postCreateCommand() {
   //////////////////////////////////////////////////////////////////////////////////
 
   await $`npm install -g npm-run-all`;
-
+  await $`npm install -g graphql-request`;
 
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GLOBAL MODULES (TO BE MOVED TO DVC)
