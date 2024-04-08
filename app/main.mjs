@@ -1,6 +1,6 @@
 // const NODE_PATH = "/home/vscode/.npm-global/lib/node_modules";
 
-import { $, fs, chalk, sleep } from 'zx';
+import { $, fs, chalk, sleep, cd } from 'zx';
 import { config } from 'dotenv';
 
 export async function postCreateCommand() {
@@ -56,8 +56,9 @@ export async function postCreateCommand() {
   // INSTALL RUN (PRODUCTION)
   //////////////////////////////////////////////////////////////////////////////////
 
-  await $`deno install --allow-all -f --name run https://raw.githubusercontent.com/ghostmind-dev/run/main/play/bin/cmd.ts`;
-  const run = `${HOME}/.deno/bin/run`;
+  cd(`${HOME}`);
+  await $`git clone git@github.com:ghostmind-dev/run.git`;
+  const run = `${HOME}/run/play/bin/cms.ts`;
 
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GLOBAL MODULES (TO BE MOVED TO DVC)
