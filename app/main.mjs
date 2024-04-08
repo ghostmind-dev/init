@@ -39,6 +39,8 @@ export async function postCreateCommand() {
   await $`mkdir -p ${HOME}/.npm-global`;
   await $`npm config set prefix ${HOME}/.npm-global`;
   await $`npm config set update-notifier false`;
+  await $`export PATH=${HOME}/.npm-global/bin:$PATH`;
+
   //////////////////////////////////////////////////////////////////////////////////
   // NPM PROJECT MODULES
   //////////////////////////////////////////////////////////////////////////////////
@@ -54,9 +56,8 @@ export async function postCreateCommand() {
   // INSTALL RUN (PRODUCTION)
   //////////////////////////////////////////////////////////////////////////////////
 
-  await $`npm install -g @ghostmind-dev/run`;
-  const run = `${HOME}/.npm-global/bin/run`;
-  await $`export PATH=${HOME}/.npm-global/bin:$PATH`;
+  await $`deno install --allow-all -f --name run https://raw.githubusercontent.com/ghostmind-dev/run/main/play/bin/cmd.ts`;
+  const run = `${HOME}/.deno/bin/run`;
 
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GLOBAL MODULES (TO BE MOVED TO DVC)
@@ -159,7 +160,6 @@ export async function postCreateCommand() {
   if (INIT_DEV_RESET_LIVE === 'true') {
     await $`rm -rf ${SRC}/dev`;
     await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
-    await $`npm --prefix ${SRC}/dev  install`;
   }
 
   //////////////////////////////////////////////////////////////////////////////////
