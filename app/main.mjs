@@ -58,7 +58,7 @@ export async function postCreateCommand() {
 
   cd(`${HOME}`);
   await $`git clone https://github.com/ghostmind-dev/run.git`;
-  const run = `${HOME}/run/play/bin/cms.ts`;
+  await $`deno install --allow-all --force --name run ${HOME}/run/play/bin/cmd.ts`;
 
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GLOBAL MODULES (TO BE MOVED TO DVC)
