@@ -1,7 +1,7 @@
 // const NODE_PATH = "/home/vscode/.npm-global/lib/node_modules";
 
-import { $, fs, chalk, sleep, cd } from 'zx';
-import { config } from 'dotenv';
+import { $, fs, chalk, sleep, cd } from 'npm:zx';
+import { config } from 'npm:dotenv';
 
 export async function postCreateCommand() {
   $.verbose = true;
@@ -10,8 +10,8 @@ export async function postCreateCommand() {
   //////////////////////////////////////////////////////////////////////////////////
   // CONSTANTS
   //////////////////////////////////////////////////////////////////////////////////
-  const HOME = process.env.HOME;
-  const SRC = process.env.SRC;
+  const HOME = Deno.env.get('HOME');
+  const SRC = Deno.env.get('SRC');
   // need a funny name for naming my environment variables
   // INIT = devcontainer post create
   // but this is not funny or original
@@ -21,7 +21,6 @@ export async function postCreateCommand() {
   // INIT = devcontainer post create
   //
   const {
-    INIT_SRC = process.env.INIT_SRC,
     INIT_EXPORT_ENV_PROJECT = 'false',
     INIT_EXPORT_ENV_ALL = 'false',
     INIT_DEV_INSTALL_DEPENDENCIES = 'false',
@@ -32,7 +31,7 @@ export async function postCreateCommand() {
     INIT_LOGIN_VAULT = 'false',
     INIT_LOGIN_CLOUDFLARED = 'false',
     INIT_SSH_MODE = 'false',
-  } = process.env;
+  } = Deno.env.toObject();
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GITHUB REGISTRY
   //////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +57,7 @@ export async function postCreateCommand() {
 
   await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
   await $`deno install --allow-all --force --name run ${HOME}/run/play/bin/cmd.ts`;
+  const run = `${HOME}/.deno/bin/run`;
 
   //////////////////////////////////////////////////////////////////////////////////
   // NPM GLOBAL MODULES (TO BE MOVED TO DVC)
@@ -83,7 +83,7 @@ export async function postCreateCommand() {
   // VAULT LOGIN
   //////////////////////////////////////////////////////////////////////////////////
   if (INIT_LOGIN_VAULT === 'true') {
-    await $`vault login ${process.env.VAULT_ROOT_TOKEN}`;
+    await $`vault login ${Deno.env.get('VAULT_ROOT_TOKEN')}`;
     if (INIT_EXPORT_ENV_PROJECT === 'true') {
       await $`${run} vault kv export`;
     }
@@ -102,7 +102,7 @@ export async function postCreateCommand() {
   //////////////////////////////////////////////////////////////////////////////////
 
   if (INIT_LOGIN_NPM === 'true') {
-    const NPM_TOKEN = process.env.NPM_TOKEN;
+    const NPM_TOKEN = Deno.env.get('NPM_TOKEN');
 
     await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${SRC}/.npmrc`;
     await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${HOME}/.npmrc`;
@@ -111,9 +111,9 @@ export async function postCreateCommand() {
   // GCP
   ////////////////////////////////////////////////////////////////////////////////
   if (INIT_LOGIN_GCP === 'true') {
-    const GCP_SERVICE_ACCOUNT_ADMIN = process.env.GCP_SERVICE_ACCOUNT_ADMIN;
+    const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
     $.shell = '/usr/bin/zsh';
-    const GCP_PROJECT_NAME = process.env.GCP_PROJECT_NAME;
+    const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
     try {
       $.verbose = false;
       await $`echo ${GCP_SERVICE_ACCOUNT_ADMIN} | base64 -di -w 0 >/tmp/gsa_key.json`;
@@ -136,9 +136,9 @@ export async function postCreateCommand() {
   // // GAM
   // //////////////////////////////////////////////////////////////////////////////////
   if (INIT_LOGIN_GAM === 'true') {
-    const GAM_OAUTH2CLIENT = process.env.GAM_OAUTH2CLIENT;
-    const GAM_CLIENTSECRETS = process.env.GAM_CLIENTSECRETS;
-    const GAM_OAUTH2TXT = process.env.GAM_OAUTH2TXT;
+    const GAM_OAUTH2CLIENT = Deno.env.get('GAM_OAUTH2CLIENT');
+    const GAM_CLIENTSECRETS = Deno.env.get('GAM_CLIENTSECRETS');
+    const GAM_OAUTH2TXT = Deno.env.get('GAM_OAUTH2TXT');
     await $`echo ${GAM_OAUTH2CLIENT} | base64 -di -w 0 >/home/vscode/bin/gam/oauth2service.json`;
     await $`echo ${GAM_CLIENTSECRETS} | base64 -di -w 0 >/home/vscode/bin/gam/client_secrets.json`;
     await $`echo ${GAM_OAUTH2TXT} | base64 -di -w 0 >/home/vscode/bin/gam/oauth2.txt`;
@@ -146,7 +146,7 @@ export async function postCreateCommand() {
   //////////////////////////////////////////////////////////////////////////////////
   // GIT SAFE
   //////////////////////////////////////////////////////////////////////////////////
-  process.chdir(SRC);
+  Deno.chdir(SRC);
   await $`git config --add safe.directory "*"`;
   //
   //////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ export async function postCreateCommand() {
   //////////////////////////////////////////////////////////////////////////////////
 
   if (INIT_LOGIN_CLOUDFLARED === 'true') {
-    const CLOUDFLARED_CREDS = process.env.CLOUDFLARED_CREDS;
+    const CLOUDFLARED_CREDS = Deno.env.get('CLOUDFLARED_CREDS');
     $.shell = '/usr/bin/zsh';
 
     try {
@@ -210,7 +210,9 @@ export async function postCreateCommand() {
   ////////////////////////////////////////////////////////////////////////////////
   // CONNECT TO GHCR.IO
   ////////////////////////////////////////////////////////////////////////////////
-  await $`echo ${process.env.GH_TOKEN} | docker login ghcr.io -u USERNAME --password-stdin`;
+  await $`echo ${Deno.env.get(
+    'GH_TOKEN'
+  )} | docker login ghcr.io -u USERNAME --password-stdin`;
   ////////////////////////////////////////////////////////////////////////////////
   // THE END
   ////////////////////////////////////////////////////////////////////////////////

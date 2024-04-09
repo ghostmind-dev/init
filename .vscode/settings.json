@@ -18,7 +18,6 @@
     "**/.terraform.lock.hcl": true,
     "**/backend.tf": true,
     "**/versions.tf": true,
-    "**/meta.json": true,
     "**/.npmignore": true
   },
   "files.associations": {
@@ -28,7 +27,10 @@
   "editor.formatOnSave": true,
   "files.autoSave": "off",
   "prettier.singleQuote": true,
-  "vs-kubernetes": {
-    "disable-linters": ["resource-limits"]
-  }
+  "deno.unstable": true,
+  "deno.lint": true,
+  "deno.cacheOnSave": true,
+  "deno.path": "/deno/bin/deno",
+  "deno.cache": "/deno/.cache",
+  "deno.config": "/home/vscode/deno.json"
 }

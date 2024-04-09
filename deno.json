@@ -1,0 +1,15 @@
+{
+  "lint": {
+    "include": ["**/init/**/*.ts", ".devcontainer/**/*.ts", ".vscode/**/*.ts"],
+    "rules": {
+      "tags": ["recommended"],
+      "include": ["ban-untagged-todo"],
+      "exclude": [
+        "no-unused-vars",
+        "no-explicit-any",
+        "prefer-const",
+        "require-await"
+      ]
+    }
+  }
+}
