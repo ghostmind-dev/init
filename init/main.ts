@@ -56,7 +56,7 @@ export async function postCreateCommand() {
   //////////////////////////////////////////////////////////////////////////////////
 
   await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
-  await $`deno install --allow-all --force --name run ${HOME}/run/play/bin/cmd.ts`;
+  await $`deno install --allow-all --force --name run ${HOME}/run/run/bin/cmd.ts`;
   const run = `${HOME}/.deno/bin/run`;
 
   //////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +167,7 @@ export async function postCreateCommand() {
   if (INIT_DEV_RESET_LIVE === 'true') {
     await $`rm -rf ${SRC}/dev`;
     await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
-    await $`deno install --allow-all --force --name live ${SRC}/dev/play/bin/cmd.ts`;
+    await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
 
   //////////////////////////////////////////////////////////////////////////////////
