@@ -18,7 +18,8 @@
     "**/.terraform.lock.hcl": true,
     "**/backend.tf": true,
     "**/versions.tf": true,
-    "**/.npmignore": true
+    "**/.npmignore": true,
+    "**/deno.lock": true
   },
   "files.associations": {
     "*.json": "jsonc"
