@@ -5,7 +5,9 @@
   "id": "orRYbWU9bW7r",
   "deno": {
     "config": {
-      "includes": ["**/init/**/*.ts"]
+      "lint": {
+        "includes": ["**/init/**/*.ts"]
+      }
     }
   }
 }

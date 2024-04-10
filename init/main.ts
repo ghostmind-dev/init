@@ -79,8 +79,8 @@ let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
 let mergedDenoConfig = { ...defaultDenoConfig };
 
-if (metaconfig.deno?.config) {
-  mergedDenoConfig = { ...mergedDenoConfig, ...metaconfig.deno.config };
+if (metaconfig.deno?.config?.lint) {
+  mergedDenoConfig = { ...mergedDenoConfig, ...metaconfig.deno.config.lint };
 }
 
 await fs.writeJson(`${HOME}/deno.json`, mergedDenoConfig, { spaces: 2 });
