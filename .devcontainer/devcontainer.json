@@ -8,7 +8,8 @@
   },
   "overrideCommand": false,
   "containerUser": "vscode",
-  "postCreateCommand": "deno run --allow-all /usr/local/share/post-create.ts",
+  "postCreateCommand": "deno run --allow-all init/main.ts",
+  "postStartCommand": "deno run --allow-all /usr/local/share/post-start.ts",
   "remoteUser": "vscode",
   "remoteEnv": {
     "SYNC_LOCALHOST_KUBECONFIG": "true",

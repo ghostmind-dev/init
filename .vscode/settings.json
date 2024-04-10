@@ -32,5 +32,6 @@
   "deno.cacheOnSave": true,
   "deno.path": "/deno/bin/deno",
   "deno.cache": "/deno/.cache",
-  "deno.config": "/home/vscode/deno.json"
+  "deno.config": "/home/vscode/deno.json",
+  "deno.enable": true
 }
