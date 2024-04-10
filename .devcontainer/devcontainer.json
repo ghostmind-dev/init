@@ -18,7 +18,6 @@
     "BUILDX_NO_DEFAULT_ATTESTATIONS": "1",
     "PATH": "${containerEnv:PATH}:/home/vscode/.npm-global/bin",
     "SRC": "${containerWorkspaceFolder}",
-    "APP": "${containerWorkspaceFolder}/init",
     "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/container/init",
     "GOOGLE_APPLICATION_CREDENTIALS": "/tmp/gsa_key.json",
     "DOMAIN_NAME": "${localEnv:DOMAIN_NAME}",

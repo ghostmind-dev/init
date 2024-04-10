@@ -2,5 +2,10 @@
   "type": "project",
   "name": "post-create",
   "scope": "global",
-  "id": "orRYbWU9bW7r"
+  "id": "orRYbWU9bW7r",
+  "deno": {
+    "config": {
+      "includes": ["**/init/**/*.ts"]
+    }
+  }
 }

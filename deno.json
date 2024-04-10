@@ -1,6 +1,5 @@
 {
   "lint": {
-    "include": ["**/init/**/*.ts", ".devcontainer/**/*.ts", ".vscode/**/*.ts"],
     "rules": {
       "tags": ["recommended"],
       "include": ["ban-untagged-todo"],

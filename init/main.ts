@@ -6,13 +6,14 @@ import { config } from 'npm:dotenv';
 $.verbose = true;
 
 console.log(chalk.blue('Starting devcontainer...'));
+
 //////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS
 //////////////////////////////////////////////////////////////////////////////////
+
 const HOME = Deno.env.get('HOME');
 const SRC = Deno.env.get('SRC');
 
-//
 const {
   INIT_EXPORT_ENV_PROJECT = 'false',
   INIT_EXPORT_ENV_ALL = 'false',
@@ -25,13 +26,21 @@ const {
   INIT_LOGIN_CLOUDFLARED = 'false',
   INIT_SSH_MODE = 'false',
 } = Deno.env.toObject();
+
 //////////////////////////////////////////////////////////////////////////////////
 // NPM GITHUB REGISTRY
 //////////////////////////////////////////////////////////////////////////////////
+
 await $`mkdir -p ${HOME}/.npm-global`;
 await $`npm config set prefix ${HOME}/.npm-global`;
 await $`npm config set update-notifier false`;
 await $`export PATH=${HOME}/.npm-global/bin:$PATH`;
+
+//////////////////////////////////////////////////////////////////////////////////
+// CHECK PROJECT META.JSON
+//////////////////////////////////////////////////////////////////////////////////
+
+const metaconfig: any = await fs.readJson(`${SRC}/meta.json`);
 
 //////////////////////////////////////////////////////////////////////////////////
 // NPM PROJECT MODULES
@@ -62,7 +71,19 @@ await $`npm install -g npm-run-all`;
 // SET DENO.JSON
 //////////////////////////////////////////////////////////////////////////////////
 
-await $`curl -o ${HOME}/deno.json https://raw.githubusercontent.com/ghostmind-dev/run/main/deno.json`;
+const defaultDenoCOnfigRaw = await fetch(
+  'https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/deno/deno.json'
+);
+
+let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
+
+let mergedDenoConfig = { ...defaultDenoConfig };
+
+if (metaconfig.deno?.config) {
+  mergedDenoConfig = { ...mergedDenoConfig, ...metaconfig.deno.config };
+}
+
+await fs.writeJson(`${HOME}/deno.json`, mergedDenoConfig, { spaces: 2 });
 
 //////////////////////////////////////////////////////////////////////////////////
 // NPM GLOBAL MODULES (TO BE MOVED TO DVC)
