@@ -12,24 +12,8 @@
   "postStartCommand": "deno run --allow-all /usr/local/share/post-start.ts",
   "remoteUser": "vscode",
   "remoteEnv": {
-    "SYNC_LOCALHOST_KUBECONFIG": "true",
-    "USE_GKE_GCLOUD_AUTH_PLUGIN": "true",
-    "NODE_OPTION": "--openssl-legacy-provider",
-    "BUILDX_NO_DEFAULT_ATTESTATIONS": "1",
-    "PATH": "${containerEnv:PATH}:/home/vscode/.npm-global/bin",
     "SRC": "${containerWorkspaceFolder}",
     "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/container/init",
-    "GOOGLE_APPLICATION_CREDENTIALS": "/tmp/gsa_key.json",
-    "DOMAIN_NAME": "${localEnv:DOMAIN_NAME}",
-    "GCP_PROJECT_NAME": "${localEnv:GCP_PROJECT_NAME}",
-    "GCP_PROJECT_ID": "${localEnv:GCP_PROJECT_ID}",
-    "GCP_SERVICE_ACCOUNT_ADMIN": "${localEnv:GCP_SERVICE_ACCOUNT_ADMIN}",
-    "GH_TOKEN": "${localEnv:GH_TOKEN}",
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
-    "TERRAFORM_BUCKET_NAME": "${localEnv:TERRAFORM_BUCKET_NAME}",
-    "CLOUDFLARED_CREDS": "${localEnv:CLOUDFLARED_CREDS}",
-    "CLOUDFLARED_TUNNEL_NAME": "${localEnv:CLOUDFLARED_TUNNEL_NAME}",
-    "CLOUDFLARED_TUNNEL_TOKEN": "${localEnv:CLOUDFLARED_TUNNEL_TOKEN}",
     "VAULT_ROOT_TOKEN": "${localEnv:VAULT_ROOT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
   },
@@ -51,7 +35,7 @@
     "source=ghostmind-init-zsh-history,target=/commandhistory,type=volume",
     "source=${env:HOME}${env:USERPROFILE}/projects/container/init,target=/Users/francoisseguin/projects/container/init,type=bind"
   ],
-  "runArgs": ["--cap-add=CAP_IPC_LOCK", "--name", "init"],
+  "runArgs": ["--cap-add=CAP_IPC_LOCK", "--name=init"],
   "customizations": {
     "vscode": {
       "extensions": [
