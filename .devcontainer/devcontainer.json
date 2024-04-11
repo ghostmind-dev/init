@@ -1,5 +1,5 @@
 {
-  "name": "init-devcontainer",
+  "name": "init",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
@@ -14,6 +14,7 @@
   "remoteEnv": {
     "SRC": "${containerWorkspaceFolder}",
     "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/container/init",
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "VAULT_ROOT_TOKEN": "${localEnv:VAULT_ROOT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
   },
@@ -31,11 +32,15 @@
   "appPort": ["5050"],
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
-    "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind",
     "source=ghostmind-init-zsh-history,target=/commandhistory,type=volume",
     "source=${env:HOME}${env:USERPROFILE}/projects/container/init,target=/Users/francoisseguin/projects/container/init,type=bind"
   ],
-  "runArgs": ["--cap-add=CAP_IPC_LOCK", "--name=init"],
+  "runArgs": [
+    "--cap-add=CAP_IPC_LOCK",
+    "--cap-add=NET_ADMIN",
+    "--name=init-dvc",
+    "--network=host"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [

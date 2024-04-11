@@ -46,5 +46,10 @@
       }
     }
   },
-  "remote": {}
+  "redirects": {
+    "https://deno.land/std/fmt/colors.ts": "https://deno.land/std@0.222.1/fmt/colors.ts"
+  },
+  "remote": {
+    "https://deno.land/std@0.222.1/fmt/colors.ts": "d239d84620b921ea520125d778947881f62c50e78deef2657073840b8af9559a"
+  }
 }

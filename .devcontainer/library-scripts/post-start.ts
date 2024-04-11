@@ -4,7 +4,13 @@
 // WELCOME
 ///////////////////////////////////////////////////////////////////////////////
 
-console.log('Welcome to the devcontainer');
+import { setColorEnabled, green } from 'https://deno.land/std/fmt/colors.ts';
+
+// Enable color output
+setColorEnabled(true);
+
+// Print "Welcome" in green
+console.log(green('Welcome to the Init Devcontainer!'));
 
 ///////////////////////////////////////////////////////////////////////////////
 // END
