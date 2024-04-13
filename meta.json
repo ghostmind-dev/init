@@ -9,5 +9,10 @@
         "includes": ["**/init/**/*.ts"]
       }
     }
+  },
+  "npm": {
+    "scripts": {
+      "watch": "deno run --watch --allow-all $SRC/init/main.ts"
+    }
   }
 }

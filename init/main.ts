@@ -1,15 +1,26 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { $, fs, chalk, sleep, cd } from 'npm:zx';
+import { $, fs, chalk, sleep, cd, echo } from 'npm:zx';
 import { config } from 'npm:dotenv';
+import { createStructuredOutputRunnable } from 'npm:langchain/chains/openai_functions';
+import { ChatOpenAI } from 'npm:@langchain/openai';
+import { ChatPromptTemplate } from 'npm:@langchain/core/prompts';
+import { JsonOutputFunctionsParser } from 'npm:langchain/output_parsers';
+import figlet from 'npm:figlet';
+
+import {
+  setColorEnabled,
+  green,
+  blue,
+} from 'https://deno.land/std/fmt/colors.ts';
 
 $.verbose = true;
 
 console.log(chalk.blue('Starting devcontainer...'));
 
-//////////////////////////////////////////////////////////////////////////////////
-// CONSTANTS
-//////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////
+// // CONSTANTS
+// //////////////////////////////////////////////////////////////////////////////////
 
 const HOME = Deno.env.get('HOME');
 const SRC = Deno.env.get('SRC');
@@ -25,6 +36,7 @@ const {
   INIT_LOGIN_VAULT = 'false',
   INIT_LOGIN_CLOUDFLARED = 'false',
   INIT_SSH_MODE = 'false',
+  INIT_QUOTE_AI = 'false',
 } = Deno.env.toObject();
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +143,9 @@ config({ path: `${SRC}/.env`, override: false });
 if (INIT_LOGIN_NPM === 'true') {
   const NPM_TOKEN = Deno.env.get('NPM_TOKEN');
 
+  await $`rm -rf ${SRC}/.npmrc`;
+  await $`rm -rf ${HOME}/.npmrc`;
+
   await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${SRC}/.npmrc`;
   await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${HOME}/.npmrc`;
 }
@@ -175,6 +190,8 @@ if (INIT_LOGIN_GAM === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 // GIT SAFE
 //////////////////////////////////////////////////////////////////////////////////
+
+cd(`${SRC}`);
 
 await $`git config --add safe.directory "*"`;
 //
@@ -246,6 +263,86 @@ await $`echo "export ENV=${environemnt}" > ${HOME}/.zshenv`;
 await $`echo ${Deno.env.get(
   'GH_TOKEN'
 )} | docker login ghcr.io -u USERNAME --password-stdin`;
+
+////////////////////////////////////////////////////////////////////////////////
+// WELCOME TO GHOSTMIND DEVCONTAINWER
+////////////////////////////////////////////////////////////////////////////////
+
+console.log(figlet.textSync('Welcome to Ghostmind', { font: 'Standard' }));
+
+////////////////////////////////////////////////////////////////////////////////
+// QUOTE OF THE DAY
+////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_QUOTE_AI === 'true') {
+  const jsonSchema = {
+    title: 'quote',
+    description: 'a random quote/facts about the computer science.',
+    type: 'object',
+    properties: {
+      quote: {
+        title: 'quote',
+        description: 'A random quote/facts about the computer science.',
+        type: 'string',
+      },
+    },
+    required: ['quote'],
+  };
+
+  const model = new ChatOpenAI({
+    temperature: 1.4,
+    topP: 0.9,
+  });
+
+  // fetch json from url
+
+  const subjectRaw = await fetch(
+    'https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/subjects.json'
+  );
+
+  const subjects = await subjectRaw.json();
+
+  const subject = subjects[Math.floor(Math.random() * subjects.length)];
+
+  const typesRaw = await fetch(
+    'https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/types.json'
+  );
+
+  const types = await typesRaw.json();
+
+  const type = types[Math.floor(Math.random() * types.length)];
+
+  const prompt = ChatPromptTemplate.fromMessages([
+    [
+      'human',
+      `Generate a random quote/facts about the computer science. 
+    
+    Subject: ${subject}
+    Type: ${type}
+    
+    `,
+    ],
+  ]);
+
+  const outputParser = new JsonOutputFunctionsParser();
+
+  // Also works with Zod schema
+  const runnable = createStructuredOutputRunnable({
+    outputSchema: jsonSchema,
+    llm: model,
+    prompt,
+    outputParser,
+  });
+
+  const response: any = await runnable.invoke({});
+
+  // Enable color output
+  setColorEnabled(true);
+
+  // Print "Welcome" in green
+
+  console.log(green('The quote of this rebuild is:'), response.quote, '\n');
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // THE END
