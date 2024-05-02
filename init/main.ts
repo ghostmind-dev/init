@@ -214,6 +214,16 @@ if (INIT_DEV_RESET_LIVE === 'true') {
   await $`rm -rf ${SRC}/dev`;
   await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
   await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
+
+  // get deno.json and replace a property and write it back
+
+  const denoConfig = await fs.readJson(`${HOME}/deno.json`);
+
+  // replace compilerOptions.types with a new array
+
+  denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
+
+  await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -315,11 +325,11 @@ if (INIT_QUOTE_AI === 'true') {
   const prompt = ChatPromptTemplate.fromMessages([
     [
       'human',
-      `Generate a random quote/facts about the computer science. 
-    
+      `Generate a random quote/facts about the computer science.
+
     Subject: ${subject}
     Type: ${type}
-    
+
     `,
     ],
   ]);
