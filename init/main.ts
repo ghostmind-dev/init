@@ -257,10 +257,8 @@ const currentBranch = currentBranchRaw.stdout.trim();
 let environemnt;
 if (currentBranch === 'main') {
   environemnt = 'prod';
-} else if (currentBranch === 'preview') {
-  environemnt = 'preview';
 } else {
-  environemnt = 'dev';
+  environemnt = currentBranch;
 }
 $.verbose = true;
 // set environment name in zshenv
