@@ -245,25 +245,6 @@ if (INIT_LOGIN_CLOUDFLARED === 'true') {
   await sleep(2000);
 }
 
-//////////////////////////////////////////////////////////////////////////////////
-//  SET DEVCONTAINER DEV ENVIRONMENT
-//////////////////////////////////////////////////////////////////////////////////
-
-$.verbose = false;
-
-const currentBranchRaw = await $`git branch --show-current`;
-// trim the trailing newline
-const currentBranch = currentBranchRaw.stdout.trim();
-let environemnt;
-if (currentBranch === 'main') {
-  environemnt = 'prod';
-} else {
-  environemnt = currentBranch;
-}
-$.verbose = true;
-// set environment name in zshenv
-await $`echo "export ENV=${environemnt}" > ${HOME}/.zshenv`;
-
 ////////////////////////////////////////////////////////////////////////////////
 // CONNECT TO GHCR.IO
 ////////////////////////////////////////////////////////////////////////////////
