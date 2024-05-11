@@ -29,6 +29,7 @@ const {
   INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
+  INIT_CORE_SECRETS = 'true',
   INIT_LOGIN_NPM = 'false',
   INIT_LOGIN_GCP = 'true',
   INIT_LOGIN_GHCR = 'true',
@@ -104,7 +105,7 @@ if (INIT_LOGIN_VAULT === 'true') {
 // SET GLOBAL SECRETS
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_GLOBAL_SECRETS === 'true') {
+if (INIT_CORE_SECRETS === 'true') {
   await $`rm -rf /tmp/env.global.json`;
 
   await $`vault kv get -format=json kv/GLOBAL/global/secrets  > /tmp/env.global.json`;
