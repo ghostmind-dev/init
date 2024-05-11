@@ -26,17 +26,15 @@ const HOME = Deno.env.get('HOME');
 const SRC = Deno.env.get('SRC');
 
 const {
-  INIT_EXPORT_ENV_PROJECT = 'false',
-  INIT_EXPORT_ENV_ALL = 'false',
-  INIT_DEV_INSTALL_DEPENDENCIES = 'false',
-  INIT_DEV_RESET_LIVE = 'false',
+  INIT_RESET_LIVE = 'false',
+  INIT_BASE_ZSHRC = 'true',
+  INIT_DENO_CONFIG = 'true',
   INIT_LOGIN_NPM = 'false',
-  INIT_LOGIN_GCP = 'false',
-  INIT_LOGIN_GAM = 'false',
-  INIT_LOGIN_VAULT = 'false',
-  INIT_LOGIN_CLOUDFLARED = 'false',
-  INIT_SSH_MODE = 'false',
-  INIT_QUOTE_AI = 'false',
+  INIT_LOGIN_GCP = 'true',
+  INIT_LOGIN_GHCR = 'true',
+  INIT_LOGIN_VAULT = 'true',
+  INIT_LOGIN_CLOUDFLARED = 'true',
+  INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -78,63 +76,48 @@ const run = `${HOME}/.deno/bin/run`;
 // SET DENO.JSON
 //////////////////////////////////////////////////////////////////////////////////
 
-const defaultDenoCOnfigRaw = await fetch(
-  'https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/deno/deno.json'
-);
+if (INIT_DENO_CONFIG === 'true') {
+  const defaultDenoCOnfigRaw = await fetch(
+    'https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/deno/deno.json'
+  );
 
-let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
+  let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
-let mergedDenoConfig = { ...defaultDenoConfig };
+  let mergedDenoConfig = { ...defaultDenoConfig };
 
-if (metaconfig.deno?.config?.lint) {
-  mergedDenoConfig = { ...mergedDenoConfig, ...metaconfig.deno.config.lint };
-}
+  if (metaconfig.deno?.config?.lint) {
+    mergedDenoConfig = { ...mergedDenoConfig, ...metaconfig.deno.config.lint };
+  }
 
-await fs.writeJson(`${HOME}/deno.json`, mergedDenoConfig, { spaces: 2 });
-
-//////////////////////////////////////////////////////////////////////////////////
-// NPM GLOBAL MODULES (TO BE MOVED TO DVC)
-//////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_SSH_MODE === 'true') {
-  config({ path: `${SRC}/.env` });
+  await fs.writeJson(`${HOME}/deno.json`, mergedDenoConfig, { spaces: 2 });
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // VAULT LOGIN
 //////////////////////////////////////////////////////////////////////////////////
+
 if (INIT_LOGIN_VAULT === 'true') {
   await $`vault login ${Deno.env.get('VAULT_ROOT_TOKEN')}`;
-  if (INIT_EXPORT_ENV_PROJECT === 'true') {
-    await $`${run} vault kv export`;
-  }
-  if (INIT_EXPORT_ENV_ALL === 'true') {
-    await $`${run} vault kv export --all`;
-  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // SET GLOBAL SECRETS
 //////////////////////////////////////////////////////////////////////////////////
 
-await $`rm -rf /tmp/env.global.json`;
+if (INIT_GLOBAL_SECRETS === 'true') {
+  await $`rm -rf /tmp/env.global.json`;
 
-await $`vault kv get -format=json kv/GLOBAL/global/secrets  > /tmp/env.global.json`;
+  await $`vault kv get -format=json kv/GLOBAL/global/secrets  > /tmp/env.global.json`;
 
-const credsValue = await fs.readJSONSync(`/tmp/env.global.json`);
+  const credsValue = await fs.readJSONSync(`/tmp/env.global.json`);
 
-const { CREDS } = credsValue.data.data;
+  const { CREDS } = credsValue.data.data;
 
-await $`rm -rf ${HOME}/.zprofile`;
-fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
+  await $`rm -rf ${HOME}/.zprofile`;
+  fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
 
-config({ path: `${HOME}/.zprofile`, override: false });
-
-//////////////////////////////////////////////////////////////////////////////////
-// SET PROJECT ENVIRONMENT VARIABLES
-//////////////////////////////////////////////////////////////////////////////////
-
-config({ path: `${SRC}/.env`, override: false });
+  config({ path: `${HOME}/.zprofile`, override: false });
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 // SET NPM CREDENTIALS
@@ -173,20 +156,8 @@ if (INIT_LOGIN_GCP === 'true') {
     console.log(chalk.red(e));
     console.log('something went wrong');
   }
-  await sleep(2000);
 }
-// //////////////////////////////////////////////////////////////////////////////////
-// // GAM
-// //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_GAM === 'true') {
-  const GAM_OAUTH2CLIENT = Deno.env.get('GAM_OAUTH2CLIENT');
-  const GAM_CLIENTSECRETS = Deno.env.get('GAM_CLIENTSECRETS');
-  const GAM_OAUTH2TXT = Deno.env.get('GAM_OAUTH2TXT');
-  await $`echo ${GAM_OAUTH2CLIENT} | base64 -di -w 0 >/home/vscode/bin/gam/oauth2service.json`;
-  await $`echo ${GAM_CLIENTSECRETS} | base64 -di -w 0 >/home/vscode/bin/gam/client_secrets.json`;
-  await $`echo ${GAM_OAUTH2TXT} | base64 -di -w 0 >/home/vscode/bin/gam/oauth2.txt`;
-}
 //////////////////////////////////////////////////////////////////////////////////
 // GIT SAFE
 //////////////////////////////////////////////////////////////////////////////////
@@ -199,18 +170,14 @@ await $`git config --add safe.directory "*"`;
 // DOTFILES
 //////////////////////////////////////////////////////////////////////////////////
 
-await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/zsh/.zshrc`;
-
-////////////////////////////////////////////////////////////////////////////////
-// INSTALL APP DEPENDENCIES
-////////////////////////////////////////////////////////////////////////////////
-if (INIT_DEV_INSTALL_DEPENDENCIES === 'true') {
-  await $`${run} utils dev install`;
+if (INIT_BASE_ZSHRC === 'true') {
+  await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/zsh/.zshrc`;
 }
+
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL LIVE RUN
 //////////////////////////////////////////////////////////////////////////////////
-if (INIT_DEV_RESET_LIVE === 'true') {
+if (INIT_RESET_LIVE === 'true') {
   await $`rm -rf ${SRC}/dev`;
   await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
   await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
@@ -249,9 +216,11 @@ if (INIT_LOGIN_CLOUDFLARED === 'true') {
 // CONNECT TO GHCR.IO
 ////////////////////////////////////////////////////////////////////////////////
 
-await $`echo ${Deno.env.get(
-  'GH_TOKEN'
-)} | docker login ghcr.io -u USERNAME --password-stdin`;
+if (INIT_LOGIN_GHCR == 'true') {
+  await $`echo ${Deno.env.get(
+    'GH_TOKEN'
+  )} | docker login ghcr.io -u USERNAME --password-stdin`;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // WELCOME TO GHOSTMIND DEVCONTAINWER
