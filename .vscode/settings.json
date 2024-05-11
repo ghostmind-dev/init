@@ -48,7 +48,8 @@
     { "icon": "config", "extensions": [".env.local"], "format": "svg" },
     { "icon": "config", "extensions": [".env.dev"], "format": "svg" },
     { "icon": "config", "extensions": [".env.prod"], "format": "svg" },
-    { "icon": "pytyped", "extensions": [".toml"], "format": "svg" }
+    { "icon": "pytyped", "extensions": [".toml"], "format": "svg" },
+    { "icon": "map", "extensions": [".md"], "format": "svg" }
   ],
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingImports": "none",
