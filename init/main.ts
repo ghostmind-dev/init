@@ -34,7 +34,7 @@ const {
   INIT_LOGIN_GCP = 'true',
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_VAULT = 'true',
-  INIT_LOGIN_CLOUDFLARED = 'true',
+  INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -198,7 +198,7 @@ if (INIT_RESET_LIVE === 'true') {
 // SET CLOUDFLARED
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_CLOUDFLARED === 'true') {
+if (INIT_LOGIN_CLOUDFLARE === 'true') {
   const CLOUDFLARED_CREDS = Deno.env.get('CLOUDFLARED_CREDS');
   $.shell = '/usr/bin/zsh';
 
