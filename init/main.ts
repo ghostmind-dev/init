@@ -198,16 +198,16 @@ if (INIT_RESET_LIVE === 'true') {
 
   // replace compilerOptions.types with a new array
 
-  denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
+  denoConfig.compilerOptions.types = [`${SRC}/dev/run/run/types/global.d.ts`];
 
   await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
 } else {
   // verify if ${SRC}/dev exists
 
-  const devExists = await fs.exists(`${SRC}/dev`);
+  const devExists = await fs.exists(`${SRC}/dev/run`);
 
   if (devExists) {
-    await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
+    await $`deno install --allow-all --force --name live ${SRC}/dev/run/run/bin/cmd.ts`;
 
     // get deno.json and replace a property and write it back
 
@@ -215,7 +215,7 @@ if (INIT_RESET_LIVE === 'true') {
 
     // replace compilerOptions.types with a new array
 
-    denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
+    denoConfig.compilerOptions.types = [`${SRC}/dev/run/run/types/global.d.ts`];
 
     await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
   }
