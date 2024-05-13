@@ -180,7 +180,7 @@ if (INIT_BASE_ZSHRC === 'true') {
 // INSTALL PLAY
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_PLAY === 'true') {
-  await $`rm -rf ${SRC}/dev/tools`;
+  await $`rm -rf ${SRC}/dev/actions`;
   await $`git clone https://github.com/ghostmind-dev/play.git ${SRC}/dev/actions`;
 }
 
