@@ -181,7 +181,7 @@ if (INIT_BASE_ZSHRC === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_PLAY === 'true') {
   await $`rm -rf ${SRC}/dev/tools`;
-  await $`git clone https://github.com/ghostmind-dev/play.git ${SRC}/dev/tools`;
+  await $`git clone https://github.com/ghostmind-dev/play.git ${SRC}/dev/actions`;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
