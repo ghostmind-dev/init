@@ -190,7 +190,7 @@ if (INIT_RESET_PLAY === 'true') {
 if (INIT_RESET_LIVE === 'true') {
   await $`rm -rf ${SRC}/dev/run`;
   await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev/run`;
-  await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
+  await $`deno install --allow-all --force --name live ${SRC}/dev/run/run/bin/cmd.ts`;
 
   // get deno.json and replace a property and write it back
 
