@@ -27,7 +27,6 @@ const SRC = Deno.env.get('SRC');
 
 const {
   INIT_RESET_LIVE = 'false',
-  INIT_RESET_PLAY = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
   INIT_CORE_SECRETS = 'true',
@@ -177,20 +176,12 @@ if (INIT_BASE_ZSHRC === 'true') {
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-// INSTALL PLAY
-//////////////////////////////////////////////////////////////////////////////////
-if (INIT_RESET_PLAY === 'true') {
-  await $`rm -rf ${SRC}/dev/actions`;
-  await $`git clone https://github.com/ghostmind-dev/play.git ${SRC}/dev/actions`;
-}
-
-//////////////////////////////////////////////////////////////////////////////////
 // INSTALL LIVE RUN
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_LIVE === 'true') {
-  await $`rm -rf ${SRC}/dev/run`;
-  await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev/run`;
-  await $`deno install --allow-all --force --name live ${SRC}/dev/run/run/bin/cmd.ts`;
+  await $`rm -rf ${SRC}/dev`;
+  await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
+  await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
 
   // get deno.json and replace a property and write it back
 
@@ -198,7 +189,7 @@ if (INIT_RESET_LIVE === 'true') {
 
   // replace compilerOptions.types with a new array
 
-  denoConfig.compilerOptions.types = [`${SRC}/dev/run/run/types/global.d.ts`];
+  denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
 
   await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
 } else {
@@ -207,7 +198,7 @@ if (INIT_RESET_LIVE === 'true') {
   const devExists = await fs.exists(`${SRC}/dev/run`);
 
   if (devExists) {
-    await $`deno install --allow-all --force --name live ${SRC}/dev/run/run/bin/cmd.ts`;
+    await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
 
     // get deno.json and replace a property and write it back
 
@@ -215,7 +206,7 @@ if (INIT_RESET_LIVE === 'true') {
 
     // replace compilerOptions.types with a new array
 
-    denoConfig.compilerOptions.types = [`${SRC}/dev/run/run/types/global.d.ts`];
+    denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
 
     await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
   }
