@@ -54,17 +54,6 @@ await $`export PATH=${HOME}/.npm-global/bin:$PATH`;
 const metaconfig: any = await fs.readJson(`${SRC}/meta.json`);
 
 //////////////////////////////////////////////////////////////////////////////////
-// NPM PROJECT MODULES
-//////////////////////////////////////////////////////////////////////////////////
-
-const fileExists = await fs.exists(`${SRC}/package.json`);
-
-if (fileExists) {
-  await $`npm install ${SRC}`;
-  await $`npm update`;
-}
-
-//////////////////////////////////////////////////////////////////////////////////
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -98,7 +87,14 @@ if (INIT_DENO_CONFIG === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_LOGIN_VAULT === 'true') {
-  await $`vault login ${Deno.env.get('VAULT_ROOT_TOKEN')}`;
+  try {
+    $.verbose = false;
+    await $`vault login ${Deno.env.get('VAULT_ROOT_TOKEN')}`;
+    console.log('vault login successful.');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with vault login.');
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -106,18 +102,25 @@ if (INIT_LOGIN_VAULT === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_CORE_SECRETS === 'true') {
-  await $`rm -rf /tmp/env.global.json`;
+  try {
+    $.verbose = false;
+    await $`rm -rf /tmp/env.global.json`;
 
-  await $`vault kv get -format=json kv/GLOBAL/global/secrets  > /tmp/env.global.json`;
+    await $`vault kv get -format=json kv/GLOBAL/global/secrets  > /tmp/env.global.json`;
 
-  const credsValue = await fs.readJSONSync(`/tmp/env.global.json`);
+    const credsValue = await fs.readJSONSync(`/tmp/env.global.json`);
 
-  const { CREDS } = credsValue.data.data;
+    const { CREDS } = credsValue.data.data;
 
-  await $`rm -rf ${HOME}/.zprofile`;
-  fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
+    await $`rm -rf ${HOME}/.zprofile`;
+    fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
 
-  config({ path: `${HOME}/.zprofile`, override: false });
+    config({ path: `${HOME}/.zprofile`, override: false });
+    console.log('global secrets set.');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with secrets setting.');
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -125,27 +128,39 @@ if (INIT_CORE_SECRETS === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_LOGIN_NPM === 'true') {
-  const NPM_TOKEN = Deno.env.get('NPM_TOKEN');
+  try {
+    $.verbose = false;
 
-  await $`rm -rf ${SRC}/.npmrc`;
-  await $`rm -rf ${HOME}/.npmrc`;
+    const NPM_TOKEN = Deno.env.get('NPM_TOKEN');
 
-  await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${SRC}/.npmrc`;
-  await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${HOME}/.npmrc`;
+    await $`rm -rf ${SRC}/.npmrc`;
+    await $`rm -rf ${HOME}/.npmrc`;
+
+    await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${SRC}/.npmrc`;
+    await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${HOME}/.npmrc`;
+
+    console.log('npm login successful.');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with npm login.');
+  }
 }
 /////////////////////////////////////////////////////////////////////////////////
 // GCP
 ////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_LOGIN_GCP === 'true') {
-  const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
-  $.shell = '/usr/bin/zsh';
-  const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
   try {
     $.verbose = false;
+    const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
+    $.shell = '/usr/bin/zsh';
+    const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
+
     await $`echo ${GCP_SERVICE_ACCOUNT_ADMIN} | base64 -di -w 0 >/tmp/gsa_key.json`;
-    $.verbose = true;
+
     await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
+
+    $.verbose = true;
     const isProjectExists =
       await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
     if (`${isProjectExists}` != '') {
@@ -155,7 +170,7 @@ if (INIT_LOGIN_GCP === 'true') {
     }
   } catch (e) {
     console.log(chalk.red(e));
-    console.log('something went wrong');
+    console.log('something went wrong with gcp setup');
   }
 }
 
@@ -217,16 +232,19 @@ if (INIT_RESET_LIVE === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_LOGIN_CLOUDFLARE === 'true') {
-  const CLOUDFLARED_CREDS = Deno.env.get('CLOUDFLARED_CREDS');
-  $.shell = '/usr/bin/zsh';
-
   try {
     $.verbose = false;
+
+    const CLOUDFLARED_CREDS = Deno.env.get('CLOUDFLARED_CREDS');
+    $.shell = '/usr/bin/zsh';
+
     await $`mkdir -p /home/vscode/.cloudflared`;
     await $`echo ${CLOUDFLARED_CREDS} | base64 -di -w 0 > /home/vscode/.cloudflared/cert.pem`;
+
+    console.log('cloudflared login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log('something went wrong');
+    console.log('something went wrong with cloudflared setup');
   }
   await sleep(2000);
 }
@@ -236,9 +254,17 @@ if (INIT_LOGIN_CLOUDFLARE === 'true') {
 ////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_LOGIN_GHCR == 'true') {
-  await $`echo ${Deno.env.get(
-    'GH_TOKEN'
-  )} | docker login ghcr.io -u USERNAME --password-stdin`;
+  try {
+    $.verbose = false;
+    await $`echo ${Deno.env.get(
+      'GH_TOKEN'
+    )} | docker login ghcr.io -u USERNAME --password-stdin`;
+
+    console.log('ghcr login successful.');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with ghcr login');
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
