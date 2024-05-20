@@ -160,13 +160,17 @@ if (INIT_LOGIN_GCP === 'true') {
 
     await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
-    $.verbose = true;
     const isProjectExists =
       await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
     if (`${isProjectExists}` != '') {
       await $`gcloud config set project ${GCP_PROJECT_NAME}`;
+
       await $`gcloud config set compute/zone us-central1-b`;
       await $`gcloud auth configure-docker gcr.io --quiet`;
+
+      console.log('gcp login successful.');
+    } else {
+      console.log(chalk.red('Project does not exists.'));
     }
   } catch (e) {
     console.log(chalk.red(e));
