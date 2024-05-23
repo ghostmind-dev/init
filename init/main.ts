@@ -58,7 +58,7 @@ const metaconfig: any = await fs.readJson(`${SRC}/meta.json`);
 //////////////////////////////////////////////////////////////////////////////////
 
 await $`rm -rf ${HOME}/run`;
-await $`git clone -b dev https://github.com/ghostmind-dev/run.git ${HOME}/run`;
+await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
 await $`deno install --allow-all --force --name run ${HOME}/run/run/bin/cmd.ts`;
 const run = `${HOME}/.deno/bin/run`;
 
@@ -199,7 +199,7 @@ if (INIT_BASE_ZSHRC === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_LIVE === 'true') {
   await $`rm -rf ${SRC}/dev`;
-  await $`git clone https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
+  await $`git clone -b dev https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
   await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
 
   // get deno.json and replace a property and write it back
