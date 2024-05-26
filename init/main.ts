@@ -73,13 +73,7 @@ if (INIT_DENO_CONFIG === 'true') {
 
   let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
-  let mergedDenoConfig = { ...defaultDenoConfig };
-
-  if (metaconfig.deno?.config?.lint) {
-    mergedDenoConfig = { ...mergedDenoConfig, ...metaconfig.deno.config.lint };
-  }
-
-  await fs.writeJson(`${HOME}/deno.json`, mergedDenoConfig, { spaces: 2 });
+  await fs.writeJson(`${HOME}/deno.json`, defaultDenoConfig, { spaces: 2 });
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -201,34 +195,6 @@ if (INIT_RESET_LIVE === 'true') {
   await $`rm -rf ${SRC}/dev`;
   await $`git clone -b dev https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
   await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
-
-  // get deno.json and replace a property and write it back
-
-  const denoConfig = await fs.readJson(`${HOME}/deno.json`);
-
-  // replace compilerOptions.types with a new array
-
-  denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
-
-  await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
-} else {
-  // verify if ${SRC}/dev exists
-
-  const devExists = await fs.exists(`${SRC}/dev/run`);
-
-  if (devExists) {
-    await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
-
-    // get deno.json and replace a property and write it back
-
-    const denoConfig = await fs.readJson(`${HOME}/deno.json`);
-
-    // replace compilerOptions.types with a new array
-
-    denoConfig.compilerOptions.types = [`${SRC}/dev/run/types/global.d.ts`];
-
-    await fs.writeJson(`${HOME}/deno.json`, denoConfig, { spaces: 2 });
-  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
