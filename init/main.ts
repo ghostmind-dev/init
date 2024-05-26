@@ -200,7 +200,7 @@ if (INIT_RESET_LIVE === 'true') {
 
   const devFolder = await fs.exists(`${SRC}/dev`);
 
-  if (!devFolder) {
+  if (devFolder) {
     await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
 }
