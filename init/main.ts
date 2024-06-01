@@ -57,7 +57,7 @@ const metaconfig: any = await fs.readJson(`${SRC}/meta.json`);
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
-await $`deno install --allow-all --force --name run jsr:@ghostmind/run/cmd`;
+await $`deno install --allow-all --force --name run https://raw.githubusercontent.com/ghostmind-dev/run/main/run/bin/cmd.ts`;
 const run = `${HOME}/.deno/bin/run`;
 
 //////////////////////////////////////////////////////////////////////////////////
