@@ -68,7 +68,7 @@ const run = `${HOME}/.deno/bin/run`;
 
 if (INIT_DENO_CONFIG === 'true') {
   const defaultDenoCOnfigRaw = await fetch(
-    'https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/deno/deno.json'
+    'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/deno/deno.json'
   );
 
   let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
@@ -185,7 +185,7 @@ await $`git config --add safe.directory "*"`;
 //////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_BASE_ZSHRC === 'true') {
-  await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/dotfiles/main/config/zsh/.zshrc`;
+  await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/config/main/config/zsh/.zshrc`;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
