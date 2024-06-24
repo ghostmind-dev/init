@@ -107,7 +107,9 @@ if (INIT_CORE_SECRETS === 'true') {
     const { CREDS } = credsValue.data.data;
 
     await $`rm -rf ${HOME}/.zprofile`;
+    await $`rm -rf ${HOME}/.zshenv`;
     fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
+    fs.writeFileSync(`${HOME}/.zshenv`, CREDS, 'utf8');
 
     config({ path: `${HOME}/.zprofile`, override: false });
     console.log('global secrets set.');
