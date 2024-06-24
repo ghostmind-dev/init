@@ -108,8 +108,14 @@ if (INIT_CORE_SECRETS === 'true') {
 
     await $`rm -rf ${HOME}/.zprofile`;
     await $`rm -rf ${HOME}/.zshenv`;
+
     fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
-    fs.writeFileSync(`${HOME}/.zshenv`, CREDS, 'utf8');
+
+    // we need to set the global secrets to the zshenv file
+    // the difference: each variable is exported
+    // only add the export if the line is not empty or not a comment
+
+    await $`cat ${HOME}/.zprofile | grep -v '^#' | grep -v '^$' | while read line; do echo "export $line" >> ${HOME}/.zshenv; done`;
 
     config({ path: `${HOME}/.zprofile`, override: false });
     console.log('global secrets set.');
