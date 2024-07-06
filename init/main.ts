@@ -29,6 +29,7 @@ const {
   INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
+  INIT_DENO_JUPYTER = 'true',
   INIT_CORE_SECRETS = 'true',
   INIT_LOGIN_NPM = 'false',
   INIT_LOGIN_GCP = 'true',
@@ -74,6 +75,14 @@ if (INIT_DENO_CONFIG === 'true') {
   let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
   await fs.writeJson(`${HOME}/deno.json`, defaultDenoConfig, { spaces: 2 });
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// INSTALL DENO JUPYTER
+//////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_DENO_JUPYTER === 'true') {
+  await $`deno jupyter --install`;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
