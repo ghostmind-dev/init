@@ -37,7 +37,7 @@ const {
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = null,
-  INIT_POETRY_GLOBAL = 'true'
+  INIT_POETRY_GLOBAL = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
