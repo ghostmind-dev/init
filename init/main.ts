@@ -36,7 +36,7 @@ const {
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
-  INIT_PYTHON_VERSION = null,
+  INIT_PYTHON_VERSION = '3.12.4',
   INIT_POETRY_GLOBAL = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
@@ -164,6 +164,8 @@ if (INIT_LOGIN_NPM === 'true') {
 
 if (INIT_LOGIN_GCP === 'true') {
   try {
+    await $`pyenv global 3.9.7`;
+
     $.verbose = false;
     const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
     $.shell = '/usr/bin/zsh';
@@ -228,9 +230,7 @@ if (INIT_RESET_LIVE === 'true') {
 // PYTHON VERSION
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_PYTHON_VERSION) {
-  await $`pyenv global ${INIT_PYTHON_VERSION}`;
-}
+await $`pyenv global ${INIT_PYTHON_VERSION}`;
 
 //////////////////////////////////////////////////////////////////////////////////
 // POETRY VIRTUAL ENVS IN PROJECT
