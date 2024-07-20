@@ -36,7 +36,7 @@ const {
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
-  INIT_PYTHON_VERSION = '3.12.4',
+  INIT_PYTHON_VERSION = '3.9.7',
   INIT_POETRY_GLOBAL = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
