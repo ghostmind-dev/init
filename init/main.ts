@@ -36,6 +36,8 @@ const {
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
+  INIT_PYTHON_VERSION = null,
+  INIT_POETRY_GLOBAL = 'true'
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -220,6 +222,22 @@ if (INIT_RESET_LIVE === 'true') {
   if (devExists) {
     await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// PYTHON VERSION
+//////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_PYTHON_VERSION) {
+  await $`pyenv global ${INIT_PYTHON_VERSION}`;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// POETRY VIRTUAL ENVS IN PROJECT
+//////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_POETRY_GLOBAL === 'true') {
+  await $`poetry config virtualenvs.in-project true`;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
