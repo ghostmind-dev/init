@@ -37,7 +37,7 @@ const {
   INIT_LOGIN_NVCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
-  INIT_PYTHON_VERSION = null,
+  INIT_PYTHON_VERSION = '3.9.7',
   INIT_POETRY_GLOBAL = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
@@ -231,11 +231,7 @@ if (INIT_RESET_LIVE === 'true') {
 // PYTHON VERSION
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_PYTHON_VERSION) {
-  await $`pyenv global ${INIT_PYTHON_VERSION}`;
-} else {
-  await $`pyenv global 3.9.7`;
-}
+await $`pyenv global ${INIT_PYTHON_VERSION}`;
 
 //////////////////////////////////////////////////////////////////////////////////
 // POETRY VIRTUAL ENVS IN PROJECT
