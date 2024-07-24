@@ -34,6 +34,7 @@ const {
   INIT_LOGIN_NPM = 'false',
   INIT_LOGIN_GCP = 'true',
   INIT_LOGIN_GHCR = 'true',
+  INIT_LOGIN_NVCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
@@ -274,6 +275,24 @@ if (INIT_LOGIN_GHCR == 'true') {
     )} | docker login ghcr.io -u USERNAME --password-stdin`;
 
     console.log('ghcr login successful.');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with ghcr login');
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// CONNECT TO NVCR.IO
+////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_LOGIN_NVCR == 'true') {
+  try {
+    $.verbose = false;
+    await $`echo ${Deno.env.get(
+      'NGC_TOKEN'
+    )} | docker login nvcr.io -u \\$oauthtoken --password-stdin`;
+
+    console.log('nvcr login successful.');
   } catch (e) {
     console.log(chalk.red(e));
     console.log('something went wrong with ghcr login');
