@@ -184,19 +184,14 @@ if (INIT_LOGIN_NPM === 'true') {
 
 if (INIT_LOGIN_GCP === 'true') {
   try {
-    const GCP_SERVICE_ACCOUNT_CREDENTIALS_RAW = Deno.env.get(
-      'GCP_SERVICE_ACCOUNT_CREDENTIALS'
-    ) as string;
+    $.verbose = false;
+    const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
     $.shell = '/usr/bin/zsh';
     const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
-    const GCP_SERVICE_ACCOUNT_CREDENTIALS = JSON.parse(
-      GCP_SERVICE_ACCOUNT_CREDENTIALS_RAW
-    );
+    await $`echo ${GCP_SERVICE_ACCOUNT_ADMIN} | base64 -di -w 0 >/tmp/gsa_key.json`;
 
-    await $`rm -rf /tmp/gsa_key.json`;
-
-    await fs.writeJson('/tmp/gsa_key.json', GCP_SERVICE_ACCOUNT_CREDENTIALS);
+    await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
     const isProjectExists =
       await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
