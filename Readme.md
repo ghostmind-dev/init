@@ -19,3 +19,4 @@ npm install @ghostmind-dev/init
 ```bash
 npx @ghostmind-dev/init postCreateCommand
 ```
+

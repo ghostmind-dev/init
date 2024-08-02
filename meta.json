@@ -3,16 +3,7 @@
   "name": "post-create",
   "scope": "global",
   "id": "orRYbWU9bW7r",
-  "deno": {
-    "config": {
-      "lint": {
-        "includes": ["**/init/**/*.ts"]
-      }
-    }
-  },
-  "npm": {
-    "scripts": {
-      "watch": "deno run --watch --allow-all $SRC/init/main.ts"
-    }
+  "routines": {
+    "watch": "deno run --watch --allow-all ${SRC}/init/main.ts"
   }
 }

@@ -25,6 +25,23 @@ console.log(chalk.blue('Starting devcontainer...'));
 const HOME = Deno.env.get('HOME');
 const SRC = Deno.env.get('SRC');
 
+// // debug mode
+
+// Deno.env.set('INIT_RESET_LIVE', 'false');
+// Deno.env.set('INIT_BASE_ZSHRC', 'false');
+// Deno.env.set('INIT_DENO_CONFIG', 'false');
+// Deno.env.set('INIT_DENO_JUPYTER', 'false');
+// Deno.env.set('INIT_CORE_SECRETS', 'true');
+// Deno.env.set('INIT_LOGIN_NPM', 'false');
+// Deno.env.set('INIT_LOGIN_GCP', 'true');
+// Deno.env.set('INIT_LOGIN_GHCR', 'false');
+// Deno.env.set('INIT_LOGIN_NVCR', 'false');
+// Deno.env.set('INIT_LOGIN_VAULT', 'true');
+// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
+// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+// Deno.env.set('INIT_POETRY_GLOBAL', 'false');
+// Deno.env.set('INIT_QUOTE_AI', 'false');
+
 const {
   INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
@@ -127,7 +144,9 @@ if (INIT_CORE_SECRETS === 'true') {
     // the difference: each variable is exported
     // only add the export if the line is not empty or not a comment
 
-    await $`cat ${HOME}/.zprofile | grep -v '^#' | grep -v '^$' | while read line; do echo "export $line" >> ${HOME}/.zshenv; done`;
+    await $`rm -rf ${HOME}/.zshenv`;
+
+    await $`cat ${HOME}/.zprofile | grep -v '^#' | grep -v '^$' | while read -r line; do echo "export $line" >> ${HOME}/.zshenv; done`;
 
     config({ path: `${HOME}/.zprofile`, override: false });
     console.log('global secrets set.');
@@ -165,25 +184,26 @@ if (INIT_LOGIN_NPM === 'true') {
 
 if (INIT_LOGIN_GCP === 'true') {
   try {
-    await $`pyenv global 3.9.7`;
-
-    $.verbose = false;
-    const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
+    const GCP_SERVICE_ACCOUNT_CREDENTIALS_RAW = Deno.env.get(
+      'GCP_SERVICE_ACCOUNT_CREDENTIALS'
+    ) as string;
     $.shell = '/usr/bin/zsh';
     const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
-    await $`echo ${GCP_SERVICE_ACCOUNT_ADMIN} | base64 -di -w 0 >/tmp/gsa_key.json`;
+    const GCP_SERVICE_ACCOUNT_CREDENTIALS = JSON.parse(
+      GCP_SERVICE_ACCOUNT_CREDENTIALS_RAW
+    );
 
-    await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
+    await $`rm -rf /tmp/gsa_key.json`;
+
+    await fs.writeJson('/tmp/gsa_key.json', GCP_SERVICE_ACCOUNT_CREDENTIALS);
 
     const isProjectExists =
       await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
     if (`${isProjectExists}` != '') {
       await $`gcloud config set project ${GCP_PROJECT_NAME}`;
-
       await $`gcloud config set compute/zone us-central1-b`;
       await $`gcloud auth configure-docker gcr.io --quiet`;
-
       console.log('gcp login successful.');
     } else {
       console.log(chalk.red('Project does not exists.'));
