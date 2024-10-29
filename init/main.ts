@@ -231,14 +231,14 @@ if (INIT_BASE_ZSHRC === 'true') {
 if (INIT_RESET_LIVE === 'true') {
   await $`rm -rf ${SRC}/dev`;
   await $`git clone -b dev https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
-  await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
+  await $`deno install --allow-all --force --global --name live ${SRC}/dev/run/bin/cmd.ts`;
 } else {
   // verify if dev folder exists
 
   const devExists = await fs.exists(`${SRC}/dev/run`);
 
   if (devExists) {
-    await $`deno install --allow-all --force --name live ${SRC}/dev/run/bin/cmd.ts`;
+    await $`deno install --allow-all --force --global --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
 }
 
