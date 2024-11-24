@@ -199,10 +199,6 @@ if (INIT_LOGIN_GCP === 'true') {
       await $`gcloud config set project ${GCP_PROJECT_NAME}`;
       await $`gcloud config set compute/zone us-central1-b`;
       await $`gcloud auth configure-docker gcr.io --quiet`;
-      // same for gcloud beta
-      await $`gcloud beta config set project ${GCP_PROJECT_NAME}`;
-      await $`gcloud beta config set compute/zone us-central1-b`;
-      await $`gcloud beta auth configure-docker gcr.io --quiet`;
       console.log('gcp login successful.');
     } else {
       console.log(chalk.red('Project does not exists.'));
