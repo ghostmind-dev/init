@@ -303,7 +303,6 @@ if (INIT_LOGIN_GHCR == 'true') {
 
 if (INIT_TMUX_CONFIG == 'true') {
   await $`curl -o ${HOME}/.tmux.conf https://raw.githubusercontent.com/ghostmind-dev/config/refs/heads/main/config/tmux/.tmux.config`;
-  await $`tmux source-file ${HOME}/.tmux.conf`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
