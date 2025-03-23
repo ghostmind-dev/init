@@ -56,6 +56,7 @@ const {
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_POETRY_GLOBAL = 'true',
+  INIT_TMUX_CONFIG = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -294,6 +295,15 @@ if (INIT_LOGIN_GHCR == 'true') {
     console.log(chalk.red(e));
     console.log('something went wrong with ghcr login');
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TMUX CONFIG
+////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_TMUX_CONFIG == 'true') {
+  await $`curl -o ${HOME}/.tmux.conf https://raw.githubusercontent.com/ghostmind-dev/config/main/config/tmux/.tmux.conf`;
+  await $`tmux source-file ${HOME}/.tmux.conf`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
