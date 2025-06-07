@@ -40,6 +40,7 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
 // Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
 // Deno.env.set('INIT_POETRY_GLOBAL', 'false');
+// Deno.env.set('INIT_RESET_DOCS', 'false');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
@@ -56,6 +57,7 @@ const {
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_POETRY_GLOBAL = 'true',
+  INIT_RESET_DOCS = 'false',
   INIT_TMUX_CONFIG = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
@@ -241,6 +243,15 @@ if (INIT_RESET_LIVE === 'true') {
   if (devExists) {
     await $`deno install --allow-all --force --global --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// INSTALL LIVE DOCS
+//////////////////////////////////////////////////////////////////////////////////
+if (INIT_RESET_DOCS === 'true') {
+  await $`rm -rf ${SRC}/aim`;
+  await $`git clone -b main https://github.com/ghostmind-dev/docs.git ${SRC}/aim`;
+} else {
 }
 
 //////////////////////////////////////////////////////////////////////////////////
