@@ -41,6 +41,7 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
 // Deno.env.set('INIT_POETRY_GLOBAL', 'false');
 // Deno.env.set('INIT_RESET_DOCS', 'false');
+// Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
@@ -58,6 +59,7 @@ const {
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_POETRY_GLOBAL = 'true',
   INIT_RESET_DOCS = 'false',
+  INIT_RESET_DOCS_NAME = 'docs',
   INIT_TMUX_CONFIG = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
@@ -249,8 +251,8 @@ if (INIT_RESET_LIVE === 'true') {
 // INSTALL LIVE DOCS
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_DOCS === 'true') {
-  await $`rm -rf ${SRC}/aim`;
-  await $`git clone -b main https://github.com/ghostmind-dev/docs.git ${SRC}/aim`;
+  await $`rm -rf ${SRC}/${INIT_RESET_DOCS_NAME}`;
+  await $`git clone -b main https://github.com/ghostmind-dev/docs.git ${SRC}/${INIT_RESET_DOCS_NAME}`;
 } else {
 }
 
