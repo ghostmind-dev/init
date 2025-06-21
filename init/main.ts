@@ -2,10 +2,8 @@
 
 import { $, fs, chalk, sleep, cd, echo } from 'npm:zx';
 import { config } from 'npm:dotenv';
-import { createStructuredOutputRunnable } from 'npm:langchain/chains/openai_functions';
 import { ChatOpenAI } from 'npm:@langchain/openai';
 import { ChatPromptTemplate } from 'npm:@langchain/core/prompts';
-import { JsonOutputFunctionsParser } from 'npm:langchain/output_parsers';
 import figlet from 'npm:figlet';
 
 import {
@@ -27,22 +25,23 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-// Deno.env.set('INIT_RESET_LIVE', 'false');
-// Deno.env.set('INIT_BASE_ZSHRC', 'false');
-// Deno.env.set('INIT_DENO_CONFIG', 'false');
-// Deno.env.set('INIT_DENO_JUPYTER', 'false');
-// Deno.env.set('INIT_CORE_SECRETS', 'true');
-// Deno.env.set('INIT_LOGIN_NPM', 'false');
-// Deno.env.set('INIT_LOGIN_GCP', 'true');
-// Deno.env.set('INIT_LOGIN_GHCR', 'false');
-// Deno.env.set('INIT_LOGIN_NVCR', 'false');
-// Deno.env.set('INIT_LOGIN_VAULT', 'true');
-// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
-// Deno.env.set('INIT_POETRY_GLOBAL', 'false');
-// Deno.env.set('INIT_RESET_DOCS', 'false');
-// Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
-// Deno.env.set('INIT_QUOTE_AI', 'false');
+Deno.env.set('INIT_RESET_LIVE', 'false');
+Deno.env.set('INIT_BASE_ZSHRC', 'false');
+Deno.env.set('INIT_DENO_CONFIG', 'false');
+Deno.env.set('INIT_DENO_JUPYTER', 'false');
+Deno.env.set('INIT_CORE_SECRETS', 'false');
+Deno.env.set('INIT_LOGIN_NPM', 'false');
+Deno.env.set('INIT_LOGIN_GCP', 'false');
+Deno.env.set('INIT_LOGIN_GHCR', 'false');
+Deno.env.set('INIT_LOGIN_NVCR', 'false');
+Deno.env.set('INIT_LOGIN_VAULT', 'false');
+Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
+Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+Deno.env.set('INIT_POETRY_GLOBAL', 'false');
+Deno.env.set('INIT_RESET_DOCS', 'false');
+Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
+Deno.env.set('INIT_QUOTE_AI', 'false');
+Deno.env.set('INIT_HIDE_UNHIDE', 'false');
 
 const {
   INIT_RESET_LIVE = 'false',
@@ -62,6 +61,7 @@ const {
   INIT_RESET_DOCS_NAME = 'docs',
   INIT_TMUX_CONFIG = 'false',
   INIT_QUOTE_AI = 'true',
+  INIT_HIDE_UNHIDE = 'true',
 } = Deno.env.toObject();
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -337,6 +337,57 @@ if (INIT_LOGIN_NVCR == 'true') {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// HIDE/UNHIDE FUNCTIONALITY
+////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_HIDE_UNHIDE === 'true') {
+  console.log('INIT_HIDE_UNHIDE section is running...');
+
+  try {
+    $.verbose = false;
+
+    // Get the list of releases from the GitHub API
+    const releasesResponse = await fetch(
+      'https://api.github.com/repos/komondor/hide-unhide/contents/releases'
+    );
+    const releases = await releasesResponse.json();
+
+    // Filter for .vsix files and sort by name to get the most recent version
+    const vsixFiles = releases
+      .filter((file: any) => file.name.endsWith('.vsix'))
+      .sort((a: any, b: any) => b.name.localeCompare(a.name)); // Sort descending to get latest version first
+
+    if (vsixFiles.length > 0) {
+      const latestVsix = vsixFiles[0];
+      const downloadUrl = latestVsix.download_url;
+      const fileName = latestVsix.name;
+      const tempPath = `/tmp/${fileName}`;
+
+      console.log(`Downloading hide-unhide extension: ${fileName}`);
+
+      // Download the VSIX file
+      await $`curl -L -o ${tempPath} ${downloadUrl}`;
+
+      // Install the extension using cursor
+      console.log(`Installing hide-unhide extension...`);
+      await $`cursor --install-extension ${tempPath}`;
+
+      // Clean up the temporary file
+      await $`rm -f ${tempPath}`;
+
+      console.log('hide-unhide extension installed successfully.');
+    } else {
+      console.log('No VSIX files found in the releases folder.');
+    }
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log(
+      'Something went wrong with hide-unhide extension installation.'
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // WELCOME TO GHOSTMIND DEVCONTAINWER
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -396,17 +447,10 @@ if (INIT_QUOTE_AI === 'true') {
     ],
   ]);
 
-  const outputParser = new JsonOutputFunctionsParser();
+  // Use the modern withStructuredOutput method
+  const structuredModel = model.withStructuredOutput(jsonSchema);
 
-  // Also works with Zod schema
-  const runnable = createStructuredOutputRunnable({
-    outputSchema: jsonSchema,
-    llm: model,
-    prompt,
-    outputParser,
-  });
-
-  const response: any = await runnable.invoke({});
+  const response: any = await structuredModel.invoke(await prompt.invoke({}));
 
   // Enable color output
   setColorEnabled(true);
