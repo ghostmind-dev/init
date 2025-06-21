@@ -25,23 +25,23 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-Deno.env.set('INIT_RESET_LIVE', 'false');
-Deno.env.set('INIT_BASE_ZSHRC', 'false');
-Deno.env.set('INIT_DENO_CONFIG', 'false');
-Deno.env.set('INIT_DENO_JUPYTER', 'false');
-Deno.env.set('INIT_CORE_SECRETS', 'false');
-Deno.env.set('INIT_LOGIN_NPM', 'false');
-Deno.env.set('INIT_LOGIN_GCP', 'false');
-Deno.env.set('INIT_LOGIN_GHCR', 'false');
-Deno.env.set('INIT_LOGIN_NVCR', 'false');
-Deno.env.set('INIT_LOGIN_VAULT', 'false');
-Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
-Deno.env.set('INIT_POETRY_GLOBAL', 'false');
-Deno.env.set('INIT_RESET_DOCS', 'false');
-Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
-Deno.env.set('INIT_QUOTE_AI', 'false');
-Deno.env.set('INIT_HIDE_UNHIDE', 'false');
+// Deno.env.set('INIT_RESET_LIVE', 'false');
+// Deno.env.set('INIT_BASE_ZSHRC', 'false');
+// Deno.env.set('INIT_DENO_CONFIG', 'false');
+// Deno.env.set('INIT_DENO_JUPYTER', 'false');
+// Deno.env.set('INIT_CORE_SECRETS', 'false');
+// Deno.env.set('INIT_LOGIN_NPM', 'false');
+// Deno.env.set('INIT_LOGIN_GCP', 'false');
+// Deno.env.set('INIT_LOGIN_GHCR', 'false');
+// Deno.env.set('INIT_LOGIN_NVCR', 'false');
+// Deno.env.set('INIT_LOGIN_VAULT', 'false');
+// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
+// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+// Deno.env.set('INIT_POETRY_GLOBAL', 'false');
+// Deno.env.set('INIT_RESET_DOCS', 'false');
+// Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
+// Deno.env.set('INIT_QUOTE_AI', 'false');
+// Deno.env.set('INIT_HIDE_UNHIDE', 'false');
 
 const {
   INIT_RESET_LIVE = 'false',
