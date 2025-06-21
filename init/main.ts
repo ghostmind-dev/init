@@ -346,6 +346,41 @@ if (INIT_HIDE_UNHIDE === 'true') {
   try {
     $.verbose = false;
 
+    // Find the most recent cursor installation
+    const cursorBasePath = '/vscode/cursor-server/bin/linux-arm64';
+    let cursorPath = 'cursor'; // fallback to system cursor
+
+    try {
+      // List all directories in the cursor server path
+      const cursorDirs = await $`ls -1t ${cursorBasePath}`.quiet();
+      const dirList = cursorDirs.stdout
+        .trim()
+        .split('\n')
+        .filter((dir) => dir.trim());
+
+      if (dirList.length > 0) {
+        // Get the most recent directory (first in time-sorted list)
+        const mostRecentDir = dirList[0];
+        const potentialCursorPath = `${cursorBasePath}/${mostRecentDir}/bin/remote-cli/cursor`;
+
+        // Check if the cursor binary exists in this path
+        const cursorExists = await $`test -f ${potentialCursorPath}`.quiet()
+          .exitCode;
+        if (cursorExists === 0) {
+          cursorPath = potentialCursorPath;
+          console.log(`Using cursor from: ${cursorPath}`);
+        } else {
+          console.log(
+            `Cursor binary not found at ${potentialCursorPath}, using system cursor`
+          );
+        }
+      }
+    } catch (e) {
+      console.log(
+        'Could not find cursor server installation, using system cursor'
+      );
+    }
+
     // Get the list of releases from the GitHub API
     const releasesResponse = await fetch(
       'https://api.github.com/repos/komondor/hide-unhide/contents/releases'
@@ -370,7 +405,7 @@ if (INIT_HIDE_UNHIDE === 'true') {
 
       // Install the extension using cursor
       console.log(`Installing hide-unhide extension...`);
-      await $`cursor --install-extension ${tempPath}`;
+      await $`${cursorPath} --install-extension ${tempPath}`;
 
       // Clean up the temporary file
       await $`rm -f ${tempPath}`;
