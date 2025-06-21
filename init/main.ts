@@ -41,7 +41,6 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_RESET_DOCS', 'false');
 // Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
-// Deno.env.set('INIT_HIDE_UNHIDE', 'false');
 
 const {
   INIT_RESET_LIVE = 'false',
@@ -61,7 +60,6 @@ const {
   INIT_RESET_DOCS_NAME = 'docs',
   INIT_TMUX_CONFIG = 'false',
   INIT_QUOTE_AI = 'true',
-  INIT_HIDE_UNHIDE = 'true',
 } = Deno.env.toObject();
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -333,92 +331,6 @@ if (INIT_LOGIN_NVCR == 'true') {
   } catch (e) {
     console.log(chalk.red(e));
     console.log('something went wrong with ghcr login');
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// HIDE/UNHIDE FUNCTIONALITY
-////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_HIDE_UNHIDE === 'true') {
-  console.log('INIT_HIDE_UNHIDE section is running...');
-
-  try {
-    $.verbose = false;
-
-    // Find the most recent cursor installation
-    const cursorBasePath = '/vscode/cursor-server/bin/linux-arm64';
-    let cursorPath = 'cursor'; // fallback to system cursor
-
-    try {
-      // List all directories in the cursor server path
-      const cursorDirs = await $`ls -1t ${cursorBasePath}`.quiet();
-      const dirList = cursorDirs.stdout
-        .trim()
-        .split('\n')
-        .filter((dir) => dir.trim());
-
-      if (dirList.length > 0) {
-        // Get the most recent directory (first in time-sorted list)
-        const mostRecentDir = dirList[0];
-        const potentialCursorPath = `${cursorBasePath}/${mostRecentDir}/bin/remote-cli/cursor`;
-
-        // Check if the cursor binary exists in this path
-        const cursorExists = await $`test -f ${potentialCursorPath}`.quiet()
-          .exitCode;
-        if (cursorExists === 0) {
-          cursorPath = potentialCursorPath;
-          console.log(`Using cursor from: ${cursorPath}`);
-        } else {
-          console.log(
-            `Cursor binary not found at ${potentialCursorPath}, using system cursor`
-          );
-        }
-      }
-    } catch (e) {
-      console.log(
-        'Could not find cursor server installation, using system cursor'
-      );
-    }
-
-    // Get the list of releases from the GitHub API
-    const releasesResponse = await fetch(
-      'https://api.github.com/repos/komondor/hide-unhide/contents/releases'
-    );
-    const releases = await releasesResponse.json();
-
-    // Filter for .vsix files and sort by name to get the most recent version
-    const vsixFiles = releases
-      .filter((file: any) => file.name.endsWith('.vsix'))
-      .sort((a: any, b: any) => b.name.localeCompare(a.name)); // Sort descending to get latest version first
-
-    if (vsixFiles.length > 0) {
-      const latestVsix = vsixFiles[0];
-      const downloadUrl = latestVsix.download_url;
-      const fileName = latestVsix.name;
-      const tempPath = `/tmp/${fileName}`;
-
-      console.log(`Downloading hide-unhide extension: ${fileName}`);
-
-      // Download the VSIX file
-      await $`curl -L -o ${tempPath} ${downloadUrl}`;
-
-      // Install the extension using cursor
-      console.log(`Installing hide-unhide extension...`);
-      await $`${cursorPath} --install-extension ${tempPath}`;
-
-      // Clean up the temporary file
-      await $`rm -f ${tempPath}`;
-
-      console.log('hide-unhide extension installed successfully.');
-    } else {
-      console.log('No VSIX files found in the releases folder.');
-    }
-  } catch (e) {
-    console.log(chalk.red(e));
-    console.log(
-      'Something went wrong with hide-unhide extension installation.'
-    );
   }
 }
 
