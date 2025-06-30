@@ -2,7 +2,7 @@
 # WELCOME
 ############################################################################
 
-FROM ghcr.io/ghostmind-dev/dvc:dev-base
+FROM ghcr.io/ghostmind-dev/dvc:base
 
 ############################################################################
 # POST-CREATE

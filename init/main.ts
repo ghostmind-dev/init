@@ -25,28 +25,27 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-// Deno.env.set('INIT_RESET_LIVE', 'false');
-// Deno.env.set('INIT_BASE_ZSHRC', 'false');
-// Deno.env.set('INIT_DENO_CONFIG', 'false');
-// Deno.env.set('INIT_DENO_JUPYTER', 'false');
-// Deno.env.set('INIT_CORE_SECRETS', 'false');
-// Deno.env.set('INIT_LOGIN_NPM', 'false');
-// Deno.env.set('INIT_LOGIN_GCP', 'false');
-// Deno.env.set('INIT_LOGIN_GHCR', 'false');
-// Deno.env.set('INIT_LOGIN_NVCR', 'false');
-// Deno.env.set('INIT_LOGIN_VAULT', 'false');
-// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
-// Deno.env.set('INIT_POETRY_GLOBAL', 'false');
-// Deno.env.set('INIT_RESET_DOCS', 'false');
-// Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
-// Deno.env.set('INIT_QUOTE_AI', 'false');
+Deno.env.set('INIT_RESET_LIVE', 'false');
+Deno.env.set('INIT_BASE_ZSHRC', 'false');
+Deno.env.set('INIT_DENO_CONFIG', 'false');
+Deno.env.set('INIT_DENO_JUPYTER', 'false');
+Deno.env.set('INIT_CORE_SECRETS', 'false');
+Deno.env.set('INIT_LOGIN_NPM', 'false');
+Deno.env.set('INIT_LOGIN_GCP', 'true');
+Deno.env.set('INIT_LOGIN_GHCR', 'false');
+Deno.env.set('INIT_LOGIN_NVCR', 'false');
+Deno.env.set('INIT_LOGIN_VAULT', 'false');
+Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
+Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+Deno.env.set('INIT_RESET_DOCS', 'false');
+Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
+Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
   INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
-  INIT_DENO_JUPYTER = 'true',
+  INIT_DENO_JUPYTER = 'false',
   INIT_CORE_SECRETS = 'true',
   INIT_LOGIN_NPM = 'false',
   INIT_LOGIN_GCP = 'true',
@@ -55,7 +54,6 @@ const {
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
-  INIT_POETRY_GLOBAL = 'true',
   INIT_RESET_DOCS = 'false',
   INIT_RESET_DOCS_NAME = 'docs',
   INIT_TMUX_CONFIG = 'false',
@@ -70,12 +68,6 @@ await $`mkdir -p ${HOME}/.npm-global`;
 await $`npm config set prefix ${HOME}/.npm-global`;
 await $`npm config set update-notifier false`;
 await $`export PATH=${HOME}/.npm-global/bin:$PATH`;
-
-//////////////////////////////////////////////////////////////////////////////////
-// CHECK PROJECT META.JSON
-//////////////////////////////////////////////////////////////////////////////////
-
-const metaconfig: any = await fs.readJson(`${SRC}/meta.json`);
 
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL RUN (PRODUCTION)
@@ -187,11 +179,11 @@ if (INIT_LOGIN_NPM === 'true') {
 if (INIT_LOGIN_GCP === 'true') {
   try {
     $.verbose = false;
-    const GCP_SERVICE_ACCOUNT_ADMIN = Deno.env.get('GCP_SERVICE_ACCOUNT_ADMIN');
+    const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON');
     $.shell = '/usr/bin/zsh';
     const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
-    await $`echo ${GCP_SERVICE_ACCOUNT_ADMIN} | base64 -di -w 0 >/tmp/gsa_key.json`;
+    await fs.writeFile('/tmp/gsa_key.json', GCP_SERVICE_ACCOUNT_JSON);
 
     await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
