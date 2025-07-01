@@ -6,12 +6,6 @@ import { ChatOpenAI } from 'npm:@langchain/openai';
 import { ChatPromptTemplate } from 'npm:@langchain/core/prompts';
 import figlet from 'npm:figlet';
 
-import {
-  setColorEnabled,
-  green,
-  blue,
-} from 'https://deno.land/std/fmt/colors.ts';
-
 $.verbose = true;
 
 console.log(chalk.blue('Starting devcontainer...'));
@@ -379,12 +373,14 @@ if (INIT_QUOTE_AI === 'true') {
 
   const response: any = await structuredModel.invoke(await prompt.invoke({}));
 
-  // Enable color output
-  setColorEnabled(true);
+  // Print "Welcome" in green using CSS styling
 
-  // Print "Welcome" in green
-
-  console.log(green('The quote of this rebuild is:'), response.quote, '\n');
+  console.log(
+    '%cThe quote of this rebuild is:',
+    'color: green',
+    response.quote,
+    '\n'
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
