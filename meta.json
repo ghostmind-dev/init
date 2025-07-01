@@ -1,6 +1,7 @@
 {
   "type": "project",
   "name": "post-create",
+  "version": "1.0.0",
   "scope": "global",
   "id": "orRYbWU9bW7r",
   "routines": {
