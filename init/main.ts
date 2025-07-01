@@ -31,7 +31,7 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_DENO_JUPYTER', 'false');
 // Deno.env.set('INIT_CORE_SECRETS', 'false');
 // Deno.env.set('INIT_LOGIN_NPM', 'false');
-// Deno.env.set('INIT_LOGIN_GCP', 'false');
+// Deno.env.set('INIT_LOGIN_GCP', 'true');
 // Deno.env.set('INIT_LOGIN_GHCR', 'false');
 // Deno.env.set('INIT_LOGIN_NVCR', 'false');
 // Deno.env.set('INIT_LOGIN_VAULT', 'false');
@@ -61,15 +61,6 @@ const {
 } = Deno.env.toObject();
 
 //////////////////////////////////////////////////////////////////////////////////
-// NPM GITHUB REGISTRY
-//////////////////////////////////////////////////////////////////////////////////
-
-await $`mkdir -p ${HOME}/.npm-global`;
-await $`npm config set prefix ${HOME}/.npm-global`;
-await $`npm config set update-notifier false`;
-await $`export PATH=${HOME}/.npm-global/bin:$PATH`;
-
-//////////////////////////////////////////////////////////////////////////////////
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +77,7 @@ if (INIT_DENO_CONFIG === 'true') {
     'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/deno/deno.json'
   );
 
-  let defaultDenoConfig = await defaultDenoCOnfigRaw.json();
+  const defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
   await fs.writeJson(`${HOME}/deno.json`, defaultDenoConfig, { spaces: 2 });
 }
@@ -184,6 +175,12 @@ if (INIT_LOGIN_GCP === 'true') {
     const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
     await fs.writeFile('/tmp/gsa_key.json', GCP_SERVICE_ACCOUNT_JSON);
+
+    // Set GOOGLE_APPLICATION_CREDENTIALS environment variable
+    Deno.env.set('GOOGLE_APPLICATION_CREDENTIALS', '/tmp/gsa_key.json');
+
+    // Make GOOGLE_APPLICATION_CREDENTIALS persistent in shell sessions
+    await $`echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gsa_key.json" >> ${HOME}/.zshenv`;
 
     await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
