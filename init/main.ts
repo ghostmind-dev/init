@@ -214,16 +214,17 @@ if (INIT_BASE_ZSHRC === 'true') {
 // INSTALL LIVE RUN
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_LIVE === 'true') {
+  console.log('INIT_RESET_LIVE_INIT_RESET_LIVE_INIT_RESET_LIVE');
   await $`rm -rf ${SRC}/dev`;
-  await $`git clone -b dev https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
-  await $`deno install --allow-all --force --global --name live ${SRC}/dev/run/bin/cmd.ts`;
+  await $`git clone -b dev --depth 1 --single-branch https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
+  await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
 } else {
   // verify if dev folder exists
 
   const devExists = await fs.exists(`${SRC}/dev/run`);
 
   if (devExists) {
-    await $`deno install --allow-all --force --global --name live ${SRC}/dev/run/bin/cmd.ts`;
+    await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
 }
 
