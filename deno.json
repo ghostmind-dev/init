@@ -1,0 +1,28 @@
+{
+    "name": "@ghostmind/init",
+    "version": "0.0.1",
+    "license": "MIT",
+    "description": "An initialization script for development container in the Ghostmind DevOps ecosystem",
+    "exports": {
+        ".": "./init/main.ts"
+    },
+    "lint": {
+        "include": [
+            "**/init/**"
+        ],
+        "rules": {
+            "tags": [
+                "recommended"
+            ],
+            "include": [
+                "ban-untagged-todo"
+            ],
+            "exclude": [
+                "no-unused-vars",
+                "no-explicit-any",
+                "prefer-const",
+                "require-await"
+            ]
+        }
+    }
+}

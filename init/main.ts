@@ -1,18 +1,18 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { $, fs, chalk, sleep, cd, echo } from 'npm:zx';
-import { config } from 'npm:dotenv';
-import { ChatOpenAI } from 'npm:@langchain/openai';
-import { ChatPromptTemplate } from 'npm:@langchain/core/prompts';
-import figlet from 'npm:figlet';
+import { $, fs, chalk, sleep, cd, echo } from 'npm:zx@8.6.1';
+import { config } from 'npm:dotenv@17.0.1';
+import { ChatOpenAI } from 'npm:@langchain/openai@0.5.18';
+import { ChatPromptTemplate } from 'npm:@langchain/core@0.3.62/prompts';
+import figlet from 'npm:figlet@1.8.1';
 
 $.verbose = true;
 
 console.log(chalk.blue('Starting devcontainer...'));
 
-// //////////////////////////////////////////////////////////////////////////////////
-// // CONSTANTS
-// //////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+// CONSTANTS
+//////////////////////////////////////////////////////////////////////////////////
 
 const HOME = Deno.env.get('HOME');
 const SRC = Deno.env.get('SRC');
@@ -32,7 +32,7 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
 // Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
 // Deno.env.set('INIT_RESET_DOCS', 'false');
-// Deno.env.set('INIT_RESET_DOCS_NAME', 'docs');
+// Deno.env.set('INIT_RESET_DOCS_NAME', 'refs');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {

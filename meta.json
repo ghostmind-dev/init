@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "scope": "global",
   "id": "orRYbWU9bW7r",
+
   "routines": {
-    "watch": "deno run --watch --allow-all ${SRC}/init/main.ts"
+    "watch": "deno run --watch --allow-all ${SRC}/init/main.ts",
+    "check": "deno check ${SRC}/init/main.ts"
   }
 }
