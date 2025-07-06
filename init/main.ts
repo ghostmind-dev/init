@@ -48,8 +48,6 @@ const {
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
-  INIT_RESET_DOCS = 'false',
-  INIT_RESET_DOCS_NAME = 'docs',
   INIT_TMUX_CONFIG = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
@@ -225,15 +223,6 @@ if (INIT_RESET_LIVE === 'true') {
   if (devExists) {
     await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-// INSTALL LIVE DOCS
-//////////////////////////////////////////////////////////////////////////////////
-if (INIT_RESET_DOCS === 'true') {
-  await $`rm -rf ${SRC}/${INIT_RESET_DOCS_NAME}`;
-  await $`git clone -b main https://github.com/ghostmind-dev/docs.git ${SRC}/${INIT_RESET_DOCS_NAME}`;
-} else {
 }
 
 //////////////////////////////////////////////////////////////////////////////////
