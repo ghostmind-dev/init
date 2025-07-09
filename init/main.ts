@@ -89,7 +89,7 @@ if (INIT_DENO_JUPYTER === 'true') {
 if (INIT_LOGIN_VAULT === 'true') {
   try {
     $.verbose = false;
-    await $`vault login ${Deno.env.get('VAULT_ROOT_TOKEN')}`;
+    await $`vault login ${Deno.env.get('VAULT_TOKEN')}`;
     console.log('vault login successful.');
   } catch (e) {
     console.log(chalk.red(e));
