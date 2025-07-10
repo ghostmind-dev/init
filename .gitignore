@@ -98,3 +98,6 @@ __pycache__
 **/output.txt
 
 **/dist
+
+
+**/global-*.mdc
