@@ -1,6 +1,6 @@
 {
     "name": "@ghostmind/init",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "license": "MIT",
     "description": "An initialization script for development container in the Ghostmind DevOps ecosystem",
     "exports": {

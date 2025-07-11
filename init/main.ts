@@ -200,7 +200,7 @@ if (INIT_LOGIN_GCP === 'true') {
 
 cd(`${SRC}`);
 
-await $`git config --add safe.directory "*"`;
+// await $`git config --add safe.directory "*"`;
 //
 //////////////////////////////////////////////////////////////////////////////////
 // DOTFILES
