@@ -36,7 +36,6 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_RESET_DOCS_NAME', 'refs');
 // Deno.env.set('INIT_GLOBAL_RULES', 'false');
 // Deno.env.set('INIT_DEVCONTAINER_SETTINGS', 'false');
-// Deno.env.set('INIT_DEVCONTAINER_EXTENSIONS', 'true');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
@@ -56,7 +55,6 @@ const {
   INIT_TMUX_CONFIG = 'false',
   INIT_GLOBAL_RULES = 'true',
   INIT_DEVCONTAINER_SETTINGS = 'false',
-  INIT_DEVCONTAINER_EXTENSIONS = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -128,84 +126,6 @@ if (INIT_DEVCONTAINER_SETTINGS === 'true') {
   } catch (e) {
     console.log(chalk.red(e));
     console.log('something went wrong with IDE settings.');
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-// SET EXTENSIONS IN CURSOR
-//////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_DEVCONTAINER_EXTENSIONS === 'true') {
-  try {
-    const extensionsRaw = await fetch(
-      'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/vscode/extensions.json'
-    );
-
-    const extensions = await extensionsRaw.json();
-
-    // Detect IDE type and get the dynamic path to the executable
-    const cursorServerPath = `${HOME}/.cursor-server`;
-    const vscodeServerPath = `${HOME}/.vscode-server`;
-
-    let installCommand;
-    let ideName;
-
-    if (await fs.exists(cursorServerPath)) {
-      // Find the commit hash directory dynamically
-      const binPath = `${cursorServerPath}/bin`;
-      if (await fs.exists(binPath)) {
-        const dirs = await fs.readdir(binPath);
-        const commitHash = dirs.find((dir: string) => !dir.startsWith('.'));
-        if (commitHash) {
-          installCommand = `${binPath}/${commitHash}/bin/remote-cli/cursor`;
-          ideName = 'Cursor';
-        } else {
-          throw new Error(
-            'Could not find commit hash directory in .cursor-server/bin'
-          );
-        }
-      } else {
-        throw new Error('Could not find .cursor-server/bin directory');
-      }
-    } else if (await fs.exists(vscodeServerPath)) {
-      // Find the commit hash directory dynamically
-      const binPath = `${vscodeServerPath}/bin`;
-      if (await fs.exists(binPath)) {
-        const dirs = await fs.readdir(binPath);
-        const commitHash = dirs.find((dir: string) => !dir.startsWith('.'));
-        if (commitHash) {
-          installCommand = `${binPath}/${commitHash}/bin/remote-cli/code`;
-          ideName = 'VS Code';
-        } else {
-          throw new Error(
-            'Could not find commit hash directory in .vscode-server/bin'
-          );
-        }
-      } else {
-        throw new Error('Could not find .vscode-server/bin directory');
-      }
-    } else {
-      // Default to Cursor if neither exists - use generic command as fallback
-      installCommand = 'cursor';
-      ideName = 'Cursor (default)';
-    }
-
-    console.log(`Installing ${extensions.length} extensions for ${ideName}...`);
-    console.log(`Using command: ${installCommand}`);
-
-    for (const extension of extensions) {
-      try {
-        await $`${installCommand} --install-extension=${extension}`;
-        console.log(`✓ Installed: ${extension}`);
-      } catch (e) {
-        console.log(chalk.yellow(`⚠ Failed to install: ${extension}`));
-      }
-    }
-
-    console.log('Extensions installation completed.');
-  } catch (e) {
-    console.log(chalk.red(e));
-    console.log('Something went wrong with extensions installation.');
   }
 }
 
