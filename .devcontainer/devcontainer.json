@@ -13,13 +13,13 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/ghostmind-dev/features/mounts:latest": {},
     "ghcr.io/ghostmind-dev/features/init:latest": {
-      "resetLive": "true"
+      "resetLive": true
     },
     "ghcr.io/ghostmind-dev/features/zsh:latest": {
       "theme": "codespaces"
     }
   },
-  "postCreateCommand": "deno run --allow-all init/main.ts",
+  "postAttachCommand": "deno run --allow-all init/main.ts",
   "postStartCommand": "deno run --allow-all /usr/local/share/post-start.ts",
   "remoteEnv": {
     "SRC": "${containerWorkspaceFolder}",
@@ -37,11 +37,14 @@
     "--network=host",
     "--name=init-container"
   ],
+  "mounts": [
+    "source=termina-init-features,target=/commandhistory,type=volume",
+    "source=/Volumes/Projects,target=/Volumes/Projects,type=bind",
+    "source=${env:HOME}${env:USERPROFILE}/.cursor,target=/home/vscode/.cursor,type=bind"
+  ],
   "customizations": {
     "vscode": {
-      "extensions": [
-        "denoland.vscode-deno"
-      ]
+      "extensions": []
     }
   }
 }
