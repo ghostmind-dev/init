@@ -6,14 +6,12 @@
       "PROJECT_DIR": "${env:HOME}${env:USERPROFILE}/projects/container/init"
     }
   },
+  "remoteUser": "vscode",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/ghostmind-dev/features/extensions:latest": {},
-    "ghcr.io/ghostmind-dev/features/themes:latest": {},
     "ghcr.io/ghostmind-dev/features/mounts:latest": {},
-    "ghcr.io/ghostmind-dev/features/settings:latest": {},
     "ghcr.io/ghostmind-dev/features/init:latest": {
       "resetLive": "true"
     },
@@ -41,7 +39,9 @@
   ],
   "customizations": {
     "vscode": {
-      "extensions": []
+      "extensions": [
+        "denoland.vscode-deno"
+      ]
     }
   }
 }
