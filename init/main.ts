@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { $, fs, chalk, sleep, cd, echo } from 'npm:zx@8.6.1';
+import { $, fs, chalk, sleep, cd } from 'npm:zx@8.6.1';
 import { config } from 'npm:dotenv@17.0.1';
 import { ChatOpenAI } from 'npm:@langchain/openai@0.5.18';
 import { ChatPromptTemplate } from 'npm:@langchain/core@0.3.62/prompts';
@@ -19,13 +19,14 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
+// Deno.env.set('INIT_RUN_INSTALL', 'false');
 // Deno.env.set('INIT_RESET_LIVE', 'false');
 // Deno.env.set('INIT_BASE_ZSHRC', 'false');
 // Deno.env.set('INIT_DENO_CONFIG', 'false');
 // Deno.env.set('INIT_DENO_JUPYTER', 'false');
 // Deno.env.set('INIT_CORE_SECRETS', 'false');
 // Deno.env.set('INIT_LOGIN_NPM', 'false');
-// Deno.env.set('INIT_LOGIN_GCP', 'true');
+// Deno.env.set('INIT_LOGIN_GCP', 'false');
 // Deno.env.set('INIT_LOGIN_GHCR', 'false');
 // Deno.env.set('INIT_LOGIN_NVCR', 'false');
 // Deno.env.set('INIT_LOGIN_VAULT', 'false');
@@ -33,10 +34,13 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
 // Deno.env.set('INIT_RESET_DOCS', 'false');
 // Deno.env.set('INIT_RESET_DOCS_NAME', 'refs');
-// Deno.env.set('INIT_GLOBAL_RULES', 'true');
+// Deno.env.set('INIT_GLOBAL_RULES', 'false');
+// Deno.env.set('INIT_DEVCONTAINER_SETTINGS', 'false');
+// Deno.env.set('INIT_DEVCONTAINER_EXTENSIONS', 'true');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
+  INIT_RUN_INSTALL = 'true',
   INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
@@ -51,16 +55,22 @@ const {
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'false',
   INIT_GLOBAL_RULES = 'true',
+  INIT_DEVCONTAINER_SETTINGS = 'false',
+  INIT_DEVCONTAINER_EXTENSIONS = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
+
+console.log(INIT_RESET_LIVE);
 
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
-await $`rm -rf ${HOME}/run`;
-await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
-await $`deno install --allow-all --force --global --name run ${HOME}/run/run/bin/cmd.ts`;
+if (INIT_RUN_INSTALL === 'true') {
+  await $`rm -rf ${HOME}/run`;
+  await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
+  await $`deno install --allow-all --force --global --name run ${HOME}/run/run/bin/cmd.ts`;
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 // SET DENO.JSON
@@ -74,6 +84,100 @@ if (INIT_DENO_CONFIG === 'true') {
   const defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
   await fs.writeJson(`${HOME}/deno.json`, defaultDenoConfig, { spaces: 2 });
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// SET VSCODE SETTINGS FROM DEVCONTAINER FEATURE
+//////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_DEVCONTAINER_SETTINGS === 'true') {
+  try {
+    const settingsRaw = await fetch(
+      'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/vscode/settings.static.json'
+    );
+
+    const settings = await settingsRaw.json();
+
+    // Detect IDE type and use appropriate settings path
+    const cursorServerPath = `${HOME}/.cursor-server`;
+    const vscodeServerPath = `${HOME}/.vscode-server`;
+
+    let settingsPath;
+    let ideName;
+
+    if (await fs.exists(cursorServerPath)) {
+      settingsPath = `${cursorServerPath}/data/Machine/settings.json`;
+      ideName = 'Cursor';
+    } else if (await fs.exists(vscodeServerPath)) {
+      settingsPath = `${vscodeServerPath}/data/Machine/settings.json`;
+      ideName = 'VS Code';
+    } else {
+      // Default to Cursor if neither exists (will create the directory structure)
+      settingsPath = `${cursorServerPath}/data/Machine/settings.json`;
+      ideName = 'Cursor (default)';
+    }
+
+    // Ensure the directory exists
+    await fs.ensureDir(
+      settingsPath.substring(0, settingsPath.lastIndexOf('/'))
+    );
+
+    await fs.writeJson(settingsPath, settings, { spaces: 2 });
+
+    console.log(`${ideName} settings set at: ${settingsPath}`);
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with IDE settings.');
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// SET EXTENSIONS IN CURSOR
+//////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_DEVCONTAINER_EXTENSIONS === 'true') {
+  try {
+    const extensionsRaw = await fetch(
+      'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/vscode/extensions.json'
+    );
+
+    const extensions = await extensionsRaw.json();
+
+    // Detect IDE type and use appropriate command
+    const cursorServerPath = `${HOME}/.cursor-server`;
+    const vscodeServerPath = `${HOME}/.vscode-server`;
+
+    let installCommand;
+    let ideName;
+
+    if (await fs.exists(cursorServerPath)) {
+      installCommand = 'cursor';
+      ideName = 'Cursor';
+    } else if (await fs.exists(vscodeServerPath)) {
+      installCommand = 'code';
+      ideName = 'VS Code';
+    } else {
+      // Default to Cursor if neither exists
+      installCommand = 'cursor';
+      ideName = 'Cursor (default)';
+    }
+
+    console.log(`Installing ${extensions.length} extensions for ${ideName}...`);
+
+    for (const extension of extensions) {
+      try {
+        await $`${installCommand} --install-extension=${extension}`;
+        console.log(`✓ Installed: ${extension}`);
+      } catch (e) {
+        console.log(chalk.yellow(`⚠ Failed to install: ${extension}`));
+      }
+    }
+
+    console.log('Extensions installation completed.');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('Something went wrong with extensions installation.');
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -214,6 +318,7 @@ if (INIT_BASE_ZSHRC === 'true') {
 // INSTALL LIVE RUN
 //////////////////////////////////////////////////////////////////////////////////
 if (INIT_RESET_LIVE === 'true') {
+  console.log('resetting live');
   await $`rm -rf ${SRC}/dev`;
   await $`git clone -b dev --depth 1 --single-branch https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
   await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
