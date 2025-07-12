@@ -143,7 +143,7 @@ if (INIT_DEVCONTAINER_EXTENSIONS === 'true') {
 
     const extensions = await extensionsRaw.json();
 
-    // Detect IDE type and use appropriate command
+    // Detect IDE type and get the dynamic path to the executable
     const cursorServerPath = `${HOME}/.cursor-server`;
     const vscodeServerPath = `${HOME}/.vscode-server`;
 
@@ -151,18 +151,47 @@ if (INIT_DEVCONTAINER_EXTENSIONS === 'true') {
     let ideName;
 
     if (await fs.exists(cursorServerPath)) {
-      installCommand = 'cursor';
-      ideName = 'Cursor';
+      // Find the commit hash directory dynamically
+      const binPath = `${cursorServerPath}/bin`;
+      if (await fs.exists(binPath)) {
+        const dirs = await fs.readdir(binPath);
+        const commitHash = dirs.find((dir: string) => !dir.startsWith('.'));
+        if (commitHash) {
+          installCommand = `${binPath}/${commitHash}/bin/remote-cli/cursor`;
+          ideName = 'Cursor';
+        } else {
+          throw new Error(
+            'Could not find commit hash directory in .cursor-server/bin'
+          );
+        }
+      } else {
+        throw new Error('Could not find .cursor-server/bin directory');
+      }
     } else if (await fs.exists(vscodeServerPath)) {
-      installCommand = 'code';
-      ideName = 'VS Code';
+      // Find the commit hash directory dynamically
+      const binPath = `${vscodeServerPath}/bin`;
+      if (await fs.exists(binPath)) {
+        const dirs = await fs.readdir(binPath);
+        const commitHash = dirs.find((dir: string) => !dir.startsWith('.'));
+        if (commitHash) {
+          installCommand = `${binPath}/${commitHash}/bin/remote-cli/code`;
+          ideName = 'VS Code';
+        } else {
+          throw new Error(
+            'Could not find commit hash directory in .vscode-server/bin'
+          );
+        }
+      } else {
+        throw new Error('Could not find .vscode-server/bin directory');
+      }
     } else {
-      // Default to Cursor if neither exists
+      // Default to Cursor if neither exists - use generic command as fallback
       installCommand = 'cursor';
       ideName = 'Cursor (default)';
     }
 
     console.log(`Installing ${extensions.length} extensions for ${ideName}...`);
+    console.log(`Using command: ${installCommand}`);
 
     for (const extension of extensions) {
       try {
