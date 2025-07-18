@@ -253,8 +253,12 @@ if (INIT_LOGIN_GCP === 'true') {
 
 cd(`${SRC}`);
 
-// await $`git config --add safe.directory "*"`;
-//
+const cursorServerPath = `${HOME}/.cursor-server`;
+
+if (await fs.exists(cursorServerPath)) {
+  await $`git config --add safe.directory "*"`;
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 // DOTFILES
 //////////////////////////////////////////////////////////////////////////////////
