@@ -10,8 +10,10 @@
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ghostmind-dev/features/settings:latest": {},
+    "ghcr.io/ghostmind-dev/features/extensions:latest": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/ghostmind-dev/features/mounts:latest": {},
+    
     "ghcr.io/ghostmind-dev/features/init:latest": {
       "resetLive": true
     },
@@ -35,12 +37,15 @@
     "--cap-add=CAP_IPC_LOCK",
     "--cap-add=NET_ADMIN",
     "--network=host",
+    "--env=SSH_AUTH_SOCK=/ssh-agent",
     "--name=init-container"
   ],
   "mounts": [
     "source=termina-init-features,target=/commandhistory,type=volume",
     "source=/Volumes/Projects,target=/Volumes/Projects,type=bind",
-    "source=${env:HOME}${env:USERPROFILE}/.cursor,target=/home/vscode/.cursor,type=bind"
+    "source=${env:HOME}${env:USERPROFILE}/.claude.json,target=/home/vscode/.claude.json,type=bind",
+    "type=bind,source=/run/host-services/ssh-auth.sock,target=/ssh-agent",
+    "type=bind,source=${env:HOME}/.ssh/known_hosts,target=/home/vscode/.ssh/known_hosts,readonly"
   ],
   "customizations": {
     "vscode": {
