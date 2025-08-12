@@ -361,70 +361,70 @@ if (INIT_LOGIN_NVCR == 'true') {
 // GLOBAL RULES
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_GLOBAL_RULES === 'true') {
-  try {
-    $.verbose = false;
+// if (INIT_GLOBAL_RULES === 'true') {
+//   try {
+//     $.verbose = false;
 
-    // Create temporary directory for cloning
-    const tempDir = '/tmp/ghostmind-docs';
-    await $`rm -rf ${tempDir}`;
+//     // Create temporary directory for cloning
+//     const tempDir = '/tmp/ghostmind-docs';
+//     await $`rm -rf ${tempDir}`;
 
-    // Clone the docs repository
-    await $`git clone https://github.com/ghostmind-dev/docs.git ${tempDir}`;
+//     // Clone the docs repository
+//     await $`git clone https://github.com/ghostmind-dev/docs.git ${tempDir}`;
 
-    // Create target directory
-    const targetDir = `${SRC}/.cursor/rules`;
-    await $`mkdir -p ${targetDir}`;
+//     // Create target directory
+//     const targetDir = `${SRC}/.cursor/rules`;
+//     await $`mkdir -p ${targetDir}`;
 
-    // Get all existing files in target directory to preserve non-matching ones
-    const existingFiles = new Set();
-    try {
-      const existingFilesOutput =
-        await $`find ${targetDir} -type f -name "*.mdc" -exec basename {} \\;`;
-      existingFilesOutput.stdout
-        .split('\n')
-        .filter((f) => f.trim())
-        .forEach((file) => {
-          existingFiles.add(file.trim());
-        });
-    } catch (e) {
-      // Directory might not exist or be empty, that's fine
-    }
+//     // Get all existing files in target directory to preserve non-matching ones
+//     const existingFiles = new Set();
+//     try {
+//       const existingFilesOutput =
+//         await $`find ${targetDir} -type f -name "*.mdc" -exec basename {} \\;`;
+//       existingFilesOutput.stdout
+//         .split('\n')
+//         .filter((f) => f.trim())
+//         .forEach((file) => {
+//           existingFiles.add(file.trim());
+//         });
+//     } catch (e) {
+//       // Directory might not exist or be empty, that's fine
+//     }
 
-    // Copy all .mdc files from docs/rules to target directory
-    const rulesSourceDir = `${tempDir}/docs/rules`;
+//     // Copy all .mdc files from docs/rules to target directory
+//     const rulesSourceDir = `${tempDir}/docs/rules`;
 
-    // Check if source directory exists
-    const rulesExists = await fs.exists(rulesSourceDir);
-    if (rulesExists) {
-      // Get all .mdc files from source
-      const sourceFiles =
-        await $`find ${rulesSourceDir} -type f -name "*.mdc" -exec basename {} \\;`;
-      const sourceFileList = sourceFiles.stdout
-        .split('\n')
-        .filter((f) => f.trim());
+//     // Check if source directory exists
+//     const rulesExists = await fs.exists(rulesSourceDir);
+//     if (rulesExists) {
+//       // Get all .mdc files from source
+//       const sourceFiles =
+//         await $`find ${rulesSourceDir} -type f -name "*.mdc" -exec basename {} \\;`;
+//       const sourceFileList = sourceFiles.stdout
+//         .split('\n')
+//         .filter((f) => f.trim());
 
-      // Copy each .mdc file
-      for (const file of sourceFileList) {
-        if (file.trim()) {
-          await $`cp "${rulesSourceDir}/${file.trim()}" "${targetDir}/"`;
-        }
-      }
+//       // Copy each .mdc file
+//       for (const file of sourceFileList) {
+//         if (file.trim()) {
+//           await $`cp "${rulesSourceDir}/${file.trim()}" "${targetDir}/"`;
+//         }
+//       }
 
-      console.log(`Copied ${sourceFileList.length} rule files to ${targetDir}`);
-    } else {
-      console.log('No rules directory found in the docs repository');
-    }
+//       console.log(`Copied ${sourceFileList.length} rule files to ${targetDir}`);
+//     } else {
+//       console.log('No rules directory found in the docs repository');
+//     }
 
-    // Clean up temporary directory
-    await $`rm -rf ${tempDir}`;
+//     // Clean up temporary directory
+//     await $`rm -rf ${tempDir}`;
 
-    console.log('Global rules setup completed successfully.');
-  } catch (e) {
-    console.log(chalk.red(e));
-    console.log('Something went wrong with global rules setup');
-  }
-}
+//     console.log('Global rules setup completed successfully.');
+//   } catch (e) {
+//     console.log(chalk.red(e));
+//     console.log('Something went wrong with global rules setup');
+//   }
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 // WELCOME TO GHOSTMIND DEVCONTAINWER
