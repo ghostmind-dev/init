@@ -13,7 +13,6 @@
     "ghcr.io/ghostmind-dev/features/settings:latest": {},
     "ghcr.io/ghostmind-dev/features/extensions:latest": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    
     "ghcr.io/ghostmind-dev/features/init:latest": {
       "resetLive": true
     },
@@ -21,17 +20,14 @@
       "theme": "codespaces"
     }
   },
-  "postAttachCommand": "deno run --allow-all init/main.ts",
-  "postStartCommand": "deno run --allow-all /usr/local/share/post-start.ts",
+  "postStartCommand": "deno run -A -r jsr:@ghostmind/init",
+  "postCreateCommand": "deno run -A /usr/local/share/post-create.ts",
   "remoteEnv": {
     "SRC": "${containerWorkspaceFolder}",
     "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/container/init",
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "VAULT_TOKEN": "${localEnv:VAULT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
-  },
-  "containerEnv": {
-    "NEW_THING": "true"
   },
   "runArgs": [
     "--cap-add=CAP_IPC_LOCK",
@@ -41,9 +37,10 @@
     "--name=init-container"
   ],
   "mounts": [
-    "source=termina-init-features,target=/commandhistory,type=volume",
+    "source=terminal-init-history,target=/commandhistory,type=volume",
     "source=/Volumes/Projects,target=/Volumes/Projects,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.claude.json,target=/home/vscode/.claude.json,type=bind",
+    "source=${env:HOME}${env:USERPROFILE}/.gemini,target=/home/vscode/.gemini,type=bind",
     "type=bind,source=/run/host-services/ssh-auth.sock,target=/ssh-agent",
     "type=bind,source=${env:HOME}/.ssh/known_hosts,target=/home/vscode/.ssh/known_hosts,readonly"
   ],

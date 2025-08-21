@@ -2,13 +2,13 @@
 # WELCOME
 ############################################################################
 
-FROM ghcr.io/ghostmind-dev/dvc:dev-base
+FROM ghcr.io/ghostmind-dev/dvc:base
 
 ############################################################################
 # POST-CREATE
 ############################################################################
 
-COPY library-scripts/post-start.ts /usr/local/share/
+COPY library-scripts/post-create.ts /usr/local/share/
 
 ############################################################################
 # THE END

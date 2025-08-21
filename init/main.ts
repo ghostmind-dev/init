@@ -36,6 +36,7 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_RESET_DOCS_NAME', 'refs');
 // Deno.env.set('INIT_GLOBAL_RULES', 'false');
 // Deno.env.set('INIT_DEVCONTAINER_SETTINGS', 'false');
+// Deno.env.set('INIT_TMUX_CONFIG', 'true');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
@@ -52,8 +53,7 @@ const {
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'false',
   INIT_PYTHON_VERSION = '3.9.7',
-  INIT_TMUX_CONFIG = 'false',
-  INIT_GLOBAL_RULES = 'true',
+  INIT_TMUX_CONFIG = 'true',
   INIT_DEVCONTAINER_SETTINGS = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
@@ -336,7 +336,7 @@ if (INIT_LOGIN_GHCR == 'true') {
 ////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_TMUX_CONFIG == 'true') {
-  await $`curl -o ${HOME}/.tmux.conf https://raw.githubusercontent.com/ghostmind-dev/config/refs/heads/main/config/tmux/.tmux.config`;
+  await $`curl -o ${HOME}/.tmux.conf https://raw.githubusercontent.com/ghostmind-dev/config/refs/heads/main/config/tmux/.tmux.conf`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
