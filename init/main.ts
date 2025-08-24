@@ -49,7 +49,7 @@ const {
   INIT_LOGIN_NPM = 'false',
   INIT_LOGIN_GCP = 'true',
   INIT_LOGIN_GHCR = 'true',
-  INIT_LOGIN_NVCR = 'true',
+  INIT_LOGIN_NVCR = 'false',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'false',
   INIT_PYTHON_VERSION = '3.9.7',
@@ -314,15 +314,77 @@ if (INIT_LOGIN_CLOUDFLARE === 'true') {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// SETUP DOCKER CREDENTIAL HELPER
+////////////////////////////////////////////////////////////////////////////////
+
+async function setupDockerCredentialHelper() {
+  const dockerConfigPath = Deno.env.get('DOCKER_CONFIG') || `${HOME}/.docker`;
+
+  try {
+    // Ensure the docker config directory exists
+    await fs.ensureDir(dockerConfigPath);
+
+    // Create a config that doesn't store credentials persistently
+    // We use an empty auths object and avoid setting credsStore
+    const dockerConfig = {
+      auths: {},
+    };
+
+    const configPath = `${dockerConfigPath}/config.json`;
+
+    // Check if config already exists
+    if (await fs.exists(configPath)) {
+      const existingConfig = await fs.readJSON(configPath);
+      // Keep existing config but ensure auths is clean
+      if (!existingConfig.auths) {
+        existingConfig.auths = {};
+      }
+      // Remove any credsStore setting that might cause issues
+      delete existingConfig.credsStore;
+      await fs.writeJson(configPath, existingConfig, { spaces: 2 });
+    } else {
+      await fs.writeJson(configPath, dockerConfig, { spaces: 2 });
+    }
+  } catch (e) {
+    console.log(
+      chalk.yellow('Note: Could not configure Docker credential helper')
+    );
+  }
+}
+
+// Helper function to clean Docker credentials after login
+async function cleanDockerCredentials() {
+  const dockerConfigPath = Deno.env.get('DOCKER_CONFIG') || `${HOME}/.docker`;
+  const configPath = `${dockerConfigPath}/config.json`;
+
+  try {
+    if (await fs.exists(configPath)) {
+      const config = await fs.readJSON(configPath);
+      // Keep the config but clear the auths to prevent storing credentials
+      config.auths = {};
+      await fs.writeJson(configPath, config, { spaces: 2 });
+    }
+  } catch (e) {
+    // Silent fail - not critical
+  }
+}
+
+await setupDockerCredentialHelper();
+
+////////////////////////////////////////////////////////////////////////////////
 // CONNECT TO GHCR.IO
 ////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_LOGIN_GHCR == 'true') {
   try {
     $.verbose = false;
+
     await $`echo ${Deno.env.get(
       'GH_TOKEN'
-    )} | docker login ghcr.io -u USERNAME --password-stdin`;
+    )} | docker login ghcr.io -u USERNAME --password-stdin 2>/dev/null || true`;
+
+    // Clean credentials after login to prevent storage warning
+    await cleanDockerCredentials();
 
     console.log('ghcr login successful.');
   } catch (e) {
@@ -346,14 +408,18 @@ if (INIT_TMUX_CONFIG == 'true') {
 if (INIT_LOGIN_NVCR == 'true') {
   try {
     $.verbose = false;
+
     await $`echo ${Deno.env.get(
       'NGC_TOKEN'
-    )} | docker login nvcr.io -u \\$oauthtoken --password-stdin`;
+    )} | docker login nvcr.io -u \\$oauthtoken --password-stdin 2>/dev/null || true`;
+
+    // Clean credentials after login to prevent storage warning
+    await cleanDockerCredentials();
 
     console.log('nvcr login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log('something went wrong with ghcr login');
+    console.log('something went wrong with nvcr login');
   }
 }
 

@@ -1,10 +1,8 @@
 {
   "name": "init",
+  "containerUser": "vscode",
   "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "PROJECT_DIR": "${env:HOME}${env:USERPROFILE}/projects/container/init"
-    }
+    "dockerfile": "Dockerfile"
   },
   "remoteUser": "vscode",
   "features": {
@@ -22,31 +20,29 @@
   },
   "postStartCommand": "deno run -A -r jsr:@ghostmind/init",
   "postCreateCommand": "deno run -A /usr/local/share/post-create.ts",
-  "remoteEnv": {
+  "containerEnv": {
     "SRC": "${containerWorkspaceFolder}",
-    "LOCALHOST_SRC": "${env:HOME}${env:USERPROFILE}/projects/container/init",
+    "LOCALHOST_SRC": "/Volumes/Projects/prototype/mtl",
+    "DOCKER_CONFIG": "/home/vscode/.docker-no-creds"
+  },
+  "remoteEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "VAULT_TOKEN": "${localEnv:VAULT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
   },
+  "mounts": [
+    "source=/Volumes/Projects,target=/Volumes/Projects,type=bind",
+    "source=terminal-history-init,target=/commandhistory,type=volume",
+    "source=/Volumes/Projects/config/source/.claude.json,target=/home/vscode/.claude.json,type=bind",
+    "source=/Volumes/Projects/config/source/.ssh/config,target=/home/vscode/.ssh/config,type=bind",
+    "type=bind,source=/run/host-services/ssh-auth.sock,target=/ssh-agent",
+    "type=bind,source=${env:HOME}/.ssh/known_hosts,target=/home/vscode/.ssh/known_hosts"
+  ],
   "runArgs": [
     "--cap-add=CAP_IPC_LOCK",
     "--cap-add=NET_ADMIN",
     "--network=host",
     "--env=SSH_AUTH_SOCK=/ssh-agent",
-    "--name=init-container"
-  ],
-  "mounts": [
-    "source=terminal-init-history,target=/commandhistory,type=volume",
-    "source=/Volumes/Projects,target=/Volumes/Projects,type=bind",
-    "source=${env:HOME}${env:USERPROFILE}/.claude.json,target=/home/vscode/.claude.json,type=bind",
-    "source=${env:HOME}${env:USERPROFILE}/.gemini,target=/home/vscode/.gemini,type=bind",
-    "type=bind,source=/run/host-services/ssh-auth.sock,target=/ssh-agent",
-    "type=bind,source=${env:HOME}/.ssh/known_hosts,target=/home/vscode/.ssh/known_hosts,readonly"
-  ],
-  "customizations": {
-    "vscode": {
-      "extensions": []
-    }
-  }
+    "--name=init"
+  ]
 }
