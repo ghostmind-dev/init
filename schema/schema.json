@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dev Container Configuration with Ghostmind Features",
+  "description": "Enhanced DevContainer configuration with auto-completion support for ghostmind-dev features",
+  "allOf": [
+    {
+      "$ref": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "features": {
+          "type": "object",
+          "description": "Features to add to the dev container",
+          "additionalProperties": true,
+          "properties": {
+            "ghcr.io/ghostmind-dev/init/init": {
+              "$ref": "#/definitions/initFeature"
+            },
+            "ghcr.io/ghostmind-dev/init/init:1": {
+              "$ref": "#/definitions/initFeature"
+            },
+            "ghcr.io/ghostmind-dev/init/init:latest": {
+              "$ref": "#/definitions/initFeature"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "initFeature": {
+      "type": "object",
+      "description": "Initialize development environment with configurable options",
+      "additionalProperties": false,
+      "properties": {
+        "resetLive": {
+          "type": "boolean",
+          "description": "Reset live environment settings (default: false)",
+          "default": false
+        },
+        "baseZshrc": {
+          "type": "boolean",
+          "description": "Configure base ZSH configuration (default: true)",
+          "default": true
+        },
+        "denoConfig": {
+          "type": "boolean",
+          "description": "Setup Deno configuration (default: true)",
+          "default": true
+        },
+        "denoJupyter": {
+          "type": "boolean",
+          "description": "Enable Deno Jupyter integration (default: false)",
+          "default": false
+        },
+        "coreSecrets": {
+          "type": "boolean",
+          "description": "Setup core secrets management (default: true)",
+          "default": true
+        },
+        "loginNpm": {
+          "type": "boolean",
+          "description": "Configure NPM login (default: false)",
+          "default": false
+        },
+        "loginGcp": {
+          "type": "boolean",
+          "description": "Configure Google Cloud Platform login (default: true)",
+          "default": true
+        },
+        "loginGhcr": {
+          "type": "boolean",
+          "description": "Configure GitHub Container Registry login (default: true)",
+          "default": true
+        },
+        "loginNvcr": {
+          "type": "boolean",
+          "description": "Configure NVIDIA Container Registry login (default: true)",
+          "default": true
+        },
+        "loginVault": {
+          "type": "boolean",
+          "description": "Configure HashiCorp Vault login (default: true)",
+          "default": true
+        },
+        "loginCloudflare": {
+          "type": "boolean",
+          "description": "Configure Cloudflare login (default: true)",
+          "default": true
+        },
+        "pythonVersion": {
+          "type": "string",
+          "description": "Python version to configure (default: 3.9.7)",
+          "default": "3.9.7"
+        },
+        "tmuxConfig": {
+          "type": "boolean",
+          "description": "Setup TMUX configuration (default: false)",
+          "default": true
+        },
+        "devcontainerSettings": {
+          "type": "boolean",
+          "description": "Configure VS Code/Cursor settings from remote configuration (default: false)",
+          "default": false
+        },
+        "quoteAi": {
+          "type": "boolean",
+          "description": "Enable AI quote feature (default: true)",
+          "default": true
+        }
+      }
+    }
+  }
+}

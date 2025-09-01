@@ -20,8 +20,8 @@ export default async function (args: CustomArgs, opts: CustomOptions) {
 
   const featureConfigText = await Deno.readTextFile(featureConfigPath);
   const featureConfig = JSON.parse(featureConfigText);
-  const version = featureConfig.version || '1.0.0';
-  const name = featureConfig.name || 'init';
+  const version = featureConfig.version;
+  const name = featureConfig.name;
 
   console.log(`   📋 ${name} v${version}`);
   console.log(`   Target: ${registry}/${namespace}/init:${version}`);
@@ -30,10 +30,10 @@ export default async function (args: CustomArgs, opts: CustomOptions) {
   await $`devcontainer features publish ${featurePath} --registry ${registry} --namespace ${namespace}`;
 
   console.log(`✅ Successfully published ${feature}:${version}`);
-  console.log(`   📖 Usage: "${registry}/${namespace}/${feature}:${version}"`);
+  console.log(`   📖 Usage: "${registry}/${namespace}/feature:${version}"`);
 
   console.log('\n🎉 All features published successfully!');
   console.log(
-    `\n🔗 Registry: https://github.com/ghostmind-dev/init/pkgs/container/features`
+    `\n🔗 Registry: https://github.com/ghostmind-dev/init/pkgs/container/feature`
   );
 }
