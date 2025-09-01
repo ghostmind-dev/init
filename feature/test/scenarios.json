@@ -1,0 +1,28 @@
+{
+  "test_default": {
+    "image": "mcr.microsoft.com/devcontainers/base:debian-11",
+    "features": {
+      "init": {}
+    }
+  },
+  "test_custom_login": {
+    "image": "mcr.microsoft.com/devcontainers/base:debian-11",
+    "features": {
+      "init": {
+        "loginVault": false,
+        "loginGcp": true,
+        "loginNpm": true
+      }
+    }
+  },
+  "test_python_config": {
+    "image": "mcr.microsoft.com/devcontainers/base:debian-11",
+    "features": {
+      "init": {
+        "pythonVersion": "3.11.5",
+        "tmuxConfig": true,
+        "denoJupyter": true
+      }
+    }
+  }
+}

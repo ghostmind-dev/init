@@ -6,6 +6,7 @@
     "npm:@langchain/openai@0.5.18": "0.5.18_@langchain+core@0.3.62__zod@3.25.74_zod@3.25.74_openai@5.8.2__zod@3.25.74",
     "npm:dotenv@17.0.1": "17.0.1",
     "npm:figlet@1.8.1": "1.8.1",
+    "npm:zx@*": "8.6.1",
     "npm:zx@8.6.1": "8.6.1"
   },
   "npm": {

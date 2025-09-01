@@ -7,6 +7,9 @@
 
   "routines": {
     "watch": "deno run --watch --allow-all ${SRC}/init/main.ts",
-    "check": "deno check ${SRC}/init/main.ts"
+    "check": "deno check ${SRC}/init/main.ts",
+    "feature_live": "run custom live --root=feature",
+    "feature_test": "run custom test --root=feature",
+    "feature_publish": "run custom publish --root=feature"
   }
 }

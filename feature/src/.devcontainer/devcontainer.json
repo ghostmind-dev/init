@@ -1,0 +1,19 @@
+{
+    "name": "Test Init Feature",
+    "image": "ghcr.io/ghostmind-dev/dvc:empty",
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {},
+        "ghcr.io/ghostmind-dev/features/init:1": {
+            "enableFeature": true,
+            "installComponent": true
+        }
+    },
+    "remoteUser": "vscode",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscode.json-language-features"
+            ]
+        }
+    }
+}

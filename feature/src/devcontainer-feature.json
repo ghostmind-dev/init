@@ -1,0 +1,85 @@
+{
+  "id": "init",
+  "version": "1.0.7",
+  "name": "Init",
+  "description": "Initialize development environment with configurable options",
+  "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
+  "options": {
+    "resetLive": {
+      "type": "boolean",
+      "default": false,
+      "description": "Reset live environment settings (default: false)"
+    },
+    "baseZshrc": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configure base ZSH configuration (default: true)"
+    },
+    "denoConfig": {
+      "type": "boolean",
+      "default": true,
+      "description": "Setup Deno configuration (default: true)"
+    },
+    "denoJupyter": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable Deno Jupyter integration (default: false)"
+    },
+    "coreSecrets": {
+      "type": "boolean",
+      "default": true,
+      "description": "Setup core secrets management (default: true)"
+    },
+    "loginNpm": {
+      "type": "boolean",
+      "default": false,
+      "description": "Configure NPM login (default: false)"
+    },
+    "loginGcp": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configure Google Cloud Platform login (default: true)"
+    },
+    "loginGhcr": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configure GitHub Container Registry login (default: true)"
+    },
+    "loginNvcr": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configure NVIDIA Container Registry login (default: true)"
+    },
+    "loginVault": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configure HashiCorp Vault login (default: true)"
+    },
+    "loginCloudflare": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configure Cloudflare login (default: true)"
+    },
+    "pythonVersion": {
+      "type": "string",
+      "default": "3.9.7",
+      "description": "Python version to configure (default: 3.9.7)"
+    },
+    "tmuxConfig": {
+      "type": "boolean",
+      "default": true,
+      "description": "Setup TMUX configuration (default: false)"
+    },
+    "devcontainerSettings": {
+      "type": "boolean",
+      "default": false,
+      "description": "Configure VS Code/Cursor settings from remote configuration (default: false)"
+    },
+    "quoteAi": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable AI quote feature (default: true)"
+    }
+  },
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils:2"]
+}

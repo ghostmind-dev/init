@@ -4,7 +4,18 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_click",
-      "mcp__playwright__browser_type"
+      "mcp__playwright__browser_type",
+      "Bash(run custom test:*)",
+      "Bash(deno run:*)",
+      "Bash(pkill:*)",
+      "Bash(timeout 5 deno run:*)",
+      "Bash(run custom debug test:*)",
+      "Bash(run custom)",
+      "Bash(timeout 30 run custom test:*)",
+      "Bash(echo \"Exit code: $?\")",
+      "Bash(cat:*)",
+      "Bash(bash:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
