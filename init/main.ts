@@ -1,60 +1,56 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { $, fs, chalk, sleep, cd } from "npm:zx@8.6.1";
-import { config } from "npm:dotenv@17.0.1";
-import { ChatOpenAI } from "npm:@langchain/openai@0.5.18";
-import { ChatPromptTemplate } from "npm:@langchain/core@0.3.62/prompts";
-import figlet from "npm:figlet@1.8.1";
+import { $, fs, chalk, sleep, cd } from 'npm:zx@8.6.1';
+import { config } from 'npm:dotenv@17.0.1';
+import { ChatOpenAI } from 'npm:@langchain/openai@0.5.18';
+import { ChatPromptTemplate } from 'npm:@langchain/core@0.3.62/prompts';
+import figlet from 'npm:figlet@1.8.1';
 
 $.verbose = true;
 
-console.log(chalk.blue("Starting devcontainer..."));
+console.log(chalk.blue('Starting devcontainer...'));
 
 //////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS
 //////////////////////////////////////////////////////////////////////////////////
 
-const HOME = Deno.env.get("HOME");
-const SRC = Deno.env.get("SRC");
+const HOME = Deno.env.get('HOME');
+const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-// Deno.env.set("INIT_RUN_INSTALL", "false");
-// Deno.env.set("INIT_RESET_LIVE", "false");
-// Deno.env.set("INIT_BASE_ZSHRC", "true");
-// Deno.env.set("INIT_DENO_CONFIG", "false");
-// Deno.env.set("INIT_DENO_JUPYTER", "false");
-// Deno.env.set("INIT_CORE_SECRETS", "false");
-// Deno.env.set("INIT_LOGIN_NPM", "false");
-// Deno.env.set("INIT_LOGIN_GCP", "false");
-// Deno.env.set("INIT_LOGIN_GHCR", "false");
-// Deno.env.set("INIT_LOGIN_NVCR", "false");
-// Deno.env.set("INIT_LOGIN_VAULT", "false");
-// Deno.env.set("INIT_LOGIN_CLOUDFLARE", "false");
-// Deno.env.set("INIT_PYTHON_VERSION", "3.9.7");
-// Deno.env.set("INIT_RESET_DOCS", "false");
-// Deno.env.set("INIT_RESET_DOCS_NAME", "refs");
-// Deno.env.set("INIT_GLOBAL_RULES", "false");
-// Deno.env.set("INIT_TMUX_CONFIG", "false");
-// Deno.env.set("INIT_QUOTE_AI", "false");
+// Deno.env.set('INIT_RUN_INSTALL', 'false');
+// Deno.env.set('INIT_RESET_LIVE', 'false');
+// Deno.env.set('INIT_BASE_ZSHRC', 'true');
+// Deno.env.set('INIT_DENO_CONFIG', 'false');
+// Deno.env.set('INIT_DENO_JUPYTER', 'false');
+// Deno.env.set('INIT_CORE_SECRETS', 'false');
+// Deno.env.set('INIT_LOGIN_NPM', 'false');
+// Deno.env.set('INIT_LOGIN_GCP', 'false');
+// Deno.env.set('INIT_LOGIN_GHCR', 'false');
+// Deno.env.set('INIT_LOGIN_NVCR', 'false');
+// Deno.env.set('INIT_LOGIN_VAULT', 'false');
+// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
+// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+// Deno.env.set('INIT_TMUX_CONFIG', 'false');
+// Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
-  INIT_RUN_INSTALL = "true",
-  INIT_RESET_LIVE = "false",
-  INIT_BASE_ZSHRC = "true",
-  INIT_DENO_CONFIG = "true",
-  INIT_DENO_JUPYTER = "false",
-  INIT_CORE_SECRETS = "true",
-  INIT_LOGIN_NPM = "false",
-  INIT_LOGIN_GCP = "true",
-  INIT_LOGIN_GHCR = "true",
-  INIT_LOGIN_NVCR = "false",
-  INIT_LOGIN_VAULT = "true",
-  INIT_LOGIN_CLOUDFLARE = "false",
-  INIT_PYTHON_VERSION = "3.9.7",
-  INIT_TMUX_CONFIG = "true",
-  INIT_DEVCONTAINER_EXTENSIONS = "false",
-  INIT_QUOTE_AI = "true",
+  INIT_RUN_INSTALL = 'true',
+  INIT_RESET_LIVE = 'false',
+  INIT_BASE_ZSHRC = 'true',
+  INIT_DENO_CONFIG = 'true',
+  INIT_DENO_JUPYTER = 'false',
+  INIT_CORE_SECRETS = 'true',
+  INIT_LOGIN_NPM = 'false',
+  INIT_LOGIN_GCP = 'true',
+  INIT_LOGIN_GHCR = 'true',
+  INIT_LOGIN_NVCR = 'false',
+  INIT_LOGIN_VAULT = 'true',
+  INIT_LOGIN_CLOUDFLARE = 'false',
+  INIT_PYTHON_VERSION = '3.9.7',
+  INIT_TMUX_CONFIG = 'true',
+  INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
 console.log(INIT_RESET_LIVE);
@@ -63,7 +59,7 @@ console.log(INIT_RESET_LIVE);
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_RUN_INSTALL === "true") {
+if (INIT_RUN_INSTALL === 'true') {
   await $`rm -rf ${HOME}/run`;
   await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
   await $`deno install --allow-all --force --global --name run ${HOME}/run/run/bin/cmd.ts`;
@@ -73,9 +69,9 @@ if (INIT_RUN_INSTALL === "true") {
 // SET DENO.JSON
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_DENO_CONFIG === "true") {
+if (INIT_DENO_CONFIG === 'true') {
   const defaultDenoCOnfigRaw = await fetch(
-    "https://raw.githubusercontent.com/ghostmind-dev/config/main/config/deno/deno.json"
+    'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/deno/deno.json'
   );
 
   const defaultDenoConfig = await defaultDenoCOnfigRaw.json();
@@ -87,7 +83,7 @@ if (INIT_DENO_CONFIG === "true") {
 // INSTALL DENO JUPYTER
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_DENO_JUPYTER === "true") {
+if (INIT_DENO_JUPYTER === 'true') {
   await $`deno jupyter --install`;
 }
 
@@ -95,14 +91,14 @@ if (INIT_DENO_JUPYTER === "true") {
 // VAULT LOGIN
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_VAULT === "true") {
+if (INIT_LOGIN_VAULT === 'true') {
   try {
     $.verbose = false;
-    await $`vault login ${Deno.env.get("VAULT_TOKEN")}`;
-    console.log("vault login successful.");
+    await $`vault login ${Deno.env.get('VAULT_TOKEN')}`;
+    console.log('vault login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with vault login.");
+    console.log('something went wrong with vault login.');
   }
 }
 
@@ -110,7 +106,7 @@ if (INIT_LOGIN_VAULT === "true") {
 // SET GLOBAL SECRETS
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_CORE_SECRETS === "true") {
+if (INIT_CORE_SECRETS === 'true') {
   try {
     $.verbose = false;
     await $`rm -rf /tmp/env.global.json`;
@@ -124,7 +120,7 @@ if (INIT_CORE_SECRETS === "true") {
     await $`rm -rf ${HOME}/.zprofile`;
     await $`rm -rf ${HOME}/.zshenv`;
 
-    fs.writeFileSync(`${HOME}/.zprofile`, CREDS, "utf8");
+    fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
 
     // we need to set the global secrets to the zshenv file
     // the difference: each variable is exported
@@ -135,10 +131,10 @@ if (INIT_CORE_SECRETS === "true") {
     await $`cat ${HOME}/.zprofile | grep -v '^#' | grep -v '^$' | while read -r line; do echo "export $line" >> ${HOME}/.zshenv; done`;
 
     config({ path: `${HOME}/.zprofile`, override: false });
-    console.log("global secrets set.");
+    console.log('global secrets set.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with secrets setting.");
+    console.log('something went wrong with secrets setting.');
   }
 }
 
@@ -146,11 +142,11 @@ if (INIT_CORE_SECRETS === "true") {
 // SET NPM CREDENTIALS
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_NPM === "true") {
+if (INIT_LOGIN_NPM === 'true') {
   try {
     $.verbose = false;
 
-    const NPM_TOKEN = Deno.env.get("NPM_TOKEN");
+    const NPM_TOKEN = Deno.env.get('NPM_TOKEN');
 
     await $`rm -rf ${SRC}/.npmrc`;
     await $`rm -rf ${HOME}/.npmrc`;
@@ -158,27 +154,27 @@ if (INIT_LOGIN_NPM === "true") {
     await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${SRC}/.npmrc`;
     await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${HOME}/.npmrc`;
 
-    console.log("npm login successful.");
+    console.log('npm login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with npm login.");
+    console.log('something went wrong with npm login.');
   }
 }
 /////////////////////////////////////////////////////////////////////////////////
 // GCP
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_GCP === "true") {
+if (INIT_LOGIN_GCP === 'true') {
   try {
     $.verbose = false;
-    const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get("GCP_SERVICE_ACCOUNT_JSON");
-    $.shell = "/usr/bin/zsh";
-    const GCP_PROJECT_NAME = Deno.env.get("GCP_PROJECT_NAME");
+    const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON');
+    $.shell = '/usr/bin/zsh';
+    const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
-    await fs.writeFile("/tmp/gsa_key.json", GCP_SERVICE_ACCOUNT_JSON);
+    await fs.writeFile('/tmp/gsa_key.json', GCP_SERVICE_ACCOUNT_JSON);
 
     // Set GOOGLE_APPLICATION_CREDENTIALS environment variable
-    Deno.env.set("GOOGLE_APPLICATION_CREDENTIALS", "/tmp/gsa_key.json");
+    Deno.env.set('GOOGLE_APPLICATION_CREDENTIALS', '/tmp/gsa_key.json');
 
     // Make GOOGLE_APPLICATION_CREDENTIALS persistent in shell sessions
     await $`echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gsa_key.json" >> ${HOME}/.zshenv`;
@@ -187,17 +183,17 @@ if (INIT_LOGIN_GCP === "true") {
 
     const isProjectExists =
       await $`gcloud projects list --filter="${GCP_PROJECT_NAME}"`;
-    if (`${isProjectExists}` != "") {
+    if (`${isProjectExists}` != '') {
       await $`gcloud config set project ${GCP_PROJECT_NAME}`;
       await $`gcloud config set compute/zone us-central1-b`;
       await $`gcloud auth configure-docker gcr.io --quiet`;
-      console.log("gcp login successful.");
+      console.log('gcp login successful.');
     } else {
-      console.log(chalk.red("Project does not exists."));
+      console.log(chalk.red('Project does not exists.'));
     }
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with gcp setup");
+    console.log('something went wrong with gcp setup');
   }
 }
 
@@ -217,13 +213,13 @@ if (await fs.exists(cursorServerPath)) {
 // DOTFILES
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_BASE_ZSHRC === "true") {
+if (INIT_BASE_ZSHRC === 'true') {
   await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/config/main/config/zsh/.zshrc`;
 
   // Configure ZSH theme and plugins from environment variables
-  const INIT_ZSH_THEME = Deno.env.get("INIT_ZSH_THEME") || "codespaces";
+  const INIT_ZSH_THEME = Deno.env.get('INIT_ZSH_THEME') || 'codespaces';
   const INIT_ZSH_PLUGINS =
-    "autosuggestions zsh-syntax-highlighting zsh-completions";
+    'zsh zsh-autosuggestions zsh-syntax-highlighting zsh-completions';
 
   // Set ZSH_THEME in .zshenv for persistence across sessions
   await $`echo 'export INIT_ZSH_THEME="${INIT_ZSH_THEME}"' >> ${HOME}/.zshenv`;
@@ -240,54 +236,54 @@ if (INIT_BASE_ZSHRC === "true") {
   if (!(await fs.exists(ZSH_CUSTOM))) {
     console.log(
       chalk.yellow(
-        "Warning: Oh My Zsh custom directory not found. Make sure Oh My Zsh is installed."
+        'Warning: Oh My Zsh custom directory not found. Make sure Oh My Zsh is installed.'
       )
     );
   } else {
-    console.log("Installing Oh My Zsh plugins...");
+    console.log('Installing Oh My Zsh plugins...');
 
     // Install zsh-autosuggestions
     if (!(await fs.exists(`${ZSH_CUSTOM}/plugins/zsh-autosuggestions`))) {
-      console.log("Installing zsh-autosuggestions...");
+      console.log('Installing zsh-autosuggestions...');
       try {
         await $`git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM}/plugins/zsh-autosuggestions`;
-        console.log("zsh-autosuggestions installed successfully");
+        console.log('zsh-autosuggestions installed successfully');
       } catch (e) {
-        console.log(chalk.red("Failed to install zsh-autosuggestions"));
+        console.log(chalk.red('Failed to install zsh-autosuggestions'));
       }
     }
 
     // Install zsh-syntax-highlighting
     if (!(await fs.exists(`${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting`))) {
-      console.log("Installing zsh-syntax-highlighting...");
+      console.log('Installing zsh-syntax-highlighting...');
       try {
         await $`git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting`;
-        console.log("zsh-syntax-highlighting installed successfully");
+        console.log('zsh-syntax-highlighting installed successfully');
       } catch (e) {
-        console.log(chalk.red("Failed to install zsh-syntax-highlighting"));
+        console.log(chalk.red('Failed to install zsh-syntax-highlighting'));
       }
     }
 
     // Install zsh-completions
     if (!(await fs.exists(`${ZSH_CUSTOM}/plugins/zsh-completions`))) {
-      console.log("Installing zsh-completions...");
+      console.log('Installing zsh-completions...');
       try {
         await $`git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM}/plugins/zsh-completions`;
-        console.log("zsh-completions installed successfully");
+        console.log('zsh-completions installed successfully');
       } catch (e) {
-        console.log(chalk.red("Failed to install zsh-completions"));
+        console.log(chalk.red('Failed to install zsh-completions'));
       }
     }
 
-    console.log("Oh My Zsh plugins installation completed");
+    console.log('Oh My Zsh plugins installation completed');
   }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL LIVE RUN
 //////////////////////////////////////////////////////////////////////////////////
-if (INIT_RESET_LIVE === "true") {
-  console.log("resetting live");
+if (INIT_RESET_LIVE === 'true') {
+  console.log('resetting live');
   await $`rm -rf ${SRC}/dev`;
   await $`git clone -b dev --depth 1 --single-branch https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
   await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
@@ -311,20 +307,20 @@ await $`pyenv global ${INIT_PYTHON_VERSION}`;
 // SET CLOUDFLARED
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_CLOUDFLARE === "true") {
+if (INIT_LOGIN_CLOUDFLARE === 'true') {
   try {
     $.verbose = false;
 
-    const CLOUDFLARED_CREDS = Deno.env.get("CLOUDFLARED_CREDS");
-    $.shell = "/usr/bin/zsh";
+    const CLOUDFLARED_CREDS = Deno.env.get('CLOUDFLARED_CREDS');
+    $.shell = '/usr/bin/zsh';
 
     await $`mkdir -p /home/vscode/.cloudflared`;
     await $`echo ${CLOUDFLARED_CREDS} | base64 -di -w 0 > /home/vscode/.cloudflared/cert.pem`;
 
-    console.log("cloudflared login successful.");
+    console.log('cloudflared login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with cloudflared setup");
+    console.log('something went wrong with cloudflared setup');
   }
   await sleep(2000);
 }
@@ -334,7 +330,7 @@ if (INIT_LOGIN_CLOUDFLARE === "true") {
 ////////////////////////////////////////////////////////////////////////////////
 
 async function setupDockerCredentialHelper() {
-  const dockerConfigPath = Deno.env.get("DOCKER_CONFIG") || `${HOME}/.docker`;
+  const dockerConfigPath = Deno.env.get('DOCKER_CONFIG') || `${HOME}/.docker`;
 
   try {
     // Ensure the docker config directory exists
@@ -363,14 +359,14 @@ async function setupDockerCredentialHelper() {
     }
   } catch (e) {
     console.log(
-      chalk.yellow("Note: Could not configure Docker credential helper")
+      chalk.yellow('Note: Could not configure Docker credential helper')
     );
   }
 }
 
 // Helper function to clean Docker credentials after login
 async function cleanDockerCredentials() {
-  const dockerConfigPath = Deno.env.get("DOCKER_CONFIG") || `${HOME}/.docker`;
+  const dockerConfigPath = Deno.env.get('DOCKER_CONFIG') || `${HOME}/.docker`;
   const configPath = `${dockerConfigPath}/config.json`;
 
   try {
@@ -391,21 +387,21 @@ await setupDockerCredentialHelper();
 // CONNECT TO GHCR.IO
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_GHCR == "true") {
+if (INIT_LOGIN_GHCR == 'true') {
   try {
     $.verbose = false;
 
     await $`echo ${Deno.env.get(
-      "GH_TOKEN"
+      'GH_TOKEN'
     )} | docker login ghcr.io -u USERNAME --password-stdin 2>/dev/null || true`;
 
     // Clean credentials after login to prevent storage warning
     await cleanDockerCredentials();
 
-    console.log("ghcr login successful.");
+    console.log('ghcr login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with ghcr login");
+    console.log('something went wrong with ghcr login');
   }
 }
 
@@ -413,7 +409,7 @@ if (INIT_LOGIN_GHCR == "true") {
 // TMUX CONFIG
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_TMUX_CONFIG == "true") {
+if (INIT_TMUX_CONFIG == 'true') {
   await $`curl -o ${HOME}/.tmux.conf https://raw.githubusercontent.com/ghostmind-dev/config/refs/heads/main/config/tmux/.tmux.conf`;
 }
 
@@ -421,21 +417,21 @@ if (INIT_TMUX_CONFIG == "true") {
 // CONNECT TO NVCR.IO
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_NVCR == "true") {
+if (INIT_LOGIN_NVCR == 'true') {
   try {
     $.verbose = false;
 
     await $`echo ${Deno.env.get(
-      "NGC_TOKEN"
+      'NGC_TOKEN'
     )} | docker login nvcr.io -u \\$oauthtoken --password-stdin 2>/dev/null || true`;
 
     // Clean credentials after login to prevent storage warning
     await cleanDockerCredentials();
 
-    console.log("nvcr login successful.");
+    console.log('nvcr login successful.');
   } catch (e) {
     console.log(chalk.red(e));
-    console.log("something went wrong with nvcr login");
+    console.log('something went wrong with nvcr login');
   }
 }
 
@@ -443,25 +439,25 @@ if (INIT_LOGIN_NVCR == "true") {
 // WELCOME TO GHOSTMIND DEVCONTAINWER
 ////////////////////////////////////////////////////////////////////////////////
 
-console.log(figlet.textSync("Welcome to Ghostmind", { font: "Standard" }));
+console.log(figlet.textSync('Welcome to Ghostmind', { font: 'Standard' }));
 
 ////////////////////////////////////////////////////////////////////////////////
 // QUOTE OF THE DAY
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_QUOTE_AI === "true") {
+if (INIT_QUOTE_AI === 'true') {
   const jsonSchema = {
-    title: "quote",
-    description: "a random quote/facts about the computer science.",
-    type: "object",
+    title: 'quote',
+    description: 'a random quote/facts about the computer science.',
+    type: 'object',
     properties: {
       quote: {
-        title: "quote",
-        description: "A random quote/facts about the computer science.",
-        type: "string",
+        title: 'quote',
+        description: 'A random quote/facts about the computer science.',
+        type: 'string',
       },
     },
-    required: ["quote"],
+    required: ['quote'],
   };
 
   const model = new ChatOpenAI({
@@ -472,7 +468,7 @@ if (INIT_QUOTE_AI === "true") {
   // fetch json from url
 
   const subjectRaw = await fetch(
-    "https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/subjects.json"
+    'https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/subjects.json'
   );
 
   const subjects = await subjectRaw.json();
@@ -480,7 +476,7 @@ if (INIT_QUOTE_AI === "true") {
   const subject = subjects[Math.floor(Math.random() * subjects.length)];
 
   const typesRaw = await fetch(
-    "https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/types.json"
+    'https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/types.json'
   );
 
   const types = await typesRaw.json();
@@ -489,7 +485,7 @@ if (INIT_QUOTE_AI === "true") {
 
   const prompt = ChatPromptTemplate.fromMessages([
     [
-      "human",
+      'human',
       `Generate a random quote/facts about the computer science.
 
     Subject: ${subject}
@@ -507,10 +503,10 @@ if (INIT_QUOTE_AI === "true") {
   // Print "Welcome" in green using CSS styling
 
   console.log(
-    "%cThe quote of this rebuild is:",
-    "color: green",
+    '%cThe quote of this rebuild is:',
+    'color: green',
     response.quote,
-    "\n"
+    '\n'
   );
 }
 

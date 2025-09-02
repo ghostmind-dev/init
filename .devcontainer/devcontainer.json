@@ -8,7 +8,8 @@
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/ghostmind-dev/features/extensions:latest": {},
+    "ghcr.io/ghostmind-dev/config/extensions:latest": {},
+    "ghcr.io/ghostmind-dev/config/settings:latest": {},
     "ghcr.io/ghostmind-dev/init/init:latest": {
       "resetLive": true
     }
@@ -18,7 +19,8 @@
   "containerEnv": {
     "SRC": "${containerWorkspaceFolder}",
     "LOCALHOST_SRC": "/Volumes/Projects/prototype/mtl",
-    "DOCKER_CONFIG": "/home/vscode/.docker-no-creds"
+    "DOCKER_CONFIG": "/home/vscode/.docker-no-creds",
+    "SSH_AUTH_SOCK": "/ssh-agent"
   },
   "remoteEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
@@ -37,7 +39,6 @@
     "--cap-add=CAP_IPC_LOCK",
     "--cap-add=NET_ADMIN",
     "--network=host",
-    "--env=SSH_AUTH_SOCK=/ssh-agent",
     "--name=init"
   ]
 }
