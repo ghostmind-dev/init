@@ -7,16 +7,10 @@
   "remoteUser": "vscode",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
-    // "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/ghostmind-dev/features/settings:latest": {},
     "ghcr.io/ghostmind-dev/features/extensions:latest": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/ghostmind-dev/init/init:latest": {
       "resetLive": true
-    },
-    "ghcr.io/ghostmind-dev/features/zsh:latest": {
-      "theme": "codespaces"
     }
   },
   "postStartCommand": "deno run -A -r jsr:@ghostmind/init",

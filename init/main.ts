@@ -19,25 +19,26 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-// Deno.env.set('INIT_RUN_INSTALL', 'false');
-// Deno.env.set('INIT_RESET_LIVE', 'false');
-// Deno.env.set('INIT_BASE_ZSHRC', 'false');
-// Deno.env.set('INIT_DENO_CONFIG', 'false');
-// Deno.env.set('INIT_DENO_JUPYTER', 'false');
-// Deno.env.set('INIT_CORE_SECRETS', 'false');
-// Deno.env.set('INIT_LOGIN_NPM', 'false');
-// Deno.env.set('INIT_LOGIN_GCP', 'false');
-// Deno.env.set('INIT_LOGIN_GHCR', 'false');
-// Deno.env.set('INIT_LOGIN_NVCR', 'false');
-// Deno.env.set('INIT_LOGIN_VAULT', 'false');
-// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
-// Deno.env.set('INIT_RESET_DOCS', 'false');
-// Deno.env.set('INIT_RESET_DOCS_NAME', 'refs');
-// Deno.env.set('INIT_GLOBAL_RULES', 'false');
-// Deno.env.set('INIT_DEVCONTAINER_SETTINGS', 'false');
-// Deno.env.set('INIT_TMUX_CONFIG', 'true');
-// Deno.env.set('INIT_QUOTE_AI', 'false');
+// Deno.env.set("INIT_RUN_INSTALL", "false");
+// Deno.env.set("INIT_RESET_LIVE", "false");
+// Deno.env.set("INIT_BASE_ZSHRC", "true");
+// Deno.env.set("INIT_DENO_CONFIG", "false");
+// Deno.env.set("INIT_DENO_JUPYTER", "false");
+// Deno.env.set("INIT_CORE_SECRETS", "false");
+// Deno.env.set("INIT_LOGIN_NPM", "false");
+// Deno.env.set("INIT_LOGIN_GCP", "false");
+// Deno.env.set("INIT_LOGIN_GHCR", "false");
+// Deno.env.set("INIT_LOGIN_NVCR", "false");
+// Deno.env.set("INIT_LOGIN_VAULT", "false");
+// Deno.env.set("INIT_LOGIN_CLOUDFLARE", "false");
+// Deno.env.set("INIT_PYTHON_VERSION", "3.9.7");
+// Deno.env.set("INIT_RESET_DOCS", "false");
+// Deno.env.set("INIT_RESET_DOCS_NAME", "refs");
+// Deno.env.set("INIT_GLOBAL_RULES", "false");
+// Deno.env.set("INIT_DEVCONTAINER_SETTINGS", "true");
+// Deno.env.set("INIT_DEVCONTAINER_EXTENSIONS", "false");
+// Deno.env.set("INIT_TMUX_CONFIG", "false");
+// Deno.env.set("INIT_QUOTE_AI", "false");
 
 const {
   INIT_RUN_INSTALL = 'true',
@@ -54,7 +55,7 @@ const {
   INIT_LOGIN_CLOUDFLARE = 'false',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'true',
-  INIT_DEVCONTAINER_SETTINGS = 'false',
+  INIT_DEVCONTAINER_SETTINGS = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -265,6 +266,55 @@ if (await fs.exists(cursorServerPath)) {
 
 if (INIT_BASE_ZSHRC === 'true') {
   await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/config/main/config/zsh/.zshrc`;
+
+  // Install Oh My Zsh plugins
+  const ZSH_CUSTOM = `${HOME}/.oh-my-zsh/custom`;
+
+  // Ensure Oh My Zsh custom directory exists
+  if (!(await fs.exists(ZSH_CUSTOM))) {
+    console.log(
+      chalk.yellow(
+        'Warning: Oh My Zsh custom directory not found. Make sure Oh My Zsh is installed.'
+      )
+    );
+  } else {
+    console.log('Installing Oh My Zsh plugins...');
+
+    // Install zsh-autosuggestions
+    if (!(await fs.exists(`${ZSH_CUSTOM}/plugins/zsh-autosuggestions`))) {
+      console.log('Installing zsh-autosuggestions...');
+      try {
+        await $`git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM}/plugins/zsh-autosuggestions`;
+        console.log('zsh-autosuggestions installed successfully');
+      } catch (e) {
+        console.log(chalk.red('Failed to install zsh-autosuggestions'));
+      }
+    }
+
+    // Install zsh-syntax-highlighting
+    if (!(await fs.exists(`${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting`))) {
+      console.log('Installing zsh-syntax-highlighting...');
+      try {
+        await $`git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting`;
+        console.log('zsh-syntax-highlighting installed successfully');
+      } catch (e) {
+        console.log(chalk.red('Failed to install zsh-syntax-highlighting'));
+      }
+    }
+
+    // Install zsh-completions
+    if (!(await fs.exists(`${ZSH_CUSTOM}/plugins/zsh-completions`))) {
+      console.log('Installing zsh-completions...');
+      try {
+        await $`git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM}/plugins/zsh-completions`;
+        console.log('zsh-completions installed successfully');
+      } catch (e) {
+        console.log(chalk.red('Failed to install zsh-completions'));
+      }
+    }
+
+    console.log('Oh My Zsh plugins installation completed');
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
