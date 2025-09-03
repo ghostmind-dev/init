@@ -104,6 +104,11 @@
           "description": "Configure VS Code/Cursor settings from remote configuration (default: false)",
           "default": false
         },
+        "initDevcontainerSettings": {
+          "type": "boolean",
+          "description": "Initialize devcontainer settings (default: false)",
+          "default": false
+        },
         "quoteAi": {
           "type": "boolean",
           "description": "Enable AI quote feature (default: true)",

@@ -33,6 +33,7 @@ const SRC = Deno.env.get('SRC');
 // Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
 // Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
 // Deno.env.set('INIT_TMUX_CONFIG', 'false');
+// Deno.env.set('INIT_DEVCONTAINER_SETTINGS', 'false');
 // Deno.env.set('INIT_QUOTE_AI', 'false');
 
 const {
@@ -50,6 +51,7 @@ const {
   INIT_LOGIN_CLOUDFLARE = 'false',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'true',
+  INIT_DEVCONTAINER_SETTINGS = 'false',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -432,6 +434,51 @@ if (INIT_LOGIN_NVCR == 'true') {
   } catch (e) {
     console.log(chalk.red(e));
     console.log('something went wrong with nvcr login');
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// SET VSCODE SETTINGS FROM DEVCONTAINER FEATURE
+//////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_DEVCONTAINER_SETTINGS === 'true') {
+  try {
+    const settingsRaw = await fetch(
+      'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/vscode/settings.static.json'
+    );
+
+    const settings = await settingsRaw.json();
+
+    // Detect IDE type and use appropriate settings path
+    const cursorServerPath = `${HOME}/.cursor-server`;
+    const vscodeServerPath = `${HOME}/.vscode-server`;
+
+    let settingsPath;
+    let ideName;
+
+    if (await fs.exists(cursorServerPath)) {
+      settingsPath = `${cursorServerPath}/data/Machine/settings.json`;
+      ideName = 'Cursor';
+    } else if (await fs.exists(vscodeServerPath)) {
+      settingsPath = `${vscodeServerPath}/data/Machine/settings.json`;
+      ideName = 'VS Code';
+    } else {
+      // Default to Cursor if neither exists (will create the directory structure)
+      settingsPath = `${cursorServerPath}/data/Machine/settings.json`;
+      ideName = 'Cursor (default)';
+    }
+
+    // Ensure the directory exists
+    await fs.ensureDir(
+      settingsPath.substring(0, settingsPath.lastIndexOf('/'))
+    );
+
+    await fs.writeJson(settingsPath, settings, { spaces: 2 });
+
+    console.log(`${ideName} settings set at: ${settingsPath}`);
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with IDE settings.');
   }
 }
 
