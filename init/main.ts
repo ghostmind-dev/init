@@ -19,22 +19,26 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-// Deno.env.set('INIT_RUN_INSTALL', 'false');
-// Deno.env.set('INIT_RESET_LIVE', 'false');
-// Deno.env.set('INIT_BASE_ZSHRC', 'true');
-// Deno.env.set('INIT_DENO_CONFIG', 'false');
-// Deno.env.set('INIT_DENO_JUPYTER', 'false');
-// Deno.env.set('INIT_CORE_SECRETS', 'false');
-// Deno.env.set('INIT_LOGIN_NPM', 'false');
-// Deno.env.set('INIT_LOGIN_GCP', 'false');
-// Deno.env.set('INIT_LOGIN_GHCR', 'false');
-// Deno.env.set('INIT_LOGIN_NVCR', 'false');
-// Deno.env.set('INIT_LOGIN_VAULT', 'false');
-// Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-// Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
-// Deno.env.set('INIT_TMUX_CONFIG', 'false');
-// Deno.env.set('INIT_DEVCONTAINER_SETTINGS', 'false');
-// Deno.env.set('INIT_QUOTE_AI', 'false');
+const DEBUG_MODE = Deno.env.get('DEBUG_MODE');
+
+if (DEBUG_MODE === 'true') {
+  Deno.env.set('INIT_RUN_INSTALL', 'false');
+  Deno.env.set('INIT_RESET_LIVE', 'false');
+  Deno.env.set('INIT_BASE_ZSHRC', 'true');
+  Deno.env.set('INIT_DENO_CONFIG', 'false');
+  Deno.env.set('INIT_DENO_JUPYTER', 'false');
+  Deno.env.set('INIT_CORE_SECRETS', 'false');
+  Deno.env.set('INIT_LOGIN_NPM', 'false');
+  Deno.env.set('INIT_LOGIN_GCP', 'false');
+  Deno.env.set('INIT_LOGIN_GHCR', 'false');
+  Deno.env.set('INIT_LOGIN_NVCR', 'false');
+  Deno.env.set('INIT_LOGIN_VAULT', 'false');
+  Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
+  Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+  Deno.env.set('INIT_TMUX_CONFIG', 'false');
+  Deno.env.set('INIT_INSTALL_AI_TOOLS', 'true');
+  Deno.env.set('INIT_QUOTE_AI', 'false');
+}
 
 const {
   INIT_RUN_INSTALL = 'true',
@@ -48,10 +52,10 @@ const {
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_NVCR = 'false',
   INIT_LOGIN_VAULT = 'true',
-  INIT_LOGIN_CLOUDFLARE = 'false',
+  INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'true',
-  INIT_DEVCONTAINER_SETTINGS = 'false',
+  INIT_INSTALL_AI_TOOLS = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -436,49 +440,14 @@ if (INIT_LOGIN_NVCR == 'true') {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////
-// SET VSCODE SETTINGS FROM DEVCONTAINER FEATURE
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// INSTALL AI TOOLS
+////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_DEVCONTAINER_SETTINGS === 'true') {
-  try {
-    const settingsRaw = await fetch(
-      'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/vscode/settings.static.json'
-    );
-
-    const settings = await settingsRaw.json();
-
-    // Detect IDE type and use appropriate settings path
-    const cursorServerPath = `${HOME}/.cursor-server`;
-    const vscodeServerPath = `${HOME}/.vscode-server`;
-
-    let settingsPath;
-    let ideName;
-
-    if (await fs.exists(cursorServerPath)) {
-      settingsPath = `${cursorServerPath}/data/Machine/settings.json`;
-      ideName = 'Cursor';
-    } else if (await fs.exists(vscodeServerPath)) {
-      settingsPath = `${vscodeServerPath}/data/Machine/settings.json`;
-      ideName = 'VS Code';
-    } else {
-      // Default to Cursor if neither exists (will create the directory structure)
-      settingsPath = `${cursorServerPath}/data/Machine/settings.json`;
-      ideName = 'Cursor (default)';
-    }
-
-    // Ensure the directory exists
-    await fs.ensureDir(
-      settingsPath.substring(0, settingsPath.lastIndexOf('/'))
-    );
-
-    await fs.writeJson(settingsPath, settings, { spaces: 2 });
-
-    console.log(`${ideName} settings set at: ${settingsPath}`);
-  } catch (e) {
-    console.log(chalk.red(e));
-    console.log('something went wrong with IDE settings.');
-  }
+if (INIT_INSTALL_AI_TOOLS === 'true') {
+  await $`sudo npm install -g @anthropic-ai/claude-code`;
+  await $`sudo npm install -g @openai/codex`;
+  await $`sudo npm install -g @google/gemini-cli`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

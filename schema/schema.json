@@ -76,8 +76,8 @@
         },
         "loginNvcr": {
           "type": "boolean",
-          "description": "Configure NVIDIA Container Registry login (default: true)",
-          "default": true
+          "description": "Configure NVIDIA Container Registry login (default: false)",
+          "default": false
         },
         "loginVault": {
           "type": "boolean",
@@ -96,13 +96,18 @@
         },
         "tmuxConfig": {
           "type": "boolean",
-          "description": "Setup TMUX configuration (default: false)",
+          "description": "Setup TMUX configuration (default: true)",
           "default": true
         },
         "devcontainerSettings": {
           "type": "boolean",
           "description": "Configure VS Code/Cursor settings from remote configuration (default: false)",
           "default": false
+        },
+        "installAiTools": {
+          "type": "boolean",
+          "description": "Install AI tools (Claude Code, OpenAI Codex, Google Gemini CLI) (default: true)",
+          "default": true
         },
         "quoteAi": {
           "type": "boolean",

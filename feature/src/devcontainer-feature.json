@@ -1,6 +1,6 @@
 {
   "id": "init",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
@@ -68,8 +68,8 @@
     },
     "loginNvcr": {
       "type": "boolean",
-      "default": true,
-      "description": "Configure NVIDIA Container Registry login (default: true)"
+      "default": false,
+      "description": "Configure NVIDIA Container Registry login (default: false)"
     },
     "loginVault": {
       "type": "boolean",
@@ -89,12 +89,17 @@
     "tmuxConfig": {
       "type": "boolean",
       "default": true,
-      "description": "Setup TMUX configuration (default: false)"
+      "description": "Setup TMUX configuration (default: true)"
     },
     "devcontainerSettings": {
       "type": "boolean",
       "default": false,
       "description": "Configure VS Code/Cursor settings from remote configuration (default: false)"
+    },
+    "installAiTools": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install AI tools (Claude Code, OpenAI Codex, Google Gemini CLI) (default: true)"
     },
     "quoteAi": {
       "type": "boolean",
