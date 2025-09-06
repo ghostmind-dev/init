@@ -1,9 +1,30 @@
 {
   "id": "init",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
+  "postCreateCommand": "deno run -A -r jsr:@ghostmind/init",
+  "capAdd": [
+    "NET_ADMIN",
+    "IPC_LOCK"
+  ],
+  "mounts": [
+    {
+      "source": "/run/host-services/ssh-auth.sock",
+      "target": "/ssh-agent",
+      "type": "bind"
+    },
+    {
+      "source": "${env:HOME}/.ssh/known_hosts",
+      "target": "/home/vscode/.ssh/known_hosts",
+      "type": "bind"
+    }
+  ],
+  "containerEnv": {
+    "DOCKER_CONFIG": "/home/vscode/.docker-no-creds",
+    "SSH_AUTH_SOCK": "/ssh-agent"
+  },
   "options": {
     "resetLive": {
       "type": "boolean",
@@ -81,5 +102,7 @@
       "description": "Enable AI quote feature (default: true)"
     }
   },
-  "installsAfter": ["ghcr.io/devcontainers/features/common-utils:2"]
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils:2"
+  ]
 }

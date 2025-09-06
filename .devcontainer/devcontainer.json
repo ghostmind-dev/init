@@ -10,17 +10,15 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/ghostmind-dev/config/extensions:latest": {},
     "ghcr.io/ghostmind-dev/config/settings:latest": {},
+    "ghcr.io/ghostmind-dev/misc/mounts:latest": {},
     "ghcr.io/ghostmind-dev/init/init:latest": {
       "resetLive": true
     }
   },
-  "postStartCommand": "deno run -A -r jsr:@ghostmind/init",
-  "postCreateCommand": "deno run -A /usr/local/share/post-create.ts",
+  "postStartCommand": "deno run -A /usr/local/share/post-start.ts",
   "containerEnv": {
     "SRC": "${containerWorkspaceFolder}",
-    "LOCALHOST_SRC": "/Volumes/Projects/prototype/mtl",
-    "DOCKER_CONFIG": "/home/vscode/.docker-no-creds",
-    "SSH_AUTH_SOCK": "/ssh-agent"
+    "LOCALHOST_SRC": "/Volumes/Projects/prototype/mtl"
   },
   "remoteEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
@@ -28,16 +26,9 @@
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
   },
   "mounts": [
-    "source=/Volumes/Projects,target=/Volumes/Projects,type=bind",
-    "source=terminal-history-init,target=/commandhistory,type=volume",
-    "source=/Volumes/Projects/config/source/.claude.json,target=/home/vscode/.claude.json,type=bind",
-    "source=/Volumes/Projects/config/source/.ssh/config,target=/home/vscode/.ssh/config,type=bind",
-    "type=bind,source=/run/host-services/ssh-auth.sock,target=/ssh-agent",
-    "type=bind,source=${env:HOME}/.ssh/known_hosts,target=/home/vscode/.ssh/known_hosts"
+    "source=terminal-history-init,target=/commandhistory,type=volume"
   ],
   "runArgs": [
-    "--cap-add=CAP_IPC_LOCK",
-    "--cap-add=NET_ADMIN",
     "--network=host",
     "--name=init"
   ]
