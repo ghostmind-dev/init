@@ -173,7 +173,7 @@ if (INIT_LOGIN_NPM === 'true') {
 if (INIT_LOGIN_GCP === 'true') {
   try {
     $.verbose = false;
-    const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON');
+    const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON') || '';
     $.shell = '/usr/bin/zsh';
     const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
