@@ -384,6 +384,7 @@ async function cleanDockerCredentials() {
 }
 
 await setupDockerCredentialHelper();
+await cleanDockerCredentials();
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONNECT TO GHCR.IO
@@ -398,7 +399,6 @@ if (INIT_LOGIN_GHCR == 'true') {
     )} | docker login ghcr.io -u USERNAME --password-stdin 2>/dev/null || true`;
 
     // Clean credentials after login to prevent storage warning
-    await cleanDockerCredentials();
 
     console.log('ghcr login successful.');
   } catch (e) {
@@ -428,7 +428,6 @@ if (INIT_LOGIN_NVCR == 'true') {
     )} | docker login nvcr.io -u \\$oauthtoken --password-stdin 2>/dev/null || true`;
 
     // Clean credentials after login to prevent storage warning
-    await cleanDockerCredentials();
 
     console.log('nvcr login successful.');
   } catch (e) {

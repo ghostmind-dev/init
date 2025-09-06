@@ -1,10 +1,8 @@
 {
   "name": "init",
-  "containerUser": "vscode",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "remoteUser": "vscode",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
@@ -18,7 +16,7 @@
   "postStartCommand": "deno run -A /usr/local/share/post-start.ts",
   "containerEnv": {
     "SRC": "${containerWorkspaceFolder}",
-    "LOCALHOST_SRC": "/Volumes/Projects/prototype/mtl"
+    "LOCALHOST_SRC": "/Volumes/Projects/container/init"
   },
   "remoteEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
