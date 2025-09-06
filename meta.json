@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "scope": "global",
   "routines": {
-    "watch": "DEBUG_MODE=true deno run --watch --allow-all ${SRC}/init/main.ts",
+    "watch": "INIT_DEBUG_MODE=true deno run --watch --allow-all ${SRC}/init/main.ts",
     "check": "deno check ${SRC}/init/main.ts",
     "feature_live": "run custom live --root=feature",
     "feature_test": "run custom test --root=feature",

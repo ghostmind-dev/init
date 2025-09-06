@@ -19,9 +19,9 @@ const SRC = Deno.env.get('SRC');
 
 // // debug mode
 
-const DEBUG_MODE = Deno.env.get('DEBUG_MODE');
+const INIT_DEBUG_MODE = Deno.env.get('INIT_DEBUG_MODE');
 
-if (DEBUG_MODE === 'true') {
+if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_RUN_INSTALL', 'false');
   Deno.env.set('INIT_RESET_LIVE', 'false');
   Deno.env.set('INIT_BASE_ZSHRC', 'true');
