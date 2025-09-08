@@ -170,12 +170,12 @@ if (INIT_LOGIN_NPM === 'true') {
 // GCP
 ////////////////////////////////////////////////////////////////////////////////
 
-const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON')
+const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON');
 
 if (INIT_LOGIN_GCP === 'true' && GCP_SERVICE_ACCOUNT_JSON) {
   try {
     $.verbose = false;
-  
+
     $.shell = '/usr/bin/zsh';
     const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
 
@@ -447,9 +447,9 @@ if (INIT_LOGIN_NVCR == 'true') {
 ////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_INSTALL_AI_TOOLS === 'true') {
-  await $`sudo npm install -g @anthropic-ai/claude-code`;
-  await $`sudo npm install -g @openai/codex`;
-  await $`sudo npm install -g @google/gemini-cli`;
+  await $`npm install -g @anthropic-ai/claude-code`;
+  await $`npm install -g @openai/codex`;
+  await $`npm install -g @google/gemini-cli`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
