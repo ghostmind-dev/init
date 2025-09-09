@@ -450,6 +450,7 @@ if (INIT_INSTALL_AI_TOOLS === 'true') {
   await $`npm install -g @anthropic-ai/claude-code`;
   await $`npm install -g @openai/codex`;
   await $`npm install -g @google/gemini-cli`;
+  await $`uv tool install mcp-proxy`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
