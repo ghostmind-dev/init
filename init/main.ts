@@ -447,10 +447,21 @@ if (INIT_LOGIN_NVCR == 'true') {
 ////////////////////////////////////////////////////////////////////////////////
 
 if (INIT_INSTALL_AI_TOOLS === 'true') {
-  await $`npm install -g @anthropic-ai/claude-code`;
-  await $`npm install -g @openai/codex`;
-  await $`npm install -g @google/gemini-cli`;
-  await $`uv tool install mcp-proxy`;
+  try {
+    $.verbose = false;
+
+    await $`npm install -g @anthropic-ai/claude-code`;
+    console.log('claude code installed successfully');
+    await $`npm install -g @openai/codex`;
+    console.log('openai codex installed successfully');
+    await $`npm install -g @google/gemini-cli`;
+    console.log('gemini cli installed successfully');
+    await $`uv tool install mcp-proxy`;
+    console.log('mcp-proxy installed successfully');
+  } catch (e) {
+    console.log(chalk.red(e));
+    console.log('something went wrong with ai tools installation');
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
