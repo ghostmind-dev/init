@@ -1,6 +1,6 @@
 {
   "id": "init",
-  "version": "1.0.11",
+  "version": "1.0.14",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
@@ -23,6 +23,16 @@
     {
       "source": "${env:HOME}/.ssh/config",
       "target": "/home/vscode/.ssh/config",
+      "type": "bind"
+    },
+    {
+      "source": "${localEnv:RUN_PROJECT}",
+      "target": "${localEnv:RUN_PROJECT}",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/.history",
+      "target": "/commandhistory",
       "type": "bind"
     }
   ],

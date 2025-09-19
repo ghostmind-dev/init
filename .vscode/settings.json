@@ -7,7 +7,9 @@
     "**/.gemini": false,
     "**/.mcp.json": false
   },
-  "deno.disablePaths": ["/workspaces/mtl/city/app"],
+  "deno.disablePaths": [
+    "/workspaces/mtl/city/app"
+  ],
   "material-icon-theme.folders.associations": {},
   "material-icon-theme.files.associations": {},
   "workbench.colorCustomizations": {
