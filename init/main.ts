@@ -23,7 +23,7 @@ const INIT_DEBUG_MODE = Deno.env.get('INIT_DEBUG_MODE');
 
 if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_RUN_INSTALL', 'false');
-  Deno.env.set('INIT_RESET_LIVE', 'false');
+  Deno.env.set('INIT_RESET_LIVE', 'true');
   Deno.env.set('INIT_BASE_ZSHRC', 'true');
   Deno.env.set('INIT_DENO_CONFIG', 'false');
   Deno.env.set('INIT_DENO_JUPYTER', 'false');
@@ -291,15 +291,16 @@ if (INIT_BASE_ZSHRC === 'true') {
 if (INIT_RESET_LIVE === 'true') {
   console.log('resetting live');
   await $`rm -rf ${SRC}/dev`;
+
   await $`git clone -b dev --depth 1 --single-branch https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
-  await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
+  await $`deno install --allow-all --force --reload --global --quiet --name live ${SRC}/dev/run/bin/cmd.ts`;
 } else {
   // verify if dev folder exists
 
   const devExists = await fs.exists(`${SRC}/dev/run`);
 
   if (devExists) {
-    await $`deno install --allow-all --force --reload --global --name live ${SRC}/dev/run/bin/cmd.ts`;
+    await $`deno install --allow-all --force --reload --global --quiet --name live ${SRC}/dev/run/bin/cmd.ts`;
   }
 }
 
