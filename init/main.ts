@@ -36,7 +36,6 @@ if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
   Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
   Deno.env.set('INIT_TMUX_CONFIG', 'false');
-  Deno.env.set('INIT_INSTALL_AI_TOOLS', 'true');
   Deno.env.set('INIT_QUOTE_AI', 'false');
 }
 
@@ -55,7 +54,6 @@ const {
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'true',
-  INIT_INSTALL_AI_TOOLS = 'true',
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
@@ -439,28 +437,6 @@ if (INIT_LOGIN_NVCR == 'true') {
   } catch (e) {
     console.log(chalk.red(e));
     console.log('something went wrong with nvcr login');
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// INSTALL AI TOOLS
-////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_INSTALL_AI_TOOLS === 'true') {
-  try {
-    $.verbose = false;
-
-    await $`npm install -g @anthropic-ai/claude-code`;
-    console.log('claude code installed successfully');
-    await $`npm install -g @openai/codex`;
-    console.log('openai codex installed successfully');
-    await $`npm install -g @google/gemini-cli`;
-    console.log('gemini cli installed successfully');
-    await $`uv tool install mcp-proxy`;
-    console.log('mcp-proxy installed successfully');
-  } catch (e) {
-    console.log(chalk.red(e));
-    console.log('something went wrong with ai tools installation');
   }
 }
 

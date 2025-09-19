@@ -104,11 +104,6 @@
           "description": "Configure VS Code/Cursor settings from remote configuration (default: false)",
           "default": false
         },
-        "installAiTools": {
-          "type": "boolean",
-          "description": "Install AI tools (Claude Code, OpenAI Codex, Google Gemini CLI) (default: true)",
-          "default": true
-        },
         "quoteAi": {
           "type": "boolean",
           "description": "Enable AI quote feature (default: true)",
