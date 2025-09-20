@@ -57,8 +57,6 @@ const {
   INIT_QUOTE_AI = 'true',
 } = Deno.env.toObject();
 
-console.log(INIT_RESET_LIVE);
-
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +138,31 @@ if (INIT_CORE_SECRETS === 'true') {
     console.log(chalk.red(e));
     console.log('something went wrong with secrets setting.');
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// FIX NPM PERMISSIONS
+//////////////////////////////////////////////////////////////////////////////////
+
+// Always fix npm permissions to prevent EACCES errors during global installs
+try {
+  $.verbose = false;
+
+  // Fix ownership of npm cache directory
+  await $`sudo chown -R 1000:1000 "${HOME}/.npm" 2>/dev/null || true`;
+
+  // Fix ownership of npm global directory if it exists
+  const npmGlobalPath = `${HOME}/.npm-global`;
+  if (await fs.exists(npmGlobalPath)) {
+    await $`sudo chown -R 1000:1000 "${npmGlobalPath}" 2>/dev/null || true`;
+  }
+
+  // Clean npm cache to remove any corrupted files
+  await $`npm cache clean --force 2>/dev/null || true`;
+
+  console.log('npm permissions fixed.');
+} catch (e) {
+  console.log(chalk.yellow('npm permissions fix failed.'));
 }
 
 //////////////////////////////////////////////////////////////////////////////////

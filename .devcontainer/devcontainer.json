@@ -13,13 +13,11 @@
       "resetLive": true
     }
   },
-  "postStartCommand": "deno run -A /usr/local/share/post-start.ts",
   "containerEnv": {
     "LOCALHOST_SRC": "${localWorkspaceFolder}",
     "SRC": "${containerWorkspaceFolder}"
   },
   "remoteEnv": {
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "VAULT_TOKEN": "${localEnv:VAULT_TOKEN}",
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
   },
