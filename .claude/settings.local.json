@@ -15,7 +15,13 @@
       "Bash(echo \"Exit code: $?\")",
       "Bash(cat:*)",
       "Bash(bash:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(INIT_DEBUG_MODE=true deno run --allow-all init/main.ts)",
+      "Bash(export INIT_DEBUG_MODE=true)",
+      "Bash(timeout 10 deno run:*)",
+      "Bash(export INIT_DEBUG_MODE=true INIT_QUOTE_AI=true)",
+      "Bash(timeout 15 deno run --allow-all init/main.ts)",
+      "Bash(timeout 20 deno run:*)"
     ],
     "deny": [],
     "ask": []

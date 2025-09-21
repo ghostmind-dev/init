@@ -4,8 +4,15 @@
   "type": "project",
   "version": "1.0.0",
   "scope": "global",
+  "mcp": {
+    "tmux": {
+      "command": "npx",
+      "args": ["-y", "tmux-mcp", "--shell-type=zsh"]
+    }
+  },
   "routines": {
     "watch": "INIT_DEBUG_MODE=true deno run --watch --allow-all ${SRC}/init/main.ts",
+    "start": "deno run --watch --allow-all ${SRC}/init/main.ts",
     "check": "deno check ${SRC}/init/main.ts",
     "feature_live": "run custom live --root=feature",
     "feature_test": "run custom test --root=feature",
