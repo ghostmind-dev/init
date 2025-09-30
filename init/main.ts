@@ -864,7 +864,7 @@ async function cleanDockerCredentials() {
 updateStep('Setup Docker Credentials', 'in_progress');
 try {
   await setupDockerCredentialHelper();
-  await cleanDockerCredentials();
+  // await cleanDockerCredentials();
   updateStep('Setup Docker Credentials', 'success');
 } catch (e) {
   const errorMessage = e instanceof Error ? e.message : String(e);
