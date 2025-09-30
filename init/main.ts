@@ -863,15 +863,24 @@ try {
 
 if (INIT_LOGIN_GHCR == 'true') {
   updateStep('GitHub Container Registry Login', 'in_progress');
+
+  // Temporarily enable verbose mode for Docker login to see errors
+  const originalVerbose = $.verbose;
+  if (INIT_DEBUG_MODE !== 'true') {
+    $.verbose = false; // Keep quiet but allow error detection
+  }
+
   try {
-    await $`echo ${Deno.env.get(
-      'GH_TOKEN'
-    )} | docker login ghcr.io -u USERNAME --password-stdin 2>/dev/null || true`;
+    await $`echo $GH_TOKEN | docker login ghcr.io -u USERNAME --password-stdin`;
 
     updateStep('GitHub Container Registry Login', 'success');
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
+    console.log('GitHub Container Registry Login failed:', errorMessage);
     updateStep('GitHub Container Registry Login', 'failed', errorMessage);
+  } finally {
+    // Restore original verbose setting
+    $.verbose = originalVerbose;
   }
 } else {
   updateStep('GitHub Container Registry Login', 'skipped');
@@ -900,15 +909,23 @@ if (INIT_TMUX_CONFIG == 'true') {
 
 if (INIT_LOGIN_NVCR == 'true') {
   updateStep('NVIDIA Container Registry Login', 'in_progress');
+
+  // Temporarily enable verbose mode for Docker login to see errors
+  const originalVerbose = $.verbose;
+  if (INIT_DEBUG_MODE !== 'true') {
+    $.verbose = false; // Keep quiet but allow error detection
+  }
+
   try {
-    await $`echo ${Deno.env.get(
-      'NGC_TOKEN'
-    )} | docker login nvcr.io -u \\$oauthtoken --password-stdin 2>/dev/null || true`;
+    await $`echo $NGC_TOKEN | docker login nvcr.io -u \\$oauthtoken --password-stdin`;
 
     updateStep('NVIDIA Container Registry Login', 'success');
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
     updateStep('NVIDIA Container Registry Login', 'failed', errorMessage);
+  } finally {
+    // Restore original verbose setting
+    $.verbose = originalVerbose;
   }
 } else {
   updateStep('NVIDIA Container Registry Login', 'skipped');

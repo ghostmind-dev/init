@@ -14,6 +14,7 @@
     }
   },
   "containerEnv": {
+    "GH_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "LOCALHOST_SRC": "${localWorkspaceFolder}",
     "SRC": "${containerWorkspaceFolder}"
   },
