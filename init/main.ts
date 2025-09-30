@@ -79,7 +79,7 @@ if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_CORE_SECRETS', 'false');
   Deno.env.set('INIT_LOGIN_NPM', 'false');
   Deno.env.set('INIT_LOGIN_GCP', 'true');
-  Deno.env.set('INIT_LOGIN_GHCR', 'false');
+  Deno.env.set('INIT_LOGIN_GHCR', 'true');
   Deno.env.set('INIT_LOGIN_NVCR', 'false');
   Deno.env.set('INIT_LOGIN_VAULT', 'true');
   Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
@@ -883,6 +883,7 @@ if (INIT_LOGIN_GHCR == 'true') {
     )} | docker login ghcr.io -u USERNAME --password-stdin 2>/dev/null || true`;
 
     // Clean credentials after login to prevent storage warning
+    // await cleanDockerCredentials();
 
     updateStep('GitHub Container Registry Login', 'success');
   } catch (e) {
@@ -922,6 +923,7 @@ if (INIT_LOGIN_NVCR == 'true') {
     )} | docker login nvcr.io -u \\$oauthtoken --password-stdin 2>/dev/null || true`;
 
     // Clean credentials after login to prevent storage warning
+    // await cleanDockerCredentials();
 
     updateStep('NVIDIA Container Registry Login', 'success');
   } catch (e) {
