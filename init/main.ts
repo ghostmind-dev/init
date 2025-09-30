@@ -820,10 +820,10 @@ async function setupDockerConfig() {
 
     const configPath = `${dockerConfigPath}/config.json`;
 
-    // Check if config already exists
+    // Check if config already exists (may have been created by gcloud)
     if (await fs.exists(configPath)) {
       const existingConfig = await fs.readJSON(configPath);
-      // Ensure auths object exists for storing registry credentials
+      // Preserve existing auths (like GCR from gcloud) and ensure auths object exists
       if (!existingConfig.auths) {
         existingConfig.auths = {};
       }
@@ -841,6 +841,12 @@ async function setupDockerConfig() {
     // Silent fail - not critical
   }
 }
+
+// Docker config setup moved after GCP login to prevent gcloud from overwriting it
+
+////////////////////////////////////////////////////////////////////////////////
+// SETUP DOCKER CONFIG (after GCP to prevent gcloud from overwriting)
+////////////////////////////////////////////////////////////////////////////////
 
 updateStep('Setup Docker Credentials', 'in_progress');
 try {
