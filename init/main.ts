@@ -808,53 +808,34 @@ if (INIT_LOGIN_CLOUDFLARE === 'true') {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// SETUP DOCKER CREDENTIAL HELPER
+// SETUP DOCKER CONFIG
 ////////////////////////////////////////////////////////////////////////////////
 
-async function setupDockerCredentialHelper() {
-  const dockerConfigPath = Deno.env.get('DOCKER_CONFIG') || `${HOME}/.docker`;
+async function setupDockerConfig() {
+  const dockerConfigPath = `${HOME}/.docker`;
 
   try {
     // Ensure the docker config directory exists
     await fs.ensureDir(dockerConfigPath);
-
-    // Create a config that doesn't store credentials persistently
-    // We use an empty auths object and avoid setting credsStore
-    const dockerConfig = {
-      auths: {},
-    };
 
     const configPath = `${dockerConfigPath}/config.json`;
 
     // Check if config already exists
     if (await fs.exists(configPath)) {
       const existingConfig = await fs.readJSON(configPath);
-      // Keep existing config but ensure auths is clean
+      // Ensure auths object exists for storing registry credentials
       if (!existingConfig.auths) {
         existingConfig.auths = {};
       }
-      // Remove any credsStore setting that might cause issues
+      // Remove any credsStore setting that might cause issues with multiple registries
       delete existingConfig.credsStore;
       await fs.writeJson(configPath, existingConfig, { spaces: 2 });
     } else {
+      // Create a basic config with empty auths object ready for registry logins
+      const dockerConfig = {
+        auths: {},
+      };
       await fs.writeJson(configPath, dockerConfig, { spaces: 2 });
-    }
-  } catch (e) {
-    // Silent fail - not critical
-  }
-}
-
-// Helper function to clean Docker credentials after login
-async function cleanDockerCredentials() {
-  const dockerConfigPath = Deno.env.get('DOCKER_CONFIG') || `${HOME}/.docker`;
-  const configPath = `${dockerConfigPath}/config.json`;
-
-  try {
-    if (await fs.exists(configPath)) {
-      const config = await fs.readJSON(configPath);
-      // Keep the config but clear the auths to prevent storing credentials
-      config.auths = {};
-      await fs.writeJson(configPath, config, { spaces: 2 });
     }
   } catch (e) {
     // Silent fail - not critical
@@ -863,8 +844,7 @@ async function cleanDockerCredentials() {
 
 updateStep('Setup Docker Credentials', 'in_progress');
 try {
-  await setupDockerCredentialHelper();
-  // await cleanDockerCredentials();
+  await setupDockerConfig();
   updateStep('Setup Docker Credentials', 'success');
 } catch (e) {
   const errorMessage = e instanceof Error ? e.message : String(e);
@@ -881,9 +861,6 @@ if (INIT_LOGIN_GHCR == 'true') {
     await $`echo ${Deno.env.get(
       'GH_TOKEN'
     )} | docker login ghcr.io -u USERNAME --password-stdin 2>/dev/null || true`;
-
-    // Clean credentials after login to prevent storage warning
-    // await cleanDockerCredentials();
 
     updateStep('GitHub Container Registry Login', 'success');
   } catch (e) {
@@ -921,9 +898,6 @@ if (INIT_LOGIN_NVCR == 'true') {
     await $`echo ${Deno.env.get(
       'NGC_TOKEN'
     )} | docker login nvcr.io -u \\$oauthtoken --password-stdin 2>/dev/null || true`;
-
-    // Clean credentials after login to prevent storage warning
-    // await cleanDockerCredentials();
 
     updateStep('NVIDIA Container Registry Login', 'success');
   } catch (e) {
