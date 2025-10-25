@@ -23,7 +23,8 @@
     "VAULT_ADDR": "${localEnv:VAULT_ADDR}"
   },
   "runArgs": [
-    "--network=host",
-    "--name=init"
+    "--cap-add=CAP_IPC_LOCK",
+    "--cap-add=NET_ADMIN",
+    "--network=host"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "init",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
@@ -119,6 +119,11 @@
       "type": "boolean",
       "default": true,
       "description": "Enable AI quote feature (default: true)"
+    },
+    "claudeSkills": {
+      "type": "boolean",
+      "default": true,
+      "description": "Setup Claude Skills by cloning ghostmind-dev/docs to .claude/skills (default: true)"
     }
   },
   "installsAfter": [

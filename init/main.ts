@@ -85,6 +85,7 @@ if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
   Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
   Deno.env.set('INIT_TMUX_CONFIG', 'false');
+  Deno.env.set('INIT_CLAUDE_SKILLS', 'true');
   Deno.env.set('INIT_QUOTE_AI', 'false');
 }
 
@@ -104,6 +105,7 @@ const {
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'true',
   INIT_QUOTE_AI = 'true',
+  INIT_CLAUDE_SKILLS = 'true',
 } = Deno.env.toObject();
 
 // Track all steps and their statuses
@@ -177,6 +179,10 @@ function initializeSteps() {
     {
       name: 'NVIDIA Container Registry Login',
       status: INIT_LOGIN_NVCR === 'true' ? 'pending' : 'skipped',
+    },
+    {
+      name: 'Setup Claude Skills',
+      status: INIT_CLAUDE_SKILLS === 'true' ? 'pending' : 'skipped',
     }
   );
 }
@@ -929,6 +935,51 @@ if (INIT_LOGIN_NVCR == 'true') {
   }
 } else {
   updateStep('NVIDIA Container Registry Login', 'skipped');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// SETUP CLAUDE SKILLS
+////////////////////////////////////////////////////////////////////////////////
+
+if (INIT_CLAUDE_SKILLS === 'true') {
+  updateStep('Setup Claude Skills', 'in_progress');
+  try {
+    const tempDir = '/tmp/ghostmind-docs';
+    const claudeDir = `${SRC}/.claude`;
+    const skillsDir = `${claudeDir}/skills`;
+
+    // Clone the docs repo to a temporary directory
+    await $`rm -rf ${tempDir}`;
+    await $`git clone --depth 1 https://github.com/ghostmind-dev/docs.git ${tempDir}`;
+
+    // Create .claude directory if it doesn't exist
+    if (!(await fs.exists(claudeDir))) {
+      await $`mkdir -p ${claudeDir}`;
+    }
+
+    // Create skills directory if it doesn't exist
+    if (!(await fs.exists(skillsDir))) {
+      await $`mkdir -p ${skillsDir}`;
+    }
+
+    // Copy the docs folder from the repo
+    const docsSource = `${tempDir}/docs`;
+    if (await fs.exists(docsSource)) {
+      await $`cp -r ${docsSource} ${skillsDir}/`;
+    } else {
+      throw new Error('docs folder not found in repository');
+    }
+
+    // Clean up temp directory
+    await $`rm -rf ${tempDir}`;
+
+    updateStep('Setup Claude Skills', 'success');
+  } catch (e) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    updateStep('Setup Claude Skills', 'failed', errorMessage);
+  }
+} else {
+  updateStep('Setup Claude Skills', 'skipped');
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -57,6 +57,7 @@ PYTHON_VERSION=${PYTHONVERSION:-"3.9.7"}
 TMUX_CONFIG=${TMUXCONFIG:-"true"}
 DEVCONTAINER_SETTINGS=${DEVCONTAINERSETTINGS:-"false"}
 QUOTE_AI=${QUOTEAI:-"true"}
+CLAUDE_SKILLS=${CLAUDESKILLS:-"true"}
 
 echo "Processing feature options:"
 echo "    RESETLIVE=\"${RESET_LIVE}\""
@@ -74,6 +75,7 @@ echo "    PYTHONVERSION=\"${PYTHON_VERSION}\""
 echo "    TMUXCONFIG=\"${TMUX_CONFIG}\""
 echo "    DEVCONTAINERSETTINGS=\"${DEVCONTAINER_SETTINGS}\""
 echo "    QUOTEAI=\"${QUOTE_AI}\""
+echo "    CLAUDESKILLS=\"${CLAUDE_SKILLS}\""
 
 # Set environment variables with INIT_ prefix
 set_env_var "INIT_RESET_LIVE" "${RESET_LIVE}"
@@ -91,6 +93,7 @@ set_env_var "INIT_PYTHON_VERSION" "${PYTHON_VERSION}"
 set_env_var "INIT_TMUX_CONFIG" "${TMUX_CONFIG}"
 set_env_var "INIT_DEVCONTAINER_SETTINGS" "${DEVCONTAINER_SETTINGS}"
 set_env_var "INIT_QUOTE_AI" "${QUOTE_AI}"
+set_env_var "INIT_CLAUDE_SKILLS" "${CLAUDE_SKILLS}"
 
 echo ""
 echo "✅ All INIT_* environment variables have been configured"
