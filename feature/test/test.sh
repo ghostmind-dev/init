@@ -7,7 +7,7 @@ echo "🧪 Testing init feature installation..."
 
 # Test 1: Check if core environment variables are set
 echo "Test 1: Checking if core INIT_* environment variables are set..."
-required_vars=("INIT_BASE_ZSHRC" "INIT_DENO_CONFIG" "INIT_CORE_SECRETS" "INIT_LOGIN_GCP" "INIT_QUOTE_AI")
+required_vars=("INIT_BASE_ZSHRC" "INIT_DENO_CONFIG" "INIT_CORE_SECRETS" "INIT_LOGIN_GCP")
 
 for var in "${required_vars[@]}"; do
     if [ -z "${!var}" ]; then
@@ -53,17 +53,14 @@ all_init_vars=(
     "INIT_RESET_LIVE"
     "INIT_BASE_ZSHRC"
     "INIT_DENO_CONFIG"
-    "INIT_DENO_JUPYTER"
     "INIT_CORE_SECRETS"
     "INIT_LOGIN_NPM"
     "INIT_LOGIN_GCP"
     "INIT_LOGIN_GHCR"
-    "INIT_LOGIN_NVCR"
     "INIT_LOGIN_VAULT"
     "INIT_LOGIN_CLOUDFLARE"
     "INIT_PYTHON_VERSION"
     "INIT_TMUX_CONFIG"
-    "INIT_QUOTE_AI"
 )
 
 for var in "${all_init_vars[@]}"; do
@@ -80,15 +77,12 @@ boolean_vars=(
     "INIT_RESET_LIVE"
     "INIT_BASE_ZSHRC"
     "INIT_DENO_CONFIG"
-    "INIT_DENO_JUPYTER"
     "INIT_CORE_SECRETS"
     "INIT_LOGIN_NPM"
     "INIT_LOGIN_GCP"
     "INIT_LOGIN_GHCR"
-    "INIT_LOGIN_NVCR"
     "INIT_LOGIN_VAULT"
     "INIT_TMUX_CONFIG"
-    "INIT_QUOTE_AI"
 )
 
 for var in "${boolean_vars[@]}"; do

@@ -49,11 +49,6 @@
           "description": "Setup Deno configuration (default: true)",
           "default": true
         },
-        "denoJupyter": {
-          "type": "boolean",
-          "description": "Enable Deno Jupyter integration (default: false)",
-          "default": false
-        },
         "coreSecrets": {
           "type": "boolean",
           "description": "Setup core secrets management (default: true)",
@@ -74,11 +69,6 @@
           "description": "Configure GitHub Container Registry login (default: true)",
           "default": true
         },
-        "loginNvcr": {
-          "type": "boolean",
-          "description": "Configure NVIDIA Container Registry login (default: false)",
-          "default": false
-        },
         "loginVault": {
           "type": "boolean",
           "description": "Configure HashiCorp Vault login (default: true)",
@@ -97,16 +87,6 @@
         "tmuxConfig": {
           "type": "boolean",
           "description": "Setup TMUX configuration (default: true)",
-          "default": true
-        },
-        "devcontainerSettings": {
-          "type": "boolean",
-          "description": "Configure VS Code/Cursor settings from remote configuration (default: false)",
-          "default": false
-        },
-        "quoteAi": {
-          "type": "boolean",
-          "description": "Enable AI quote feature (default: true)",
           "default": true
         }
       }

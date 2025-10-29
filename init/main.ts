@@ -39,8 +39,6 @@ if (INIT_DEBUG_MODE !== 'true') {
           !chunk.includes('$') &&
           !chunk.includes('dotenv')) ||
         chunk.includes('Welcome to Ghostmind') ||
-        chunk.includes('✨ The quote') ||
-        chunk.includes('(AI quotes disabled)') ||
         chunk.includes('Activated service account') || // Allow GCP success messages
         chunk.includes('Updated property') || // Allow GCP config messages
         chunk.includes('__        __') || // ASCII art lines
@@ -75,18 +73,14 @@ if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_RESET_LIVE', 'true');
   Deno.env.set('INIT_BASE_ZSHRC', 'true');
   Deno.env.set('INIT_DENO_CONFIG', 'false');
-  Deno.env.set('INIT_DENO_JUPYTER', 'false');
   Deno.env.set('INIT_CORE_SECRETS', 'false');
   Deno.env.set('INIT_LOGIN_NPM', 'false');
   Deno.env.set('INIT_LOGIN_GCP', 'true');
   Deno.env.set('INIT_LOGIN_GHCR', 'true');
-  Deno.env.set('INIT_LOGIN_NVCR', 'false');
   Deno.env.set('INIT_LOGIN_VAULT', 'true');
   Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
   Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
   Deno.env.set('INIT_TMUX_CONFIG', 'false');
-  Deno.env.set('INIT_CLAUDE_SKILLS', 'true');
-  Deno.env.set('INIT_QUOTE_AI', 'false');
 }
 
 const {
@@ -94,18 +88,14 @@ const {
   INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
-  INIT_DENO_JUPYTER = 'false',
   INIT_CORE_SECRETS = 'true',
   INIT_LOGIN_NPM = 'false',
   INIT_LOGIN_GCP = 'true',
   INIT_LOGIN_GHCR = 'true',
-  INIT_LOGIN_NVCR = 'false',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
   INIT_PYTHON_VERSION = '3.9.7',
   INIT_TMUX_CONFIG = 'true',
-  INIT_QUOTE_AI = 'true',
-  INIT_CLAUDE_SKILLS = 'true',
 } = Deno.env.toObject();
 
 // Track all steps and their statuses
@@ -126,10 +116,6 @@ function initializeSteps() {
     {
       name: 'Configure Deno',
       status: INIT_DENO_CONFIG === 'true' ? 'pending' : 'skipped',
-    },
-    {
-      name: 'Install Deno Jupyter',
-      status: INIT_DENO_JUPYTER === 'true' ? 'pending' : 'skipped',
     },
     {
       name: 'Vault Login',
@@ -175,14 +161,6 @@ function initializeSteps() {
     {
       name: 'Configure Tmux',
       status: INIT_TMUX_CONFIG === 'true' ? 'pending' : 'skipped',
-    },
-    {
-      name: 'NVIDIA Container Registry Login',
-      status: INIT_LOGIN_NVCR === 'true' ? 'pending' : 'skipped',
-    },
-    {
-      name: 'Setup Claude Skills',
-      status: INIT_CLAUDE_SKILLS === 'true' ? 'pending' : 'skipped',
     }
   );
 }
@@ -333,23 +311,6 @@ if (INIT_DENO_CONFIG === 'true') {
   }
 } else {
   await updateStep('Configure Deno', 'skipped');
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-// INSTALL DENO JUPYTER
-//////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_DENO_JUPYTER === 'true') {
-  updateStep('Install Deno Jupyter', 'in_progress');
-  try {
-    await $`deno jupyter --install`;
-    updateStep('Install Deno Jupyter', 'success');
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Install Deno Jupyter', 'failed', errorMessage);
-  }
-} else {
-  updateStep('Install Deno Jupyter', 'skipped');
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -910,79 +871,6 @@ if (INIT_TMUX_CONFIG == 'true') {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// CONNECT TO NVCR.IO
-////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_LOGIN_NVCR == 'true') {
-  updateStep('NVIDIA Container Registry Login', 'in_progress');
-
-  // Temporarily enable verbose mode for Docker login to see errors
-  const originalVerbose = $.verbose;
-  if (INIT_DEBUG_MODE !== 'true') {
-    $.verbose = false; // Keep quiet but allow error detection
-  }
-
-  try {
-    await $`echo $NGC_TOKEN | docker login nvcr.io -u \\$oauthtoken --password-stdin`;
-
-    updateStep('NVIDIA Container Registry Login', 'success');
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('NVIDIA Container Registry Login', 'failed', errorMessage);
-  } finally {
-    // Restore original verbose setting
-    $.verbose = originalVerbose;
-  }
-} else {
-  updateStep('NVIDIA Container Registry Login', 'skipped');
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// SETUP CLAUDE SKILLS
-////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_CLAUDE_SKILLS === 'true') {
-  updateStep('Setup Claude Skills', 'in_progress');
-  try {
-    const tempDir = '/tmp/ghostmind-docs';
-    const claudeDir = `${SRC}/.claude`;
-    const skillsDir = `${claudeDir}/skills`;
-
-    // Clone the docs repo to a temporary directory
-    await $`rm -rf ${tempDir}`;
-    await $`git clone --depth 1 https://github.com/ghostmind-dev/docs.git ${tempDir}`;
-
-    // Create .claude directory if it doesn't exist
-    if (!(await fs.exists(claudeDir))) {
-      await $`mkdir -p ${claudeDir}`;
-    }
-
-    // Create skills directory if it doesn't exist
-    if (!(await fs.exists(skillsDir))) {
-      await $`mkdir -p ${skillsDir}`;
-    }
-
-    // Copy the docs folder from the repo
-    const docsSource = `${tempDir}/docs`;
-    if (await fs.exists(docsSource)) {
-      await $`cp -r ${docsSource} ${skillsDir}/`;
-    } else {
-      throw new Error('docs folder not found in repository');
-    }
-
-    // Clean up temp directory
-    await $`rm -rf ${tempDir}`;
-
-    updateStep('Setup Claude Skills', 'success');
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Setup Claude Skills', 'failed', errorMessage);
-  }
-} else {
-  updateStep('Setup Claude Skills', 'skipped');
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // PRINT FINAL TABLE (DEBUG MODE) AND WELCOME
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1015,83 +903,6 @@ lines.forEach((line: string, index: number) => {
     console.log(chalk.blue(line));
   }
 });
-
-////////////////////////////////////////////////////////////////////////////////
-// QUOTE OF THE DAY
-////////////////////////////////////////////////////////////////////////////////
-
-if (INIT_QUOTE_AI === 'true') {
-  try {
-    // Dynamically import LangChain modules to avoid dependency issues
-    const { ChatOpenAI } = await import('npm:@langchain/openai@0.5.18');
-    const { ChatPromptTemplate } = await import(
-      'npm:@langchain/core@0.3.62/prompts'
-    );
-
-    const jsonSchema = {
-      title: 'quote',
-      description: 'a random quote/facts about the computer science.',
-      type: 'object',
-      properties: {
-        quote: {
-          title: 'quote',
-          description: 'A random quote/facts about the computer science.',
-          type: 'string',
-        },
-      },
-      required: ['quote'],
-    };
-
-    const model = new ChatOpenAI({
-      temperature: 1.4,
-      topP: 0.9,
-    });
-
-    // fetch json from url
-    const subjectRaw = await fetch(
-      'https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/subjects.json'
-    );
-
-    const subjects = await subjectRaw.json();
-    const subject = subjects[Math.floor(Math.random() * subjects.length)];
-
-    const typesRaw = await fetch(
-      'https://gist.githubusercontent.com/komondor/49f517bb271b1da1ca7d7c5ff86f024d/raw/89c7f927214f2476765959edcf666fa178cdf275/types.json'
-    );
-
-    const types = await typesRaw.json();
-    const type = types[Math.floor(Math.random() * types.length)];
-
-    const prompt = ChatPromptTemplate.fromMessages([
-      [
-        'human',
-        `Generate a random quote/facts about the computer science.
-
-    Subject: ${subject}
-    Type: ${type}
-
-    `,
-      ],
-    ]);
-
-    // Use the modern withStructuredOutput method
-    const structuredModel = model.withStructuredOutput(jsonSchema);
-    const response: any = await structuredModel.invoke(await prompt.invoke({}));
-
-    // Print the quote with colors
-    console.log(
-      chalk.magenta('\n✨ The quote of this rebuild is:\n'),
-      chalk.yellow(response.quote),
-      '\n'
-    );
-  } catch (e) {
-    // Silent fail for AI quote - not critical, show fallback message
-    console.log(chalk.gray('\n(AI quotes unavailable)\n'));
-  }
-} else {
-  // Show a simple message if quotes are disabled
-  console.log(chalk.gray('\n(AI quotes disabled)\n'));
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // THE END

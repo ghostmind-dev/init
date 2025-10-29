@@ -1,6 +1,6 @@
 {
   "id": "init",
-  "version": "1.0.16",
+  "version": "1.0.1",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
@@ -31,9 +31,9 @@
       "type": "bind"
     },
     {
-      "source": "${localWorkspaceFolder}/.history",
+      "source": "devcontainer-history-${devcontainerId}",
       "target": "/commandhistory",
-      "type": "bind"
+      "type": "volume"
     }
   ],
   "containerEnv": {
@@ -55,11 +55,6 @@
       "default": true,
       "description": "Setup Deno configuration (default: true)"
     },
-    "denoJupyter": {
-      "type": "boolean",
-      "default": false,
-      "description": "Enable Deno Jupyter integration (default: false)"
-    },
     "coreSecrets": {
       "type": "boolean",
       "default": true,
@@ -80,11 +75,6 @@
       "default": true,
       "description": "Configure GitHub Container Registry login (default: true)"
     },
-    "loginNvcr": {
-      "type": "boolean",
-      "default": false,
-      "description": "Configure NVIDIA Container Registry login (default: false)"
-    },
     "loginVault": {
       "type": "boolean",
       "default": true,
@@ -104,26 +94,6 @@
       "type": "boolean",
       "default": true,
       "description": "Setup TMUX configuration (default: true)"
-    },
-    "devcontainerSettings": {
-      "type": "boolean",
-      "default": false,
-      "description": "Configure VS Code/Cursor settings from remote configuration (default: false)"
-    },
-    "installAiTools": {
-      "type": "boolean",
-      "default": true,
-      "description": "Install AI tools (Claude Code, OpenAI Codex, Google Gemini CLI) (default: true)"
-    },
-    "quoteAi": {
-      "type": "boolean",
-      "default": true,
-      "description": "Enable AI quote feature (default: true)"
-    },
-    "claudeSkills": {
-      "type": "boolean",
-      "default": true,
-      "description": "Setup Claude Skills by cloning ghostmind-dev/docs to .claude/skills (default: true)"
     }
   },
   "installsAfter": [
