@@ -1,15 +1,13 @@
 {
   "files.exclude": {
-    "**/dev": false,
-    "**/dev/**": false,
-    "**/.devcontainer": false,
-    "**/.claude": false,
-    "**/.gemini": false,
-    "**/.mcp.json": false
+    "**/dev": true,
+    "**/dev/**": true,
+    "**/.devcontainer": true,
+    "**/.claude": true,
+    "**/.gemini": true,
+    "**/.mcp.json": true
   },
-  "deno.disablePaths": [
-    "/workspaces/mtl/city/app"
-  ],
+  "deno.disablePaths": ["/workspaces/mtl/city/app"],
   "material-icon-theme.folders.associations": {},
   "material-icon-theme.files.associations": {},
   "workbench.colorCustomizations": {
