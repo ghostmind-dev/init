@@ -1,14 +1,11 @@
 {
   "id": "init",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
   "postCreateCommand": "deno run -A -r jsr:@ghostmind/init",
-  "capAdd": [
-    "NET_ADMIN",
-    "IPC_LOCK"
-  ],
+  "capAdd": ["NET_ADMIN", "IPC_LOCK"],
   "mounts": [
     {
       "source": "/run/host-services/ssh-auth.sock",
@@ -96,7 +93,5 @@
       "description": "Setup TMUX configuration (default: true)"
     }
   },
-  "installsAfter": [
-    "ghcr.io/devcontainers/features/common-utils:2"
-  ]
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils:2"]
 }

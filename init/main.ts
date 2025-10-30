@@ -79,7 +79,7 @@ if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_LOGIN_GHCR', 'true');
   Deno.env.set('INIT_LOGIN_VAULT', 'true');
   Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-  Deno.env.set('INIT_PYTHON_VERSION', '3.9.7');
+  Deno.env.set('INIT_PYTHON_VERSION', '3.12.7');
   Deno.env.set('INIT_TMUX_CONFIG', 'false');
 }
 
@@ -94,7 +94,7 @@ const {
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
-  INIT_PYTHON_VERSION = '3.9.7',
+  INIT_PYTHON_VERSION = '3.12.7',
   INIT_TMUX_CONFIG = 'true',
 } = Deno.env.toObject();
 
