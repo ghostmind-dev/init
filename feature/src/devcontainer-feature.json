@@ -1,6 +1,6 @@
 {
   "id": "init",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
@@ -84,8 +84,8 @@
     },
     "pythonVersion": {
       "type": "string",
-      "default": "3.9.7",
-      "description": "Python version to configure (default: 3.9.7)"
+      "default": "3.12.7",
+      "description": "Python version to configure (default: 3.12.7)"
     },
     "tmuxConfig": {
       "type": "boolean",
