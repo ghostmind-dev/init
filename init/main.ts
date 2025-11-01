@@ -349,7 +349,17 @@ if (INIT_CORE_SECRETS === 'true') {
 
     await $`rm -rf ${HOME}/.zshenv`;
 
-    await $`cat ${HOME}/.zprofile | grep -v '^#' | grep -v '^$' | while read -r line; do echo "export $line" >> ${HOME}/.zshenv; done`;
+    // Use native Deno code instead of shell loop for better performance and correct escape sequence handling
+    const envContent = await Deno.readTextFile(`${HOME}/.zprofile`);
+    const exportLines = envContent
+      .split('\n')
+      .filter(line => {
+        const trimmed = line.trim();
+        return trimmed && !trimmed.startsWith('#');
+      })
+      .map(line => `export ${line}`)
+      .join('\n');
+    await Deno.writeTextFile(`${HOME}/.zshenv`, exportLines);
 
     // Suppress dotenv output in production mode
     if (INIT_DEBUG_MODE === 'true') {
