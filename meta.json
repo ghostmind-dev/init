@@ -16,6 +16,37 @@
     "check": "deno check ${SRC}/init/main.ts",
     "feature_live": "run custom live --root=feature",
     "feature_test": "run custom test --root=feature",
-    "feature_publish": "run custom publish --root=feature"
+    "feature_publish": "run custom publish --root=feature",
+    "tmux_init": "run tmux init init",
+    "tmux_attach": "run tmux attach init"
+  },
+  "tmux": {
+    "sessions": [
+      {
+        "name": "init",
+        "windows": [
+          {
+            "name": "claude",
+            "layout": "compact",
+            "compact": {
+              "type": "single",
+              "panes": {
+                "claude": "claude"
+              }
+            }
+          },
+          {
+            "name": "hello",
+            "layout": "compact",
+            "compact": {
+              "type": "single",
+              "panes": {
+                "hello": "echo hello"
+              }
+            }
+          }
+        ]
+      }
+    ]
   }
 }

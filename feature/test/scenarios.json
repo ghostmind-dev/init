@@ -15,11 +15,11 @@
       }
     }
   },
-  "test_python_config": {
+  "test_docker_config": {
     "image": "mcr.microsoft.com/devcontainers/base:debian-11",
     "features": {
       "init": {
-        "pythonVersion": "3.11.5",
+        "dockerConfig": true,
         "tmuxConfig": true
       }
     }

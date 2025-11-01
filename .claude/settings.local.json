@@ -21,7 +21,12 @@
       "Bash(timeout 10 deno run:*)",
       "Bash(export INIT_DEBUG_MODE=true INIT_QUOTE_AI=true)",
       "Bash(timeout 15 deno run --allow-all init/main.ts)",
-      "Bash(timeout 20 deno run:*)"
+      "Bash(timeout 20 deno run:*)",
+      "Skill(docs)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(INIT_DEBUG_MODE=true timeout 20 deno run:*)",
+      "Bash(git remote:*)",
+      "mcp__github__issue_write"
     ],
     "deny": [],
     "ask": []

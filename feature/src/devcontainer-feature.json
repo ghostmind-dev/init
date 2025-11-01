@@ -82,10 +82,10 @@
       "default": true,
       "description": "Configure Cloudflare login (default: true)"
     },
-    "pythonVersion": {
-      "type": "string",
-      "default": "3.12.7",
-      "description": "Python version to configure (default: 3.12.7)"
+    "dockerConfig": {
+      "type": "boolean",
+      "default": true,
+      "description": "Setup Docker credentials configuration (default: true)"
     },
     "tmuxConfig": {
       "type": "boolean",

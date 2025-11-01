@@ -51,7 +51,7 @@ LOGIN_GCP=${LOGINGCP:-"true"}
 LOGIN_GHCR=${LOGINGHCR:-"true"}
 LOGIN_VAULT=${LOGINVAULT:-"true"}
 LOGIN_CLOUDFLARE=${LOGINCLOUDFLARE:-"true"}
-PYTHON_VERSION=${PYTHONVERSION:-"3.12.7"}
+DOCKER_CONFIG=${DOCKERCONFIG:-"true"}
 TMUX_CONFIG=${TMUXCONFIG:-"true"}
 
 echo "Processing feature options:"
@@ -64,7 +64,7 @@ echo "    LOGINGCP=\"${LOGIN_GCP}\""
 echo "    LOGINGHCR=\"${LOGIN_GHCR}\""
 echo "    LOGINVAULT=\"${LOGIN_VAULT}\""
 echo "    LOGINCLOUDFLARE=\"${LOGIN_CLOUDFLARE}\""
-echo "    PYTHONVERSION=\"${PYTHON_VERSION}\""
+echo "    DOCKERCONFIG=\"${DOCKER_CONFIG}\""
 echo "    TMUXCONFIG=\"${TMUX_CONFIG}\""
 
 # Set environment variables with INIT_ prefix
@@ -77,7 +77,7 @@ set_env_var "INIT_LOGIN_GCP" "${LOGIN_GCP}"
 set_env_var "INIT_LOGIN_GHCR" "${LOGIN_GHCR}"
 set_env_var "INIT_LOGIN_VAULT" "${LOGIN_VAULT}"
 set_env_var "INIT_LOGIN_CLOUDFLARE" "${LOGIN_CLOUDFLARE}"
-set_env_var "INIT_PYTHON_VERSION" "${PYTHON_VERSION}"
+set_env_var "INIT_DOCKER_CONFIG" "${DOCKER_CONFIG}"
 set_env_var "INIT_TMUX_CONFIG" "${TMUX_CONFIG}"
 
 echo ""

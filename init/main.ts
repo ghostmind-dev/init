@@ -70,17 +70,17 @@ if (INIT_DEBUG_MODE !== 'true') {
 
 if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_RUN_INSTALL', 'false');
-  Deno.env.set('INIT_RESET_LIVE', 'true');
-  Deno.env.set('INIT_BASE_ZSHRC', 'true');
+  Deno.env.set('INIT_RESET_LIVE', 'false');
+  Deno.env.set('INIT_BASE_ZSHRC', 'false');
   Deno.env.set('INIT_DENO_CONFIG', 'false');
-  Deno.env.set('INIT_CORE_SECRETS', 'false');
+  Deno.env.set('INIT_CORE_SECRETS', 'true');
   Deno.env.set('INIT_LOGIN_NPM', 'false');
-  Deno.env.set('INIT_LOGIN_GCP', 'true');
-  Deno.env.set('INIT_LOGIN_GHCR', 'true');
-  Deno.env.set('INIT_LOGIN_VAULT', 'true');
+  Deno.env.set('INIT_LOGIN_GCP', 'false');
+  Deno.env.set('INIT_LOGIN_GHCR', 'false');
+  Deno.env.set('INIT_LOGIN_VAULT', 'false');
   Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-  Deno.env.set('INIT_PYTHON_VERSION', '3.12.7');
   Deno.env.set('INIT_TMUX_CONFIG', 'false');
+  Deno.env.set('INIT_DOCKER_CONFIG', 'false');
 }
 
 const {
@@ -94,8 +94,8 @@ const {
   INIT_LOGIN_GHCR = 'true',
   INIT_LOGIN_VAULT = 'true',
   INIT_LOGIN_CLOUDFLARE = 'true',
-  INIT_PYTHON_VERSION = '3.12.7',
   INIT_TMUX_CONFIG = 'true',
+  INIT_DOCKER_CONFIG = 'true',
 } = Deno.env.toObject();
 
 // Track all steps and their statuses
@@ -107,8 +107,12 @@ const steps: Array<{
 
 // Initialize steps based on environment variables
 function initializeSteps() {
+  // Only add Init step in production mode (not debug mode)
+  if (INIT_DEBUG_MODE !== 'true') {
+    steps.push({ name: 'Init', status: 'pending' });
+  }
+
   steps.push(
-    { name: 'Init', status: 'pending' },
     {
       name: 'Install Run (Production)',
       status: INIT_RUN_INSTALL === 'true' ? 'pending' : 'skipped',
@@ -125,7 +129,6 @@ function initializeSteps() {
       name: 'Set Global Secrets',
       status: INIT_CORE_SECRETS === 'true' ? 'pending' : 'skipped',
     },
-    { name: 'Fix NPM Permissions', status: 'pending' },
     {
       name: 'NPM Login',
       status: INIT_LOGIN_NPM === 'true' ? 'pending' : 'skipped',
@@ -141,19 +144,16 @@ function initializeSteps() {
     },
     {
       name: 'Install Live Run',
-      status:
-        INIT_RESET_LIVE === 'true'
-          ? 'pending'
-          : INIT_RESET_LIVE === 'false'
-          ? 'pending'
-          : 'skipped',
+      status: INIT_RESET_LIVE === 'true' ? 'pending' : 'skipped',
     },
-    { name: `Set Python Version (${INIT_PYTHON_VERSION})`, status: 'pending' },
     {
       name: 'Cloudflare Login',
       status: INIT_LOGIN_CLOUDFLARE === 'true' ? 'pending' : 'skipped',
     },
-    { name: 'Setup Docker Credentials', status: 'pending' },
+    {
+      name: 'Setup Docker Credentials',
+      status: INIT_DOCKER_CONFIG === 'true' ? 'pending' : 'skipped',
+    },
     {
       name: 'GitHub Container Registry Login',
       status: INIT_LOGIN_GHCR === 'true' ? 'pending' : 'skipped',
@@ -268,13 +268,6 @@ if (INIT_DEBUG_MODE !== 'true') {
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
-// Mark init as completed after initial setup
-if (INIT_DEBUG_MODE === 'true') {
-  // In debug mode, just mark it as completed without showing table row
-  const initStep = steps.find((s) => s.name === 'Init');
-  if (initStep) initStep.status = 'success';
-}
-
 if (INIT_RUN_INSTALL === 'true') {
   updateStep('Install Run (Production)', 'in_progress');
   try {
@@ -387,31 +380,6 @@ if (INIT_CORE_SECRETS === 'true') {
   }
 } else {
   updateStep('Set Global Secrets', 'skipped');
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-// FIX NPM PERMISSIONS
-//////////////////////////////////////////////////////////////////////////////////
-
-// Always fix npm permissions to prevent EACCES errors during global installs
-updateStep('Fix NPM Permissions', 'in_progress');
-try {
-  // Fix ownership of npm cache directory
-  await $`sudo chown -R 1000:1000 "${HOME}/.npm" 2>/dev/null || true`;
-
-  // Fix ownership of npm global directory if it exists
-  const npmGlobalPath = `${HOME}/.npm-global`;
-  if (await fs.exists(npmGlobalPath)) {
-    await $`sudo chown -R 1000:1000 "${npmGlobalPath}" 2>/dev/null || true`;
-  }
-
-  // Clean npm cache to remove any corrupted files
-  await $`npm cache clean --force 2>/dev/null || true`;
-
-  updateStep('Fix NPM Permissions', 'success');
-} catch (e) {
-  const errorMessage = e instanceof Error ? e.message : String(e);
-  updateStep('Fix NPM Permissions', 'failed', errorMessage);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -707,8 +675,8 @@ if (INIT_BASE_ZSHRC === 'true') {
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL LIVE RUN
 //////////////////////////////////////////////////////////////////////////////////
-updateStep('Install Live Run', 'in_progress');
 if (INIT_RESET_LIVE === 'true') {
+  updateStep('Install Live Run', 'in_progress');
   try {
     await $`rm -rf ${SRC}/dev`;
     await $`git clone -b dev --depth 1 --single-branch https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
@@ -719,36 +687,7 @@ if (INIT_RESET_LIVE === 'true') {
     updateStep('Install Live Run', 'failed', errorMessage);
   }
 } else {
-  try {
-    const devExists = await fs.exists(`${SRC}/dev/run`);
-
-    if (devExists) {
-      await $`deno install --allow-all --force --reload --global --quiet --name live ${SRC}/dev/run/bin/cmd.ts`;
-      updateStep('Install Live Run', 'success');
-    } else {
-      updateStep('Install Live Run', 'skipped');
-    }
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Install Live Run', 'failed', errorMessage);
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-// PYTHON VERSION
-//////////////////////////////////////////////////////////////////////////////////
-
-updateStep(`Set Python Version (${INIT_PYTHON_VERSION})`, 'in_progress');
-try {
-  await $`pyenv global ${INIT_PYTHON_VERSION}`;
-  updateStep(`Set Python Version (${INIT_PYTHON_VERSION})`, 'success');
-} catch (e) {
-  const errorMessage = e instanceof Error ? e.message : String(e);
-  updateStep(
-    `Set Python Version (${INIT_PYTHON_VERSION})`,
-    'failed',
-    errorMessage
-  );
+  updateStep('Install Live Run', 'skipped');
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -815,13 +754,17 @@ async function setupDockerConfig() {
 // SETUP DOCKER CONFIG (after GCP to prevent gcloud from overwriting)
 ////////////////////////////////////////////////////////////////////////////////
 
-updateStep('Setup Docker Credentials', 'in_progress');
-try {
-  await setupDockerConfig();
-  updateStep('Setup Docker Credentials', 'success');
-} catch (e) {
-  const errorMessage = e instanceof Error ? e.message : String(e);
-  updateStep('Setup Docker Credentials', 'failed', errorMessage);
+if (INIT_DOCKER_CONFIG === 'true') {
+  updateStep('Setup Docker Credentials', 'in_progress');
+  try {
+    await setupDockerConfig();
+    updateStep('Setup Docker Credentials', 'success');
+  } catch (e) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    updateStep('Setup Docker Credentials', 'failed', errorMessage);
+  }
+} else {
+  updateStep('Setup Docker Credentials', 'skipped');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
