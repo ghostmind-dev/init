@@ -70,7 +70,6 @@ if (INIT_DEBUG_MODE !== 'true') {
 
 if (INIT_DEBUG_MODE === 'true') {
   Deno.env.set('INIT_RUN_INSTALL', 'false');
-  Deno.env.set('INIT_RESET_LIVE', 'false');
   Deno.env.set('INIT_BASE_ZSHRC', 'false');
   Deno.env.set('INIT_DENO_CONFIG', 'false');
   Deno.env.set('INIT_CORE_SECRETS', 'true');
@@ -85,7 +84,6 @@ if (INIT_DEBUG_MODE === 'true') {
 
 const {
   INIT_RUN_INSTALL = 'true',
-  INIT_RESET_LIVE = 'false',
   INIT_BASE_ZSHRC = 'true',
   INIT_DENO_CONFIG = 'true',
   INIT_CORE_SECRETS = 'true',
@@ -114,7 +112,7 @@ function initializeSteps() {
 
   steps.push(
     {
-      name: 'Install Run (Production)',
+      name: 'Install Run',
       status: INIT_RUN_INSTALL === 'true' ? 'pending' : 'skipped',
     },
     {
@@ -137,14 +135,9 @@ function initializeSteps() {
       name: 'GCP Login',
       status: INIT_LOGIN_GCP === 'true' ? 'pending' : 'skipped',
     },
-    { name: 'Configure Git Safe Directory', status: 'pending' },
     {
       name: 'Configure ZSH & Dotfiles',
       status: INIT_BASE_ZSHRC === 'true' ? 'pending' : 'skipped',
-    },
-    {
-      name: 'Install Live Run',
-      status: INIT_RESET_LIVE === 'true' ? 'pending' : 'skipped',
     },
     {
       name: 'Cloudflare Login',
@@ -353,11 +346,11 @@ if (INIT_CORE_SECRETS === 'true') {
     const envContent = await Deno.readTextFile(`${HOME}/.zprofile`);
     const exportLines = envContent
       .split('\n')
-      .filter(line => {
+      .filter((line) => {
         const trimmed = line.trim();
         return trimmed && !trimmed.startsWith('#');
       })
-      .map(line => `export ${line}`)
+      .map((line) => `export ${line}`)
       .join('\n');
     await Deno.writeTextFile(`${HOME}/.zshenv`, exportLines);
 
@@ -586,27 +579,6 @@ if (INIT_LOGIN_GCP === 'true') {
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-// GIT SAFE
-//////////////////////////////////////////////////////////////////////////////////
-
-updateStep('Configure Git Safe Directory', 'in_progress');
-try {
-  cd(`${SRC}`);
-
-  const cursorServerPath = `${HOME}/.cursor-server`;
-
-  if (await fs.exists(cursorServerPath)) {
-    await $`git config --add safe.directory "*"`;
-    updateStep('Configure Git Safe Directory', 'success');
-  } else {
-    updateStep('Configure Git Safe Directory', 'skipped');
-  }
-} catch (e) {
-  const errorMessage = e instanceof Error ? e.message : String(e);
-  updateStep('Configure Git Safe Directory', 'failed', errorMessage);
-}
-
-//////////////////////////////////////////////////////////////////////////////////
 // DOTFILES
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -681,25 +653,6 @@ if (INIT_BASE_ZSHRC === 'true') {
 } else {
   updateStep('Configure ZSH & Dotfiles', 'skipped');
 }
-
-//////////////////////////////////////////////////////////////////////////////////
-// INSTALL LIVE RUN
-//////////////////////////////////////////////////////////////////////////////////
-if (INIT_RESET_LIVE === 'true') {
-  updateStep('Install Live Run', 'in_progress');
-  try {
-    await $`rm -rf ${SRC}/dev`;
-    await $`git clone -b dev --depth 1 --single-branch https://github.com/ghostmind-dev/run.git ${SRC}/dev`;
-    await $`deno install --allow-all --force --reload --global --quiet --name live ${SRC}/dev/run/bin/cmd.ts`;
-    updateStep('Install Live Run', 'success');
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Install Live Run', 'failed', errorMessage);
-  }
-} else {
-  updateStep('Install Live Run', 'skipped');
-}
-
 //////////////////////////////////////////////////////////////////////////////////
 // SET CLOUDFLARED
 //////////////////////////////////////////////////////////////////////////////////

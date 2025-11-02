@@ -42,7 +42,6 @@ set_env_var() {
 }
 
 # Import and process all feature options
-RESET_LIVE=${RESETLIVE:-"false"}
 BASE_ZSHRC=${BASEZSHRC:-"true"}
 DENO_CONFIG=${DENOCONFIG:-"true"}
 CORE_SECRETS=${CORESECRETS:-"true"}
@@ -55,7 +54,6 @@ DOCKER_CONFIG=${DOCKERCONFIG:-"true"}
 TMUX_CONFIG=${TMUXCONFIG:-"true"}
 
 echo "Processing feature options:"
-echo "    RESETLIVE=\"${RESET_LIVE}\""
 echo "    BASEZSHRC=\"${BASE_ZSHRC}\""
 echo "    DENOCONFIG=\"${DENO_CONFIG}\""
 echo "    CORESECRETS=\"${CORE_SECRETS}\""
@@ -68,7 +66,6 @@ echo "    DOCKERCONFIG=\"${DOCKER_CONFIG}\""
 echo "    TMUXCONFIG=\"${TMUX_CONFIG}\""
 
 # Set environment variables with INIT_ prefix
-set_env_var "INIT_RESET_LIVE" "${RESET_LIVE}"
 set_env_var "INIT_BASE_ZSHRC" "${BASE_ZSHRC}"
 set_env_var "INIT_DENO_CONFIG" "${DENO_CONFIG}"
 set_env_var "INIT_CORE_SECRETS" "${CORE_SECRETS}"

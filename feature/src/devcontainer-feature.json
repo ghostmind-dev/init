@@ -1,6 +1,6 @@
 {
   "id": "init",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "name": "Init",
   "description": "Initialize development environment with configurable options",
   "documentationURL": "https://github.com/ghostmind-dev/features/tree/main/features/src/init",
@@ -37,11 +37,6 @@
     "SSH_AUTH_SOCK": "/ssh-agent"
   },
   "options": {
-    "resetLive": {
-      "type": "boolean",
-      "default": false,
-      "description": "Reset live environment settings (default: false)"
-    },
     "baseZshrc": {
       "type": "boolean",
       "default": true,

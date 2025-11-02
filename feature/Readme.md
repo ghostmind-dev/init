@@ -20,7 +20,6 @@ Initialize development environment with configurable options that are dynamicall
 
 | Option            | Type    | Default     | Environment Variable    | Description                                 |
 | ----------------- | ------- | ----------- | ----------------------- | ------------------------------------------- |
-| `resetLive`       | boolean | `false`     | `INIT_RESET_LIVE`       | Reset live environment settings             |
 | `baseZshrc`       | boolean | `true`      | `INIT_BASE_ZSHRC`       | Configure base ZSH configuration            |
 | `denoConfig`      | boolean | `true`      | `INIT_DENO_CONFIG`      | Setup Deno configuration                    |
 | `coreSecrets`     | boolean | `true`      | `INIT_CORE_SECRETS`     | Setup core secrets management               |
@@ -30,4 +29,4 @@ Initialize development environment with configurable options that are dynamicall
 | `loginVault`      | boolean | `true`      | `INIT_LOGIN_VAULT`      | Configure HashiCorp Vault login             |
 | `loginCloudflare` | boolean | `true`      | `INIT_LOGIN_CLOUDFLARE` | Configure Cloudflare login                  |
 | `dockerConfig`    | boolean | `true`      | `INIT_DOCKER_CONFIG`    | Setup Docker credentials configuration      |
-| `tmuxConfig`      | boolean | `true`      | `INIT_TMUX_CONFIG`      |
+| `tmuxConfig`      | boolean | `true`      | `INIT_TMUX_CONFIG`      | Setup TMUX configuration                    |

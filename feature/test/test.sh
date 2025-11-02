@@ -50,7 +50,6 @@ echo "✅ All required INIT_ variables found in /etc/profile"
 # Test 5: Verify all INIT_ variables exist
 echo "Test 5: Checking for all expected INIT_ environment variables..."
 all_init_vars=(
-    "INIT_RESET_LIVE"
     "INIT_BASE_ZSHRC"
     "INIT_DENO_CONFIG"
     "INIT_CORE_SECRETS"
@@ -74,7 +73,6 @@ echo "✅ All 16 INIT_ environment variables are set"
 # Test 6: Verify boolean values are valid
 echo "Test 6: Verifying boolean environment variable values..."
 boolean_vars=(
-    "INIT_RESET_LIVE"
     "INIT_BASE_ZSHRC"
     "INIT_DENO_CONFIG"
     "INIT_CORE_SECRETS"
