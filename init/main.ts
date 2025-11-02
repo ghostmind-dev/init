@@ -1,25 +1,25 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { $, fs, chalk, sleep, cd } from 'npm:zx@8.6.1';
-import { config } from 'npm:dotenv@17.0.1';
-import process from 'node:process';
+import { $, fs, chalk, sleep, cd } from "npm:zx@8.6.1";
+import { config } from "npm:dotenv@17.0.1";
+import process from "node:process";
 // LangChain imports - will be loaded dynamically if needed
-import figlet from 'npm:figlet@1.8.1';
-import Table from 'npm:cli-table3@0.6.3';
+import figlet from "npm:figlet@1.8.1";
+import Table from "npm:cli-table3@0.6.3";
 
 //////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS
 //////////////////////////////////////////////////////////////////////////////////
 
-const HOME = Deno.env.get('HOME');
-const SRC = Deno.env.get('SRC');
+const HOME = Deno.env.get("HOME");
+const SRC = Deno.env.get("SRC");
 
 // Control verbosity based on debug mode
-const INIT_DEBUG_MODE = Deno.env.get('INIT_DEBUG_MODE');
-$.verbose = INIT_DEBUG_MODE === 'true';
+const INIT_DEBUG_MODE = Deno.env.get("INIT_DEBUG_MODE");
+$.verbose = INIT_DEBUG_MODE === "true";
 
 // In production mode, suppress all output except our status messages
-if (INIT_DEBUG_MODE !== 'true') {
+if (INIT_DEBUG_MODE !== "true") {
   // Redirect stdout and stderr to suppress all command output
   const originalStdout = process.stdout.write;
   const originalStderr = process.stderr.write;
@@ -27,25 +27,25 @@ if (INIT_DEBUG_MODE !== 'true') {
   process.stdout.write = function (chunk: any) {
     // Only allow our specific status messages through
     if (
-      typeof chunk === 'string' &&
-      (chunk.includes('🚀 Starting routine') ||
-        chunk.includes('┌') ||
-        chunk.includes('└') ||
-        chunk.includes('├') ||
-        chunk.includes('│') || // Table borders
-        (chunk.includes('✓') && !chunk.includes('$')) ||
-        (chunk.includes('✗') && !chunk.includes('$')) ||
-        (chunk.includes('-') &&
-          !chunk.includes('$') &&
-          !chunk.includes('dotenv')) ||
-        chunk.includes('Welcome to Ghostmind') ||
-        chunk.includes('Activated service account') || // Allow GCP success messages
-        chunk.includes('Updated property') || // Allow GCP config messages
-        chunk.includes('__        __') || // ASCII art lines
-        chunk.includes(' \\ \\      / ') ||
-        chunk.includes('  \\ \\ /\\ / ') ||
-        chunk.includes('   \\ V  V ') ||
-        chunk.includes('    \\_/\\_/'))
+      typeof chunk === "string" &&
+      (chunk.includes("🚀 Starting routine") ||
+        chunk.includes("┌") ||
+        chunk.includes("└") ||
+        chunk.includes("├") ||
+        chunk.includes("│") || // Table borders
+        (chunk.includes("✓") && !chunk.includes("$")) ||
+        (chunk.includes("✗") && !chunk.includes("$")) ||
+        (chunk.includes("-") &&
+          !chunk.includes("$") &&
+          !chunk.includes("dotenv")) ||
+        chunk.includes("Welcome to Ghostmind") ||
+        chunk.includes("Activated service account") || // Allow GCP success messages
+        chunk.includes("Updated property") || // Allow GCP config messages
+        chunk.includes("__        __") || // ASCII art lines
+        chunk.includes(" \\ \\      / ") ||
+        chunk.includes("  \\ \\ /\\ / ") ||
+        chunk.includes("   \\ V  V ") ||
+        chunk.includes("    \\_/\\_/"))
     ) {
       return originalStdout.call(this, chunk);
     }
@@ -55,11 +55,11 @@ if (INIT_DEBUG_MODE !== 'true') {
   process.stderr.write = function (chunk: any) {
     // Allow gcloud stderr output in production mode
     if (
-      typeof chunk === 'string' &&
-      (chunk.includes('gcloud') ||
-        chunk.includes('WARNING') ||
-        chunk.includes('ERROR') ||
-        chunk.includes('service account'))
+      typeof chunk === "string" &&
+      (chunk.includes("gcloud") ||
+        chunk.includes("WARNING") ||
+        chunk.includes("ERROR") ||
+        chunk.includes("service account"))
     ) {
       return originalStderr.call(this, chunk);
     }
@@ -68,92 +68,89 @@ if (INIT_DEBUG_MODE !== 'true') {
   };
 }
 
-if (INIT_DEBUG_MODE === 'true') {
-  Deno.env.set('INIT_RUN_INSTALL', 'false');
-  Deno.env.set('INIT_BASE_ZSHRC', 'false');
-  Deno.env.set('INIT_DENO_CONFIG', 'false');
-  Deno.env.set('INIT_CORE_SECRETS', 'true');
-  Deno.env.set('INIT_LOGIN_NPM', 'false');
-  Deno.env.set('INIT_LOGIN_GCP', 'false');
-  Deno.env.set('INIT_LOGIN_GHCR', 'false');
-  Deno.env.set('INIT_LOGIN_VAULT', 'false');
-  Deno.env.set('INIT_LOGIN_CLOUDFLARE', 'false');
-  Deno.env.set('INIT_TMUX_CONFIG', 'false');
-  Deno.env.set('INIT_DOCKER_CONFIG', 'false');
+if (INIT_DEBUG_MODE === "true") {
+  Deno.env.set("INIT_RUN_INSTALL", "false");
+  Deno.env.set("INIT_BASE_ZSHRC", "false");
+  Deno.env.set("INIT_DENO_CONFIG", "false");
+  Deno.env.set("INIT_CORE_SECRETS", "true");
+  Deno.env.set("INIT_LOGIN_NPM", "false");
+  Deno.env.set("INIT_LOGIN_GCP", "false");
+  Deno.env.set("INIT_LOGIN_GHCR", "false");
+  Deno.env.set("INIT_LOGIN_VAULT", "false");
+  Deno.env.set("INIT_LOGIN_CLOUDFLARE", "false");
+  Deno.env.set("INIT_TMUX_CONFIG", "false");
+  Deno.env.set("INIT_DOCKER_CONFIG", "false");
 }
 
 const {
-  INIT_RUN_INSTALL = 'true',
-  INIT_BASE_ZSHRC = 'true',
-  INIT_DENO_CONFIG = 'true',
-  INIT_CORE_SECRETS = 'true',
-  INIT_LOGIN_NPM = 'false',
-  INIT_LOGIN_GCP = 'true',
-  INIT_LOGIN_GHCR = 'true',
-  INIT_LOGIN_VAULT = 'true',
-  INIT_LOGIN_CLOUDFLARE = 'true',
-  INIT_TMUX_CONFIG = 'true',
-  INIT_DOCKER_CONFIG = 'true',
+  INIT_RUN_INSTALL = "true",
+  INIT_BASE_ZSHRC = "true",
+  INIT_DENO_CONFIG = "true",
+  INIT_CORE_SECRETS = "true",
+  INIT_LOGIN_NPM = "false",
+  INIT_LOGIN_GCP = "true",
+  INIT_LOGIN_GHCR = "true",
+  INIT_LOGIN_VAULT = "true",
+  INIT_LOGIN_CLOUDFLARE = "true",
+  INIT_TMUX_CONFIG = "true",
+  INIT_DOCKER_CONFIG = "true",
 } = Deno.env.toObject();
 
 // Track all steps and their statuses
 const steps: Array<{
   name: string;
-  status: 'pending' | 'in_progress' | 'success' | 'skipped' | 'failed';
+  status: "pending" | "in_progress" | "success" | "skipped" | "failed";
   error?: string;
 }> = [];
 
 // Initialize steps based on environment variables
 function initializeSteps() {
   // Only add Init step in production mode (not debug mode)
-  if (INIT_DEBUG_MODE !== 'true') {
-    steps.push({ name: 'Init', status: 'pending' });
-  }
 
   steps.push(
     {
-      name: 'Install Run',
-      status: INIT_RUN_INSTALL === 'true' ? 'pending' : 'skipped',
+      name: "Install Run",
+      status: INIT_RUN_INSTALL === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Configure Deno',
-      status: INIT_DENO_CONFIG === 'true' ? 'pending' : 'skipped',
+      name: "Configure Deno",
+      status: INIT_DENO_CONFIG === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Vault Login',
-      status: INIT_LOGIN_VAULT === 'true' ? 'pending' : 'skipped',
+      name: "Vault Login",
+      status: INIT_LOGIN_VAULT === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Set Global Secrets',
-      status: INIT_CORE_SECRETS === 'true' ? 'pending' : 'skipped',
+      name: "Set Global Secrets",
+      status: INIT_CORE_SECRETS === "true" ? "pending" : "skipped",
     },
     {
-      name: 'NPM Login',
-      status: INIT_LOGIN_NPM === 'true' ? 'pending' : 'skipped',
+      name: "NPM Login",
+      status: INIT_LOGIN_NPM === "true" ? "pending" : "skipped",
     },
     {
-      name: 'GCP Login',
-      status: INIT_LOGIN_GCP === 'true' ? 'pending' : 'skipped',
+      name: "GCP Login",
+      status: INIT_LOGIN_GCP === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Configure ZSH & Dotfiles',
-      status: INIT_BASE_ZSHRC === 'true' ? 'pending' : 'skipped',
+      name: "Configure ZSH & Dotfiles",
+      status: INIT_BASE_ZSHRC === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Cloudflare Login',
-      status: INIT_LOGIN_CLOUDFLARE === 'true' ? 'pending' : 'skipped',
+      name: "Cloudflare Login",
+      status: INIT_LOGIN_CLOUDFLARE === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Setup Docker Credentials',
-      status: INIT_DOCKER_CONFIG === 'true' ? 'pending' : 'skipped',
+      name: "Setup Docker Credentials",
+      status: INIT_DOCKER_CONFIG === "true" ? "pending" : "skipped",
     },
     {
-      name: 'GitHub Container Registry Login',
-      status: INIT_LOGIN_GHCR === 'true' ? 'pending' : 'skipped',
+      name: "GitHub Container Registry Login",
+      status: INIT_LOGIN_GHCR === "true" ? "pending" : "skipped",
     },
     {
-      name: 'Configure Tmux',
-      status: INIT_TMUX_CONFIG === 'true' ? 'pending' : 'skipped',
+      name: "Configure Tmux",
+      status: INIT_TMUX_CONFIG === "true" ? "pending" : "skipped",
     }
   );
 }
@@ -161,41 +158,41 @@ function initializeSteps() {
 // Function to render the final table with all statuses
 function renderTable() {
   const table = new Table({
-    head: [chalk.gray('Step'), chalk.gray('Status')],
+    head: [chalk.gray("Step"), chalk.gray("Status")],
     colWidths: [50, 20],
     style: {
       head: [],
-      border: ['grey'],
+      border: ["grey"],
     },
   });
 
   for (const step of steps) {
-    let statusColor = '';
+    let statusColor = "";
     switch (step.status) {
-      case 'pending':
-        statusColor = chalk.gray('⋯ Pending');
+      case "pending":
+        statusColor = chalk.gray("⋯ Pending");
         break;
-      case 'in_progress':
-        statusColor = chalk.yellow('⟳ In Progress');
+      case "in_progress":
+        statusColor = chalk.yellow("⟳ In Progress");
         break;
-      case 'success':
-        statusColor = chalk.green('✓ Complete');
+      case "success":
+        statusColor = chalk.green("✓ Complete");
         break;
-      case 'skipped':
-        statusColor = chalk.gray('- Skipped');
+      case "skipped":
+        statusColor = chalk.gray("- Skipped");
         break;
-      case 'failed':
-        statusColor = chalk.red('✗ Failed');
+      case "failed":
+        statusColor = chalk.red("✗ Failed");
         break;
     }
     table.push([step.name, statusColor]);
   }
 
-  console.log('\n' + table.toString() + '\n');
+  console.log("\n" + table.toString() + "\n");
 
   // Show errors for failed steps
   for (const step of steps) {
-    if (step.status === 'failed' && step.error) {
+    if (step.status === "failed" && step.error) {
       console.error(chalk.red(`  ${step.name}: ${step.error}`));
     }
   }
@@ -204,20 +201,20 @@ function renderTable() {
 // Function to show sequential step progress
 function showStepProgress(
   stepName: string,
-  status: 'success' | 'skipped' | 'failed'
+  status: "success" | "skipped" | "failed"
 ) {
-  if (INIT_DEBUG_MODE === 'true') return;
+  if (INIT_DEBUG_MODE === "true") return;
 
-  let statusIcon = '';
+  let statusIcon = "";
   switch (status) {
-    case 'success':
-      statusIcon = chalk.green('✓');
+    case "success":
+      statusIcon = chalk.green("✓");
       break;
-    case 'skipped':
-      statusIcon = chalk.gray('○');
+    case "skipped":
+      statusIcon = chalk.gray("○");
       break;
-    case 'failed':
-      statusIcon = chalk.red('✗');
+    case "failed":
+      statusIcon = chalk.red("✗");
       break;
   }
 
@@ -228,7 +225,7 @@ function showStepProgress(
 // Function to update step status
 async function updateStep(
   stepName: string,
-  status: 'in_progress' | 'success' | 'skipped' | 'failed',
+  status: "in_progress" | "success" | "skipped" | "failed",
   error?: string
 ) {
   const step = steps.find((s) => s.name === stepName);
@@ -237,7 +234,7 @@ async function updateStep(
     if (error) step.error = error;
 
     // Show step progress in production mode (only on completion)
-    if (INIT_DEBUG_MODE !== 'true' && status !== 'in_progress') {
+    if (INIT_DEBUG_MODE !== "true" && status !== "in_progress") {
       // Add a delay for sequential visual effect
       await sleep(300);
       showStepProgress(stepName, status);
@@ -249,79 +246,79 @@ async function updateStep(
 initializeSteps();
 
 // Show initial message in production mode
-if (INIT_DEBUG_MODE !== 'true') {
-  console.log(chalk.cyan('\n🚀 Starting routine...\n'));
+if (INIT_DEBUG_MODE !== "true") {
+  console.log(chalk.cyan("\n🚀 Starting routine...\n"));
 
   // Show first init step
   await sleep(300);
-  showStepProgress('Init', 'success');
+  showStepProgress("Init", "success");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // INSTALL RUN (PRODUCTION)
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_RUN_INSTALL === 'true') {
-  updateStep('Install Run (Production)', 'in_progress');
+if (INIT_RUN_INSTALL === "true") {
+  updateStep("Install Run", "in_progress");
   try {
     await $`rm -rf ${HOME}/run`;
     await $`git clone https://github.com/ghostmind-dev/run.git ${HOME}/run`;
     await $`deno install --allow-all --force --global --name run ${HOME}/run/run/bin/cmd.ts`;
-    await updateStep('Install Run (Production)', 'success');
+    await updateStep("Install Run", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    await updateStep('Install Run (Production)', 'failed', errorMessage);
+    await updateStep("Install Run", "failed", errorMessage);
   }
 } else {
-  await updateStep('Install Run (Production)', 'skipped');
+  await updateStep("Install Run", "skipped");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // SET DENO.JSON
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_DENO_CONFIG === 'true') {
-  updateStep('Configure Deno', 'in_progress');
+if (INIT_DENO_CONFIG === "true") {
+  updateStep("Configure Deno", "in_progress");
   try {
     const defaultDenoCOnfigRaw = await fetch(
-      'https://raw.githubusercontent.com/ghostmind-dev/config/main/config/deno/deno.json'
+      "https://raw.githubusercontent.com/ghostmind-dev/config/main/config/deno/deno.json"
     );
 
     const defaultDenoConfig = await defaultDenoCOnfigRaw.json();
 
     await fs.writeJson(`${HOME}/deno.json`, defaultDenoConfig, { spaces: 2 });
-    await updateStep('Configure Deno', 'success');
+    await updateStep("Configure Deno", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    await updateStep('Configure Deno', 'failed', errorMessage);
+    await updateStep("Configure Deno", "failed", errorMessage);
   }
 } else {
-  await updateStep('Configure Deno', 'skipped');
+  await updateStep("Configure Deno", "skipped");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // VAULT LOGIN
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_VAULT === 'true') {
-  updateStep('Vault Login', 'in_progress');
+if (INIT_LOGIN_VAULT === "true") {
+  updateStep("Vault Login", "in_progress");
   try {
-    await $`vault login ${Deno.env.get('VAULT_TOKEN')}`;
-    await updateStep('Vault Login', 'success');
+    await $`vault login ${Deno.env.get("VAULT_TOKEN")}`;
+    await updateStep("Vault Login", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    await updateStep('Vault Login', 'failed', errorMessage);
+    await updateStep("Vault Login", "failed", errorMessage);
   }
 } else {
-  await updateStep('Vault Login', 'skipped');
+  await updateStep("Vault Login", "skipped");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // SET GLOBAL SECRETS
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_CORE_SECRETS === 'true') {
-  updateStep('Set Global Secrets', 'in_progress');
+if (INIT_CORE_SECRETS === "true") {
+  updateStep("Set Global Secrets", "in_progress");
   try {
     await $`rm -rf /tmp/env.global.json`;
 
@@ -334,7 +331,7 @@ if (INIT_CORE_SECRETS === 'true') {
     await $`rm -rf ${HOME}/.zprofile`;
     await $`rm -rf ${HOME}/.zshenv`;
 
-    fs.writeFileSync(`${HOME}/.zprofile`, CREDS, 'utf8');
+    fs.writeFileSync(`${HOME}/.zprofile`, CREDS, "utf8");
 
     // we need to set the global secrets to the zshenv file
     // the difference: each variable is exported
@@ -345,29 +342,29 @@ if (INIT_CORE_SECRETS === 'true') {
     // Use native Deno code instead of shell loop for better performance and correct escape sequence handling
     const envContent = await Deno.readTextFile(`${HOME}/.zprofile`);
     const exportLines = envContent
-      .split('\n')
+      .split("\n")
       .filter((line) => {
         const trimmed = line.trim();
-        return trimmed && !trimmed.startsWith('#');
+        return trimmed && !trimmed.startsWith("#");
       })
       .map((line) => `export ${line}`)
-      .join('\n');
+      .join("\n");
     await Deno.writeTextFile(`${HOME}/.zshenv`, exportLines);
 
     // Suppress dotenv output in production mode
-    if (INIT_DEBUG_MODE === 'true') {
+    if (INIT_DEBUG_MODE === "true") {
       config({ path: `${HOME}/.zprofile`, override: false });
     } else {
       // Load environment variables silently
       try {
         const envContent = await Deno.readTextFile(`${HOME}/.zprofile`);
-        const lines = envContent.split('\n');
+        const lines = envContent.split("\n");
         for (const line of lines) {
           const trimmed = line.trim();
-          if (trimmed && !trimmed.startsWith('#')) {
-            const [key, ...valueParts] = trimmed.split('=');
+          if (trimmed && !trimmed.startsWith("#")) {
+            const [key, ...valueParts] = trimmed.split("=");
             if (key && valueParts.length > 0) {
-              const value = valueParts.join('=');
+              const value = valueParts.join("=");
               Deno.env.set(key, value);
             }
           }
@@ -376,23 +373,23 @@ if (INIT_CORE_SECRETS === 'true') {
         // Silent fail if file doesn't exist
       }
     }
-    updateStep('Set Global Secrets', 'success');
+    updateStep("Set Global Secrets", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Set Global Secrets', 'failed', errorMessage);
+    updateStep("Set Global Secrets", "failed", errorMessage);
   }
 } else {
-  updateStep('Set Global Secrets', 'skipped');
+  updateStep("Set Global Secrets", "skipped");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // SET NPM CREDENTIALS
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_NPM === 'true') {
-  updateStep('NPM Login', 'in_progress');
+if (INIT_LOGIN_NPM === "true") {
+  updateStep("NPM Login", "in_progress");
   try {
-    const NPM_TOKEN = Deno.env.get('NPM_TOKEN');
+    const NPM_TOKEN = Deno.env.get("NPM_TOKEN");
 
     await $`rm -rf ${SRC}/.npmrc`;
     await $`rm -rf ${HOME}/.npmrc`;
@@ -400,43 +397,43 @@ if (INIT_LOGIN_NPM === 'true') {
     await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${SRC}/.npmrc`;
     await $`echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >${HOME}/.npmrc`;
 
-    updateStep('NPM Login', 'success');
+    updateStep("NPM Login", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('NPM Login', 'failed', errorMessage);
+    updateStep("NPM Login", "failed", errorMessage);
   }
 } else {
-  updateStep('NPM Login', 'skipped');
+  updateStep("NPM Login", "skipped");
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 // GCP
 ////////////////////////////////////////////////////////////////////////////////
 
-const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get('GCP_SERVICE_ACCOUNT_JSON');
+const GCP_SERVICE_ACCOUNT_JSON = Deno.env.get("GCP_SERVICE_ACCOUNT_JSON");
 
 // Debug: console.log(GCP_SERVICE_ACCOUNT_JSON);
 
-if (INIT_LOGIN_GCP === 'true') {
-  if (GCP_SERVICE_ACCOUNT_JSON && GCP_SERVICE_ACCOUNT_JSON.trim() !== '') {
-    updateStep('GCP Login', 'in_progress');
+if (INIT_LOGIN_GCP === "true") {
+  if (GCP_SERVICE_ACCOUNT_JSON && GCP_SERVICE_ACCOUNT_JSON.trim() !== "") {
+    updateStep("GCP Login", "in_progress");
 
     // In production mode, keep commands quiet but allow error handling
     const originalVerbose = $.verbose;
-    if (INIT_DEBUG_MODE === 'true') {
+    if (INIT_DEBUG_MODE === "true") {
       $.verbose = true;
     } else {
       $.verbose = false; // Keep commands quiet in production
     }
 
     try {
-      $.shell = '/usr/bin/zsh';
-      const GCP_PROJECT_NAME = Deno.env.get('GCP_PROJECT_NAME');
+      $.shell = "/usr/bin/zsh";
+      const GCP_PROJECT_NAME = Deno.env.get("GCP_PROJECT_NAME");
 
       // Validate the service account JSON before writing
-      if (!GCP_SERVICE_ACCOUNT_JSON || GCP_SERVICE_ACCOUNT_JSON.trim() === '') {
+      if (!GCP_SERVICE_ACCOUNT_JSON || GCP_SERVICE_ACCOUNT_JSON.trim() === "") {
         throw new Error(
-          'GCP_SERVICE_ACCOUNT_JSON environment variable is empty'
+          "GCP_SERVICE_ACCOUNT_JSON environment variable is empty"
         );
       }
 
@@ -459,13 +456,13 @@ if (INIT_LOGIN_GCP === 'true') {
       try {
         parsedJson = JSON.parse(cleanedJson);
       } catch (parseError) {
-        if (INIT_DEBUG_MODE === 'true') {
+        if (INIT_DEBUG_MODE === "true") {
           console.log(
-            'Raw GCP_SERVICE_ACCOUNT_JSON (first 100 chars):',
+            "Raw GCP_SERVICE_ACCOUNT_JSON (first 100 chars):",
             GCP_SERVICE_ACCOUNT_JSON.substring(0, 100)
           );
           console.log(
-            'Cleaned JSON (first 100 chars):',
+            "Cleaned JSON (first 100 chars):",
             cleanedJson.substring(0, 100)
           );
         }
@@ -479,39 +476,39 @@ if (INIT_LOGIN_GCP === 'true') {
       }
 
       // Validate it's a service account key
-      if (!parsedJson.type || parsedJson.type !== 'service_account') {
+      if (!parsedJson.type || parsedJson.type !== "service_account") {
         throw new Error(
           'GCP_SERVICE_ACCOUNT_JSON does not appear to be a valid service account key (missing or incorrect "type" field)'
         );
       }
 
       // Write the service account key to file
-      await fs.writeFile('/tmp/gsa_key.json', cleanedJson);
+      await fs.writeFile("/tmp/gsa_key.json", cleanedJson);
 
       // Verify the file was created and has content
-      const fileExists = await fs.exists('/tmp/gsa_key.json');
+      const fileExists = await fs.exists("/tmp/gsa_key.json");
       if (!fileExists) {
-        throw new Error('Failed to create service account key file');
+        throw new Error("Failed to create service account key file");
       }
 
       // Check file size to ensure it's not empty
-      const fileInfo = await Deno.stat('/tmp/gsa_key.json');
+      const fileInfo = await Deno.stat("/tmp/gsa_key.json");
       if (fileInfo.size === 0) {
-        throw new Error('Service account key file was created but is empty');
+        throw new Error("Service account key file was created but is empty");
       }
 
       // Set proper permissions on the key file
       await $`chmod 600 /tmp/gsa_key.json`;
 
-      if (INIT_DEBUG_MODE === 'true') {
-        console.log('Service account key file created successfully');
+      if (INIT_DEBUG_MODE === "true") {
+        console.log("Service account key file created successfully");
         console.log(`File size: ${fileInfo.size} bytes`);
         await $`cat /tmp/gsa_key.json`;
       }
       // In production mode, no additional logging to keep output clean
 
       // Set GOOGLE_APPLICATION_CREDENTIALS environment variable
-      Deno.env.set('GOOGLE_APPLICATION_CREDENTIALS', '/tmp/gsa_key.json');
+      Deno.env.set("GOOGLE_APPLICATION_CREDENTIALS", "/tmp/gsa_key.json");
 
       // Make GOOGLE_APPLICATION_CREDENTIALS persistent in shell sessions
       await $`echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gsa_key.json" >> ${HOME}/.zshenv`;
@@ -519,7 +516,7 @@ if (INIT_LOGIN_GCP === 'true') {
       // Activate the service account
       await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
 
-      if (GCP_PROJECT_NAME && GCP_PROJECT_NAME.trim() !== '') {
+      if (GCP_PROJECT_NAME && GCP_PROJECT_NAME.trim() !== "") {
         // First try to use GCP_PROJECT_NAME as project ID directly
         let projectId = GCP_PROJECT_NAME;
 
@@ -557,40 +554,40 @@ if (INIT_LOGIN_GCP === 'true') {
 
         // Restore original settings
         $.verbose = originalVerbose;
-        updateStep('GCP Login', 'success');
+        updateStep("GCP Login", "success");
       } else {
         // No project name provided, just activate service account
         $.verbose = originalVerbose;
-        updateStep('GCP Login', 'success');
+        updateStep("GCP Login", "success");
       }
     } catch (e) {
       // Restore original settings
       $.verbose = originalVerbose;
 
-      console.error('GCP Login error:', e);
+      console.error("GCP Login error:", e);
       const errorMessage = e instanceof Error ? e.message : String(e);
-      updateStep('GCP Login', 'failed', errorMessage);
+      updateStep("GCP Login", "failed", errorMessage);
     }
   } else {
-    updateStep('GCP Login', 'skipped');
+    updateStep("GCP Login", "skipped");
   }
 } else {
-  updateStep('GCP Login', 'skipped');
+  updateStep("GCP Login", "skipped");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // DOTFILES
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_BASE_ZSHRC === 'true') {
-  updateStep('Configure ZSH & Dotfiles', 'in_progress');
+if (INIT_BASE_ZSHRC === "true") {
+  updateStep("Configure ZSH & Dotfiles", "in_progress");
   try {
     await $`curl -o ${HOME}/.zshrc https://raw.githubusercontent.com/ghostmind-dev/config/main/config/zsh/.zshrc`;
 
     // Configure ZSH theme and plugins from environment variables
-    const INIT_ZSH_THEME = Deno.env.get('INIT_ZSH_THEME') || 'codespaces';
+    const INIT_ZSH_THEME = Deno.env.get("INIT_ZSH_THEME") || "codespaces";
     const INIT_ZSH_PLUGINS =
-      'zsh zsh-autosuggestions zsh-syntax-highlighting zsh-completions';
+      "zsh zsh-autosuggestions zsh-syntax-highlighting zsh-completions";
 
     // Set ZSH_THEME in .zshenv for persistence across sessions
     await $`echo 'export INIT_ZSH_THEME="${INIT_ZSH_THEME}"' >> ${HOME}/.zshenv`;
@@ -605,7 +602,7 @@ if (INIT_BASE_ZSHRC === 'true') {
 
     // Ensure Oh My Zsh custom directory exists
     if (!(await fs.exists(ZSH_CUSTOM))) {
-      updateStep('Configure ZSH & Dotfiles', 'success');
+      updateStep("Configure ZSH & Dotfiles", "success");
     } else {
       let pluginsInstalled = true;
 
@@ -637,43 +634,43 @@ if (INIT_BASE_ZSHRC === 'true') {
       }
 
       if (pluginsInstalled) {
-        updateStep('Configure ZSH & Dotfiles', 'success');
+        updateStep("Configure ZSH & Dotfiles", "success");
       } else {
         updateStep(
-          'Configure ZSH & Dotfiles',
-          'failed',
-          'Some plugins failed to install'
+          "Configure ZSH & Dotfiles",
+          "failed",
+          "Some plugins failed to install"
         );
       }
     }
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Configure ZSH & Dotfiles', 'failed', errorMessage);
+    updateStep("Configure ZSH & Dotfiles", "failed", errorMessage);
   }
 } else {
-  updateStep('Configure ZSH & Dotfiles', 'skipped');
+  updateStep("Configure ZSH & Dotfiles", "skipped");
 }
 //////////////////////////////////////////////////////////////////////////////////
 // SET CLOUDFLARED
 //////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_CLOUDFLARE === 'true') {
-  updateStep('Cloudflare Login', 'in_progress');
+if (INIT_LOGIN_CLOUDFLARE === "true") {
+  updateStep("Cloudflare Login", "in_progress");
   try {
-    const CLOUDFLARED_CREDS = Deno.env.get('CLOUDFLARED_CREDS');
-    $.shell = '/usr/bin/zsh';
+    const CLOUDFLARED_CREDS = Deno.env.get("CLOUDFLARED_CREDS");
+    $.shell = "/usr/bin/zsh";
 
     await $`mkdir -p /home/vscode/.cloudflared`;
     await $`echo ${CLOUDFLARED_CREDS} | base64 -di -w 0 > /home/vscode/.cloudflared/cert.pem`;
 
-    updateStep('Cloudflare Login', 'success');
+    updateStep("Cloudflare Login", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Cloudflare Login', 'failed', errorMessage);
+    updateStep("Cloudflare Login", "failed", errorMessage);
   }
   await sleep(2000);
 } else {
-  updateStep('Cloudflare Login', 'skipped');
+  updateStep("Cloudflare Login", "skipped");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -717,63 +714,63 @@ async function setupDockerConfig() {
 // SETUP DOCKER CONFIG (after GCP to prevent gcloud from overwriting)
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_DOCKER_CONFIG === 'true') {
-  updateStep('Setup Docker Credentials', 'in_progress');
+if (INIT_DOCKER_CONFIG === "true") {
+  updateStep("Setup Docker Credentials", "in_progress");
   try {
     await setupDockerConfig();
-    updateStep('Setup Docker Credentials', 'success');
+    updateStep("Setup Docker Credentials", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Setup Docker Credentials', 'failed', errorMessage);
+    updateStep("Setup Docker Credentials", "failed", errorMessage);
   }
 } else {
-  updateStep('Setup Docker Credentials', 'skipped');
+  updateStep("Setup Docker Credentials", "skipped");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONNECT TO GHCR.IO
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_LOGIN_GHCR == 'true') {
-  updateStep('GitHub Container Registry Login', 'in_progress');
+if (INIT_LOGIN_GHCR == "true") {
+  updateStep("GitHub Container Registry Login", "in_progress");
 
   // Temporarily enable verbose mode for Docker login to see errors
   const originalVerbose = $.verbose;
-  if (INIT_DEBUG_MODE !== 'true') {
+  if (INIT_DEBUG_MODE !== "true") {
     $.verbose = false; // Keep quiet but allow error detection
   }
 
   try {
     await $`echo $GH_TOKEN | docker login ghcr.io -u USERNAME --password-stdin`;
 
-    updateStep('GitHub Container Registry Login', 'success');
+    updateStep("GitHub Container Registry Login", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    console.log('GitHub Container Registry Login failed:', errorMessage);
-    updateStep('GitHub Container Registry Login', 'failed', errorMessage);
+    console.log("GitHub Container Registry Login failed:", errorMessage);
+    updateStep("GitHub Container Registry Login", "failed", errorMessage);
   } finally {
     // Restore original verbose setting
     $.verbose = originalVerbose;
   }
 } else {
-  updateStep('GitHub Container Registry Login', 'skipped');
+  updateStep("GitHub Container Registry Login", "skipped");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TMUX CONFIG
 ////////////////////////////////////////////////////////////////////////////////
 
-if (INIT_TMUX_CONFIG == 'true') {
-  updateStep('Configure Tmux', 'in_progress');
+if (INIT_TMUX_CONFIG == "true") {
+  updateStep("Configure Tmux", "in_progress");
   try {
     await $`curl -o ${HOME}/.tmux.conf https://raw.githubusercontent.com/ghostmind-dev/config/refs/heads/main/config/tmux/.tmux.conf`;
-    updateStep('Configure Tmux', 'success');
+    updateStep("Configure Tmux", "success");
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    updateStep('Configure Tmux', 'failed', errorMessage);
+    updateStep("Configure Tmux", "failed", errorMessage);
   }
 } else {
-  updateStep('Configure Tmux', 'skipped');
+  updateStep("Configure Tmux", "skipped");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -782,14 +779,14 @@ if (INIT_TMUX_CONFIG == 'true') {
 
 // Show final table only in debug mode
 // Wait for all steps to complete, then show welcome
-if (INIT_DEBUG_MODE === 'true') {
+if (INIT_DEBUG_MODE === "true") {
   renderTable();
 } else {
   // Wait for any remaining async operations to complete
   await sleep(1000);
 
   // Add spacing before welcome in production mode
-  console.log('');
+  console.log("");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -797,10 +794,10 @@ if (INIT_DEBUG_MODE === 'true') {
 ////////////////////////////////////////////////////////////////////////////////
 
 // Print welcome message with gradient-like colors
-const welcomeText = figlet.textSync('Welcome to Ghostmind', {
-  font: 'Standard',
+const welcomeText = figlet.textSync("Welcome to Ghostmind", {
+  font: "Standard",
 });
-const lines = welcomeText.split('\n');
+const lines = welcomeText.split("\n");
 lines.forEach((line: string, index: number) => {
   // Create a gradient effect from cyan to blue
   if (index % 2 === 0) {
