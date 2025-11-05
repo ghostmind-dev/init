@@ -511,7 +511,7 @@ if (INIT_LOGIN_GCP === "true") {
       Deno.env.set("GOOGLE_APPLICATION_CREDENTIALS", "/tmp/gsa_key.json");
 
       // Make GOOGLE_APPLICATION_CREDENTIALS persistent in shell sessions
-      await $`echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gsa_key.json" >> ${HOME}/.zshenv`;
+      await $`echo "\nexport GOOGLE_APPLICATION_CREDENTIALS=/tmp/gsa_key.json" >> ${HOME}/.zshenv`;
 
       // Activate the service account
       await $`gcloud auth activate-service-account --key-file="/tmp/gsa_key.json"`;
@@ -590,11 +590,11 @@ if (INIT_BASE_ZSHRC === "true") {
       "zsh zsh-autosuggestions zsh-syntax-highlighting zsh-completions";
 
     // Set ZSH_THEME in .zshenv for persistence across sessions
-    await $`echo 'export INIT_ZSH_THEME="${INIT_ZSH_THEME}"' >> ${HOME}/.zshenv`;
+    await $`echo '\nexport INIT_ZSH_THEME="${INIT_ZSH_THEME}"' >> ${HOME}/.zshenv`;
 
     // Set ZSH_PLUGINS in .zshenv if provided
     if (INIT_ZSH_PLUGINS) {
-      await $`echo 'export INIT_ZSH_PLUGINS="${INIT_ZSH_PLUGINS}"' >> ${HOME}/.zshenv`;
+      await $`echo '\nexport INIT_ZSH_PLUGINS="${INIT_ZSH_PLUGINS}"' >> ${HOME}/.zshenv`;
     }
 
     // Install Oh My Zsh plugins
